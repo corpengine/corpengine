@@ -7,7 +7,8 @@ class Assets(object):
         self.type = 'Assets'
         self.images = [
             ['player', pygame.image.load('res/images/player.png').convert()],
-            ['dev_close', pygame.image.load('res/images/dev_close.png').convert()]
+            ['dev_close', pygame.image.load('res/images/dev_close.png').convert()],
+            ['test', pygame.image.load('res/images/test.png').convert()]
         ]
         self.fonts = {
             'hp_simplified': pygame.font.Font('res/fonts/hp-simplified.ttf', 15),

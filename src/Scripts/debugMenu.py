@@ -7,7 +7,7 @@ class DebugMenu(screenGui):
         self.name = 'DebugMenu'
     
     def setup(self):
-        self.enabled = True
+        self.enabled = False
     
     def update(self):
         game = self.parent.parent
