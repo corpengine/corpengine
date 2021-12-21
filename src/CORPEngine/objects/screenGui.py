@@ -57,10 +57,17 @@ class screenGui(object):
         window.gui_window.blit(image, pos)
     
     def getSizeOfText(self, text, font, size):
-        assets = self.parent.parent.getService('Assets')
+        game = self.getGameService()
+        assets = game.getService('Assets')
         window = self.parent.parent.parent.window
 
         textObj = assets.fonts[font].render(text, True, (0, 0, 0))
         objSize = [textObj.get_width(), textObj.get_height()]
         textObj = pygame.transform.scale(textObj, (objSize[0]*size, objSize[1]*size))
         return textObj.get_width(), textObj.get_height()
+    
+    def getGameService(self):
+        game = self.parent
+        while game.type != 'GameService':
+            game = game.parent
+        return game

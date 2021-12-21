@@ -17,9 +17,7 @@ class ParticleTest(ParticleEmitter):
         if player != None:
             newPos = [player.position[0], player.position[1]]
             self.create(newPos, [uniform(-3, 3), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 10, (0, 0.06), -0.05, shape=choice(self.shapes))
-        
-        if player != None:
-            for i in range(5):
-                position = [player.position[0], player.position[1]]
-                self.create(position, [15, randint(0, 18)], (randint(0, 255), randint(0, 255), randint(0, 255)), 8, (-0.5, 0.1), -0.1, choice(self.shapes))
         """
+        for i in range(5):
+            position = [320, 15]
+            self.create(position, [uniform(-5, 5), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 13, (0, 0.1), -0.1, shape=choice(self.shapes), collidable=True)

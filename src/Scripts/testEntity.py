@@ -9,5 +9,6 @@ class TestEntity(Entity):
         game = self.parent.parent
         assets = game.getService('Assets')
 
-        self.position = [320, 15]
+        self.position = [320, 85]
         self.image = assets.getImage('test')
+        self.collisionGroup = 0

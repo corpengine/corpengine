@@ -10,7 +10,7 @@ class Entity(object):
         self.position = [0, 0]
         self.render = True
         self.children = []
-        self.collisionGroup = 1
+        self.collisionGroup = 0
     
     def getChild(self, name):
         for child in self.children:
@@ -22,13 +22,19 @@ class Entity(object):
         return self.children
     
     def isColliding(self, name, parent='Workspace'):
-        game = self.parent.parent
+        game = self.getGameService()
         # TODO: support for children
         parentObj = game.getService(parent)
         for child in parentObj.getChildren():
-            if child.name == name and child.collisionGroup == self.collisionGroup:
+            if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
                 childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
                 selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
                 return selfRect.colliderect(childRect)
+    
+    def getGameService(self):
+        game = self.parent
+        while game.type != 'GameService':
+            game = game.parent
+        return game
 
         
