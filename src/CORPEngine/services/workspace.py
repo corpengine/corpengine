@@ -1,14 +1,16 @@
 from ...Scripts.player import Player
 from ...Scripts.particleTest import ParticleTest
 from ...Scripts.testEntity import TestEntity
+from ...Scripts.mainCamera import MainCamera
 
 class Workspace(object):
     def __init__(self, parent):
         self.parent = parent
         self.name = 'Workspace'
         self.type = 'Workspace'
-        self.children = []
+        self.children = [MainCamera(self)]
         self.childrenQueue = [Player(self), ParticleTest(self), TestEntity(self)]
+        self.currentCamera = self.getChild('MainCamera')
     
     def getChild(self, name):
         for child in self.children:

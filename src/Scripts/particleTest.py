@@ -10,7 +10,9 @@ class ParticleTest(ParticleEmitter):
     
     def update(self, dt):
         #self.create([320, 180], [5, 3], (255, 0, 0), 7, [-0.5, -0.2], -0.1)
-        game = self.parent.parent
+        game = self.getGameService()
+        workspace = game.getService('Workspace')
+        camX, camY = self.getCameraPosition(workspace)
         player = game.getService('Workspace').getChild('Player')
         input = game.getService('UserInputService')
         """
@@ -19,5 +21,5 @@ class ParticleTest(ParticleEmitter):
             self.create(newPos, [uniform(-3, 3), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 10, (0, 0.06), -0.05, shape=choice(self.shapes))
         """
         for i in range(3):
-            position = [320, 15]
+            position = [320 - camX, 15 - camY]
             self.create(position, [uniform(-3.5, 3.5), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 13, (0, 0.1), -0.1, shape=choice(self.shapes), collidable=True)

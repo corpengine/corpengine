@@ -20,5 +20,3 @@ class Player(Entity):
         speed = self.speed * dt
         self.position[0] += input.isPressed('player_left')*-speed + input.isPressed('player_right')*speed
         self.position[1] += input.isPressed('player_up')*-speed + input.isPressed('player_down')*speed
-
-        print(self.isColliding('TestEntity'))

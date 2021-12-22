@@ -22,14 +22,15 @@ class ParticleEmitter(object):
     def updateParticleVelocity(self, particle, dt):
         game = self.getGameService()
         workspace = game.getService('Workspace')
+        camX, camY = self.getCameraPosition(workspace)
         particle[1][0] += particle[4][0]*dt
         if particle[7]: # check if collidable
             for child in workspace.getChildren():
                 if child.type == 'Entity' and child.collisionGroup == particle[8] and child.image != None:
                     #childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
                     childRect = child.image.get_rect()
-                    childRect.x = child.position[0]-child.image.get_width()/2
-                    childRect.y = child.position[1]-child.image.get_height()/2
+                    childRect.x = (child.position[0] - camX)-child.image.get_width()/2
+                    childRect.y = (child.position[1] - camY)-child.image.get_height()/2
                     selfRect = pygame.Rect(particle[0][0], particle[0][1], particle[3], particle[3])
                     if selfRect.colliderect(childRect):
                         # reset y velocity
@@ -42,10 +43,14 @@ class ParticleEmitter(object):
 
     
     def render(self, dt):
+        # FIXME THIS PLACE HAS MAJOR CAMERA ISSUES AND MOSTLY NEEDS THE CAMERA POS TO BE MÖANUALLY ADDED BY THE USER.
+        # FIX THIS!!!!!!!!
         game = self.getGameService()
+        workspace = game.getService('Workspace')
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
         renderService = game.getService('EngineRenderService')
+        camX, camY = self.getCameraPosition(workspace)
         # updating the particles
         for particle in self.particleData:
             # update position
@@ -60,7 +65,7 @@ class ParticleEmitter(object):
             
         # rendering
         for particle in self.particleData:
-            if not particle[0][0] > defaultScreenSize[0] and not particle[0][1] > defaultScreenSize[1]:
+            if not particle[0][0] - camX > defaultScreenSize[0] and not particle[0][1] - camY > defaultScreenSize[1]:
                 x = particle[0][0] * windowResolutionRatio[0]
                 y = particle[0][1] * windowResolutionRatio[1]
                 if particle[6] == 'circle':
@@ -70,3 +75,10 @@ class ParticleEmitter(object):
                     pygame.draw.rect(window.particle_window, particle[2], (x, y, size, size))
                 if renderService != None:
                     renderService.totalParticlesRendered += 1
+    
+    def getCameraPosition(self, workspace):
+        if workspace.currentCamera != None:  # if a default camera exists:
+            camX, camY = workspace.currentCamera.position
+        else:
+            camX, camY = (0, 0)
+        return camX, camY
