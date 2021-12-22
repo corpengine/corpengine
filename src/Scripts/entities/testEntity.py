@@ -1,4 +1,4 @@
-from ..CORPEngine.objects.entity import Entity
+from ...CORPEngine.objects.entity import Entity
 
 class TestEntity(Entity):
     def __init__(self, parent):

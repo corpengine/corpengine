@@ -1,4 +1,4 @@
-from ..CORPEngine.objects.particleEmitter import ParticleEmitter
+from ...CORPEngine.objects.particleEmitter import ParticleEmitter
 from random import uniform, randint, choice
 import math
 

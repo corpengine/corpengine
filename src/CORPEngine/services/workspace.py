@@ -1,6 +1,6 @@
-from ...Scripts.player import Player
-from ...Scripts.particleTest import ParticleTest
-from ...Scripts.testEntity import TestEntity
+from ...Scripts.entities.player import Player
+from ...Scripts.particleEmitters.particleTest import ParticleTest
+from ...Scripts.entities.testEntity import TestEntity
 from ...Scripts.mainCamera import MainCamera
 
 class Workspace(object):

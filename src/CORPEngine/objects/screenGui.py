@@ -40,6 +40,9 @@ class screenGui(object):
         newRect.height *= windowResolutionRatio[1]
         pygame.draw.rect(window.gui_window, color, newRect)
     
+    def drawTextBar(self):
+        pass
+    
     def drawImage(self, name, position):
         game = self.parent.parent
         window = game.parent.window

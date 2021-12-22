@@ -1,5 +1,5 @@
-from ..CORPEngine.objects.screenGui import screenGui
-from ..CORPEngine.coreContent import *
+from ...CORPEngine.objects.screenGui import screenGui
+from ...CORPEngine.coreContent import *
 
 class DebugMenu(screenGui):
     def __init__(self, parent):

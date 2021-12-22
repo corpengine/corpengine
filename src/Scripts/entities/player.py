@@ -1,5 +1,5 @@
-from ..CORPEngine.objects.entity import Entity
-from ..CORPEngine.coreContent import *
+from ...CORPEngine.objects.entity import Entity
+from ...CORPEngine.coreContent import *
 
 class Player(Entity):
     def __init__(self, parent):

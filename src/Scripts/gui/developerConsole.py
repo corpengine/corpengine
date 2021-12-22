@@ -1,7 +1,7 @@
 import pygame
 from pygame import mouse
-from ..CORPEngine.objects.screenGui import screenGui
-from ..CORPEngine.coreContent import defaultScreenSize
+from ...CORPEngine.objects.screenGui import screenGui
+from ...CORPEngine.coreContent import defaultScreenSize
 
 class DeveloperConsole(screenGui):
     def __init__(self, parent):
