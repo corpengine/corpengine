@@ -82,3 +82,9 @@ class ParticleEmitter(object):
         else:
             camX, camY = (0, 0)
         return camX, camY
+    
+    def getEngine(self):
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine

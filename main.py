@@ -3,8 +3,9 @@ from src.CORPEngine.services.gameService import GameService
 from src.CORPEngine.coreContent import engineVersion
 from src.settings import Settings
 
-class Game:
+class Engine:
     def __init__(self):
+        self.type = 'Engine'
         self.window = Window(self)
         self.game = GameService(self)
         self.settings = Settings(self)
@@ -17,4 +18,4 @@ class Game:
 
 if __name__ =='__main__':
     print(f'>>> [CORP] Engine {engineVersion} - Made by DaGhostyBoi.')
-    Game().run()
+    Engine().run()

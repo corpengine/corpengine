@@ -15,7 +15,7 @@ class Player(Entity):
         self.position = [320, 180]
     
     def update(self, dt):
-        game = self.parent.parent
+        game = self.getGameService()
         input = game.getService('UserInputService')
         speed = self.speed * dt
         self.position[0] += input.isPressed('player_left')*-speed + input.isPressed('player_right')*speed

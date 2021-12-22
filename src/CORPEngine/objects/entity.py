@@ -23,7 +23,7 @@ class Entity(object):
     
     def isColliding(self, name, parent='Workspace'):
         game = self.getGameService()
-        # TODO: support for children
+        # TODO: support for objects rather than only services as parents
         parentObj = game.getService(parent)
         for child in parentObj.getChildren():
             if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
@@ -37,5 +37,11 @@ class Entity(object):
         while game.type != 'GameService':
             game = game.parent
         return game
+    
+    def getEngine(self):
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine
 
         

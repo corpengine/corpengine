@@ -1,6 +1,6 @@
 import sys, inspect
 
-engineVersion = '0.1.4'
+engineVersion = '0.1.4a'
 gameVersion = '1.0'
 defaultScreenSize = (640, 360)
 availableResolutions = ((640, 360), (1280, 720), (1024, 576), (1152, 648), (1366, 768))
