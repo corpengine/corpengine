@@ -11,4 +11,4 @@ class TestEntity(Entity):
 
         self.position = [320, 85]
         self.image = assets.getImage('test')
-        self.collisionGroup = 1
+        self.collisionGroup = 0

@@ -30,6 +30,7 @@ class Entity(object):
                 childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
                 selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
                 return selfRect.colliderect(childRect)
+        return False
     
     def getGameService(self):
         game = self.parent
