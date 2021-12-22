@@ -40,3 +40,7 @@ class UserInputService(object):
         }
         mouse = pygame.mouse.get_pressed()
         return mouse[mouseButtons[num]]
+    
+    def getMousePosition(self):
+        mx, my = pygame.mouse.get_pos()
+        return mx, my
