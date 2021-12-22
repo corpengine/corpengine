@@ -18,6 +18,6 @@ class ParticleTest(ParticleEmitter):
             newPos = [player.position[0], player.position[1]]
             self.create(newPos, [uniform(-3, 3), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 10, (0, 0.06), -0.05, shape=choice(self.shapes))
         """
-        for i in range(5):
+        for i in range(3):
             position = [320, 15]
-            self.create(position, [uniform(-5, 5), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 13, (0, 0.1), -0.1, shape=choice(self.shapes), collidable=True)
+            self.create(position, [uniform(-3.5, 3.5), 0], (randint(0, 255), randint(0, 255), randint(0, 255)), 13, (0, 0.1), -0.1, shape=choice(self.shapes), collidable=True)
