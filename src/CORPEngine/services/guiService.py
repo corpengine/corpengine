@@ -1,6 +1,6 @@
 import pygame
 from ...Scripts.gui.debugMenu import DebugMenu
-from ...Scripts.gui.developerConsole import DeveloperConsole
+from ...Scripts.gui.developerMenu import DeveloperConsole
 
 class GUIService(object):
     def __init__(self, parent):

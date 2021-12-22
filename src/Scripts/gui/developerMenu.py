@@ -26,8 +26,9 @@ class DeveloperConsole(screenGui):
         self.drawRect((38, 38, 38), self.panelRect)
         self.drawRect((230, 230, 230), self.barRect)
         self.drawImage('dev_close', (382, 0))
-        # text bar
-        self.drawTextBar((10, 10, 10), self.textBarRect)
+
+        # title text
+        self.writeText('Developer Menu', (-self.offsetPosition[0], -self.offsetPosition[1]), 1, (35, 35, 35), font='roboto_mono')
 
         # close button code
         mx, my = input.getMousePosition()
