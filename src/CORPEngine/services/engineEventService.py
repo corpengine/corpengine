@@ -35,3 +35,5 @@ class EngineEventService(object):
                 if event.key == K_F6:
                     if developerConsole != None:
                         developerConsole.enabled = not developerConsole.enabled
+            if event.type == MOUSEBUTTONDOWN:
+                pass

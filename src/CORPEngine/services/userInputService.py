@@ -15,6 +15,11 @@ class UserInputService(object):
             'shift': [K_LSHIFT, K_RSHIFT],
             'developer_console': [K_LSHIFT, K_F10]
         }
+        self.mouseStatus = {
+            'left': False,
+            'middle': False,
+            'right': False
+        }
     
     def isPressed(self, name):
         keys = pygame.key.get_pressed()

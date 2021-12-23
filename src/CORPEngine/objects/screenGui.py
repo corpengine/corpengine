@@ -21,8 +21,8 @@ class screenGui(object):
         textObj = pygame.transform.scale(textObj, (objSize[0]*size, objSize[1]*size))
         objSize = [textObj.get_width(), textObj.get_height()]
         textObj = pygame.transform.scale(textObj, (objSize[0]*windowResolutionRatio[1], objSize[1]*windowResolutionRatio[1]))
-        x = newPosition[0]*windowResolutionRatio[0] + self.offsetPosition[0]
-        y = newPosition[1]*windowResolutionRatio[1] + self.offsetPosition[1]
+        x = newPosition[0]*windowResolutionRatio[0]
+        y = newPosition[1]*windowResolutionRatio[1]
         pos = [x, y]
         window.gui_window.blit(textObj, pos)
     
@@ -56,6 +56,30 @@ class screenGui(object):
         pos[0] *= windowResolutionRatio[0]
         pos[1] *= windowResolutionRatio[1]
         imageSize = [image.get_width(), image.get_height()]
+        image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
+        window.gui_window.blit(image, pos)
+    
+    def drawCheckBox(self, value, position):
+        game = self.getGameService()
+        assets = game.getService('Assets')
+        input = game.getService('UserInputService')
+        window = self.getEngine().window
+        windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
+
+        if value:
+            image = assets.getImage('checkbox_true')
+        else:
+            image = assets.getImage('checkbox_false')
+        pos = [(position[0] + self.offsetPosition[0]) * windowResolutionRatio[0], (position[1] + self.offsetPosition[1]) * windowResolutionRatio[1]]
+        
+        # updating the value
+        imageSize = [image.get_width(), image.get_height()]
+        checkboxRect = pygame.Rect(pos[0], pos[1], imageSize[0], imageSize[1])
+        mx, my = input.getMousePosition()
+        if checkboxRect.collidepoint(mx, my) and input.isMouseButtonClicked('left'):
+            value = not value
+        
+        # rendering
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
         window.gui_window.blit(image, pos)
     

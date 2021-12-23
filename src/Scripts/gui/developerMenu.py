@@ -8,6 +8,7 @@ class DeveloperConsole(screenGui):
         super().__init__(parent)
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
+        self.test = True
     
     def setup(self):
         self.enabled = False
@@ -28,7 +29,11 @@ class DeveloperConsole(screenGui):
         self.drawImage('dev_close', (382, 0))
 
         # title text
-        self.writeText('Developer Menu', (-self.offsetPosition[0], -self.offsetPosition[1]), 1, (35, 35, 35), font='roboto_mono')
+        self.writeText('Developer Menu', (0, 0), 1, (35, 35, 35), font='roboto_mono')
+
+        #self.drawImage('checkbox_true', (200, 150))
+        #self.drawImage('checkbox_false', (200, 120))
+        self.drawCheckBox(self.test, (200, 115))
 
         # close button code
         mx, my = input.getMousePosition()
