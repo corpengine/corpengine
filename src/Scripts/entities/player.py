@@ -13,6 +13,7 @@ class Player(Entity):
         
         self.speed = 4
         self.position = [320, 180]
+        self.collisionGroup = 1
     
     def update(self, dt):
         game = self.getGameService()
