@@ -1,7 +1,6 @@
 import pygame
 from ...Scripts.gui.debugMenu import DebugMenu
 from ...Scripts.gui.developerMenu import DeveloperConsole
-from ...Scripts.gui.mouseCursor import MouseCursor
 
 class GUIService(object):
     def __init__(self, parent):
@@ -9,7 +8,7 @@ class GUIService(object):
         self.type = 'GUIService'
         self.parent = parent
         self.children = []
-        self.childrenQueue = [DebugMenu(self), DeveloperConsole(self), MouseCursor(self)]
+        self.childrenQueue = [DebugMenu(self), DeveloperConsole(self)]
     
     def update(self):
         self.updateQueue()
