@@ -8,6 +8,9 @@ class DeveloperConsole(ScreenGui):
         super().__init__(parent)
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
+        self.valueData = []
+        # value data list:
+        # [type, value]
     
     def setup(self):
         self.enabled = False
@@ -16,6 +19,9 @@ class DeveloperConsole(ScreenGui):
         self.textBarRect = pygame.Rect(0, 230, 405, 25)
         self.closeRect = pygame.Rect(382, 0, 23, 23)
         self.offsetPosition = [320-self.panelRect.width/2, 180-self.panelRect.height/2]
+
+        self.addToDevMenu('checkbox', 'vsync')
+        self.addToDevMenu('show', 'vsync')
     
     def update(self):
         engine = self.getEngine()
@@ -30,9 +36,8 @@ class DeveloperConsole(ScreenGui):
         # title text
         self.writeText('Developer Menu', (0, 0), 1, (35, 35, 35), font='roboto_mono')
 
-        #self.drawImage('checkbox_true', (200, 150))
-        #self.drawImage('checkbox_false', (200, 120))
-        self.drawCheckBox('vsync', (200, 115))
+        #self.drawCheckBox('vsync', (200, 115))
+        self.drawValues()
 
         # close button code
         mx, my = input.getMousePosition()
@@ -47,3 +52,19 @@ class DeveloperConsole(ScreenGui):
         # check for mouse click
         if closeRect.collidepoint(mx, my) and input.isMouseButtonDown('left'):
             self.enabled = False
+    
+    def addToDevMenu(self, type, value):
+        self.valueData.append([type, value])
+    
+    def drawValues(self):
+        x = 0
+        y = 50
+        debugValues = self.getEngine().settings.debugValues
+        for value in self.valueData:
+            if value[0] == 'show':
+                self.writeText(f'{value[1]}:', [x, y], 1, (220, 220, 220), 'roboto_mono')
+                self.writeText(str(debugValues[value[1]]), [x+len(f'{value[1]}:')*10, y], 1, (220, 220, 220), 'roboto_mono')
+            elif value[0] == 'checkbox':
+                self.writeText(f'{value[1]}:', [x, y], 1, (220, 220, 220), 'roboto_mono')
+                self.drawCheckBox(value[1], [x+len(f'{value[1]}:')*10, y+3.5])
+            y += 16.5
