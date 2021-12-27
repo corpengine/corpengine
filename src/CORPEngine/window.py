@@ -59,11 +59,13 @@ class Window(object):
     
     def vsync(self):
         settings = self.parent.settings
-        if settings.vsync:
+        if settings.debugValues['vsync']:
             if self.clock.get_fps() < self.fps_cap:
                 self.fps_cap -= 5
             if self.clock.get_fps() >= self.fps_cap:
                 self.fps_cap += 5
+        else:
+            self.fps_cap = 60
         # update performance text:
         if self.clock.get_fps() >= self.fps_cap:
             self.performance = 'Very Good'

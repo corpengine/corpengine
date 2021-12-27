@@ -1,7 +1,7 @@
-from ...CORPEngine.objects.screenGui import screenGui
+from ...CORPEngine.objects.screenGui import ScreenGui
 from ...CORPEngine.coreContent import *
 
-class DebugMenu(screenGui):
+class DebugMenu(ScreenGui):
     def __init__(self, parent):
         super().__init__(parent)
         self.name = 'DebugMenu'

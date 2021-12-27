@@ -1,14 +1,13 @@
 import pygame
 from pygame import mouse
-from ...CORPEngine.objects.screenGui import screenGui
+from ...CORPEngine.objects.screenGui import ScreenGui
 from ...CORPEngine.coreContent import defaultScreenSize
 
-class DeveloperConsole(screenGui):
+class DeveloperConsole(ScreenGui):
     def __init__(self, parent):
         super().__init__(parent)
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
-        self.test = True
     
     def setup(self):
         self.enabled = False
@@ -33,7 +32,7 @@ class DeveloperConsole(screenGui):
 
         #self.drawImage('checkbox_true', (200, 150))
         #self.drawImage('checkbox_false', (200, 120))
-        self.drawCheckBox(self.test, (200, 115))
+        self.drawCheckBox('vsync', (200, 115))
 
         # close button code
         mx, my = input.getMousePosition()
@@ -46,5 +45,5 @@ class DeveloperConsole(screenGui):
         closeRect.width *= windowResolutionRatio[1]
         closeRect.height *= windowResolutionRatio[1]
         # check for mouse click
-        if closeRect.collidepoint(mx, my) and input.isMouseButtonClicked('left'):
+        if closeRect.collidepoint(mx, my) and input.isMouseButtonDown('left'):
             self.enabled = False

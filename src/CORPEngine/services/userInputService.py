@@ -16,11 +16,8 @@ class UserInputService(object):
             'shift': [K_LSHIFT, K_RSHIFT],
             'developer_console': [K_LSHIFT, K_F10]
         }
-        self.mouseStatus = {
-            'left': False,
-            'middle': False,
-            'right': False
-        }
+        self.mouseStatus = [False, False, False]
+        self.mouseFocus = 'Game'
     
     def isPressed(self, name):
         keys = pygame.key.get_pressed()
@@ -38,7 +35,7 @@ class UserInputService(object):
                 return False
         return True
 
-    def isMouseButtonClicked(self, num):
+    def isMouseButtonDown(self, num):
         mouseButtons = {
             'left': 0,
             'middle': 1,

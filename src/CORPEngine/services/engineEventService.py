@@ -13,8 +13,11 @@ class EngineEventService(object):
         game = self.parent
         window = game.parent.window
         guiService = game.getService('GUIService')
+        input = game.getService('UserInputService')
         debugMenu = guiService.getChild('DebugMenu')
         developerConsole = guiService.getChild('DeveloperConsole')
+
+        input.mouseStatus = [False, False, False]
         # pygame events
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -35,5 +38,9 @@ class EngineEventService(object):
                 if event.key == K_F6:
                     if developerConsole != None:
                         developerConsole.enabled = not developerConsole.enabled
+            
             if event.type == MOUSEBUTTONDOWN:
-                pass
+                if event.button == 1:
+                    input.mouseStatus[0] = True
+                if event.button == 3:
+                    input.mouseStatus[2] = True

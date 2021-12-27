@@ -1,7 +1,7 @@
 import pygame
 from ..coreContent import *
 
-class screenGui(object):
+class ScreenGui(object):
     def __init__(self, parent):
         self.parent = parent
         self.name = 'ScreenGUI'
@@ -63,10 +63,11 @@ class screenGui(object):
         game = self.getGameService()
         assets = game.getService('Assets')
         input = game.getService('UserInputService')
+        debugValues = self.getEngine().settings.debugValues
         window = self.getEngine().window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
 
-        if value:
+        if debugValues[value]:
             image = assets.getImage('checkbox_true')
         else:
             image = assets.getImage('checkbox_false')
@@ -76,8 +77,8 @@ class screenGui(object):
         imageSize = [image.get_width(), image.get_height()]
         checkboxRect = pygame.Rect(pos[0], pos[1], imageSize[0], imageSize[1])
         mx, my = input.getMousePosition()
-        if checkboxRect.collidepoint(mx, my) and input.isMouseButtonClicked('left'):
-            value = not value
+        if checkboxRect.collidepoint(mx, my) and input.mouseStatus[0]:
+            debugValues[value] = not debugValues[value]
         
         # rendering
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
@@ -104,3 +105,11 @@ class screenGui(object):
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
+    
+    def checkMouseFocus(self, uiRect):
+        input = self.getGameService().getService('UserInputService')
+        mx, my = input.getMousePosition(True)
+        if uiRect.colliderect(mx, my):
+            input.mouseFocus = 'UI'
+        else:
+            input.mouseFocus = 'Game'
