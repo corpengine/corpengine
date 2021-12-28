@@ -33,13 +33,11 @@ class ScreenGui(object):
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
 
         newRect = rect.copy()
-        newRect.x += self.offsetPosition[0]
-        newRect.y += self.offsetPosition[1]
-        newRect.x *= windowResolutionRatio[0]
-        newRect.y *= windowResolutionRatio[1]
-        newRect.width *= windowResolutionRatio[1]
-        newRect.height *= windowResolutionRatio[1]
-        pygame.draw.rect(window.gui_window, color, newRect)
+        x = (newRect.x + self.offsetPosition[0]) * windowResolutionRatio[0]
+        y = (newRect.y + self.offsetPosition[1]) * windowResolutionRatio[1]
+        w = newRect.width * windowResolutionRatio[1]
+        h = newRect.height * windowResolutionRatio[1]
+        pygame.draw.rect(window.gui_window, color, (x, y, w, h))
     
     def drawImage(self, name, position):
         game = self.parent.parent
@@ -49,15 +47,12 @@ class ScreenGui(object):
 
         image = assets.getImage(name)
         pos = [position[0], position[1]]
-        pos[0] += self.offsetPosition[0]
-        pos[1] += self.offsetPosition[1]
-        print(self.getGameService().getService('UserInputService').mouseFocus)
-        pos[0] *= windowResolutionRatio[0]
-        pos[1] *= windowResolutionRatio[1]
-        rect = pygame.Rect(pos[0], pos[1], image.get_width()*windowResolutionRatio[1], image.get_height()*windowResolutionRatio[1])
-        imageSize = [image.get_width(), image.get_height()]
-        image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
-        window.gui_window.blit(image, pos)
+        x = (pos[0] + self.offsetPosition[0]) * windowResolutionRatio[0]
+        y = (pos[1] + self.offsetPosition[1]) * windowResolutionRatio[1]
+        w = image.get_width() * windowResolutionRatio[1]
+        h = image.get_height() * windowResolutionRatio[1]
+        image = pygame.transform.scale(image, (w, h))
+        window.gui_window.blit(image, (x, y))
     
     def drawCheckBox(self, value, position):
         game = self.getGameService()
