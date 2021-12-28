@@ -14,7 +14,7 @@ class Window(object):
         self.dt = 0
         self.last_time = time.time()
         self.clock = pygame.time.Clock()
-        self.fps_cap = 60
+        self.fps_cap = 155
         self.performance = 'Very Good'
       
         pygame.font.init()
@@ -65,7 +65,7 @@ class Window(object):
             if self.clock.get_fps() >= self.fps_cap:
                 self.fps_cap += 5
         else:
-            self.fps_cap = 60
+            self.fps_cap = 15555
         # update performance text:
         if self.clock.get_fps() >= self.fps_cap:
             self.performance = 'Very Good'

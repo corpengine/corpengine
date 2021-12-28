@@ -11,6 +11,7 @@ class Entity(object):
         self.render = True
         self.children = []
         self.collisionGroup = 0
+        self.size = [1, 1]
     
     def getChild(self, name):
         for child in self.children:
