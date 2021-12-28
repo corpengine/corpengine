@@ -33,6 +33,7 @@ class GUIService(object):
         for child in self.children:
             if hasattr(child, 'update') and child.enabled == True:
                 child.update()
+            child._update()
     
     def getChild(self, name):
         for child in self.children:

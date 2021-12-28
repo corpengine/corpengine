@@ -15,11 +15,10 @@ class DeveloperConsole(ScreenGui):
     def setup(self):
         self.enabled = False
         self.panelRect = pygame.Rect(0, 0, 405, 255)
-        self.barRect = pygame.Rect(0, 0, 405, 23)
-        self.textBarRect = pygame.Rect(0, 230, 405, 25)
-        self.closeRect = pygame.Rect(382, 0, 23, 23)
         self.offsetPosition = [320-self.panelRect.width/2, 180-self.panelRect.height/2]
-
+        self.barRect = pygame.Rect(0, 0, 405, 23)
+        self.closeRect = pygame.Rect(382, 0, 23, 23)
+        self.primaryRect = self.panelRect
         self.addToDevMenu('checkbox', 'vsync')
         self.addToDevMenu('show', 'vsync')
     

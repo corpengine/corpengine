@@ -7,6 +7,7 @@ class ScreenGui(object):
         self.name = 'ScreenGUI'
         self.type = 'ScreenGUI'
         self.enabled = True
+        self.primaryRect = None
         self.offsetPosition = [0, 0]
     
     def writeText(self, text, position, size, color, font='hp_simplified', backgroundColor=None):
@@ -40,9 +41,6 @@ class ScreenGui(object):
         newRect.height *= windowResolutionRatio[1]
         pygame.draw.rect(window.gui_window, color, newRect)
     
-    def drawTextBar(self, bgColor, rect):
-        self.drawRect(bgColor, rect)
-    
     def drawImage(self, name, position):
         game = self.parent.parent
         window = game.parent.window
@@ -53,8 +51,10 @@ class ScreenGui(object):
         pos = [position[0], position[1]]
         pos[0] += self.offsetPosition[0]
         pos[1] += self.offsetPosition[1]
+        print(self.getGameService().getService('UserInputService').mouseFocus)
         pos[0] *= windowResolutionRatio[0]
         pos[1] *= windowResolutionRatio[1]
+        rect = pygame.Rect(pos[0], pos[1], image.get_width()*windowResolutionRatio[1], image.get_height()*windowResolutionRatio[1])
         imageSize = [image.get_width(), image.get_height()]
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
         window.gui_window.blit(image, pos)
@@ -75,7 +75,7 @@ class ScreenGui(object):
         
         # updating the value
         imageSize = [image.get_width(), image.get_height()]
-        checkboxRect = pygame.Rect(pos[0], pos[1], imageSize[0], imageSize[1])
+        checkboxRect = pygame.Rect(pos[0], pos[1], imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1])
         mx, my = input.getMousePosition()
         if checkboxRect.collidepoint(mx, my) and input.mouseStatus[0]:
             debugValues[value] = not debugValues[value]
@@ -83,16 +83,6 @@ class ScreenGui(object):
         # rendering
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
         window.gui_window.blit(image, pos)
-    
-    def getSizeOfText(self, text, font, size):
-        game = self.getGameService()
-        assets = game.getService('Assets')
-        window = self.parent.parent.parent.window
-
-        textObj = assets.fonts[font].render(text, True, (0, 0, 0))
-        objSize = [textObj.get_width(), textObj.get_height()]
-        textObj = pygame.transform.scale(textObj, (objSize[0]*size, objSize[1]*size))
-        return textObj.get_width(), textObj.get_height()
     
     def getGameService(self):
         game = self.parent
@@ -106,10 +96,26 @@ class ScreenGui(object):
             engine = engine.parent
         return engine
     
-    def checkMouseFocus(self, uiRect):
+    def updateMouseFocus(self, element):
         input = self.getGameService().getService('UserInputService')
-        mx, my = input.getMousePosition(True)
-        if uiRect.colliderect(mx, my):
-            input.mouseFocus = 'UI'
+        mx, my = input.getMousePosition()
+        if element.collidepoint(mx, my):
+            input.mouseFocus = self.name
         else:
             input.mouseFocus = 'Game'
+    
+    def _update(self):
+        if self.primaryRect != None:
+            window = self.getEngine().window
+            input = self.getGameService().getService('UserInputService')
+            x = self.primaryRect.x + self.offsetPosition[0]
+            y = self.primaryRect.y + self.offsetPosition[1]
+            w = self.primaryRect.width
+            h = self.primaryRect.height
+            windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
+            rect = pygame.Rect(x*windowResolutionRatio[0], y*windowResolutionRatio[1], w*windowResolutionRatio[1], h*windowResolutionRatio[1])
+            mx, my = input.getMousePosition()
+            if rect.collidepoint(mx, my):
+                input.mouseFocus = self.name
+            else:
+                input.mouseFocus = 'Game'
