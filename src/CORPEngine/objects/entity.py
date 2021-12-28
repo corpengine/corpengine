@@ -12,6 +12,7 @@ class Entity(object):
         self.children = []
         self.collisionGroup = 0
         self.size = [1, 1]
+        self.rotation = 0
     
     def getChild(self, name):
         for child in self.children:

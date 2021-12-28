@@ -27,6 +27,7 @@ class EngineRenderService(object):
                     image = pygame.transform.scale(image, (imageSize[0]*child.size[0], imageSize[1]*child.size[1]))
                     imageSize = (image.get_width(), image.get_height())
                     image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
+                    image = pygame.transform.rotate(image, child.rotation)
                     x = ((child.position[0] - camX) * windowResolutionRatio[0]) - image.get_width()/2
                     y = ((child.position[1] - camY) * windowResolutionRatio[1]) - image.get_height()/2
                     pos = [x, y]

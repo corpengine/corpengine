@@ -6,7 +6,7 @@ class Assets(object):
         self.name = 'Assets'
         self.type = 'Assets'
         self.images = [
-            ['player', pygame.image.load('res/images/player.png').convert()],
+            ['player', pygame.image.load('res/images/player.png').convert_alpha()],
             ['dev_close', pygame.image.load('res/images/dev_close.png').convert()],
             ['test', pygame.image.load('res/images/test.png').convert()],
             ['checkbox_true', pygame.image.load('res/images/engine/checkbox_true.png').convert_alpha()],
