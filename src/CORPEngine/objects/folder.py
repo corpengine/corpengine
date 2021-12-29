@@ -16,6 +16,12 @@ class Folder(object):
     def _update(self):
         self.updateQueue()
         self.childrenEvents()
+    
+    def getEngine(self):
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine
 
     def updateQueue(self):
         if len(self.childrenQueue) > 0:

@@ -19,10 +19,13 @@ class EngineRenderService(object):
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
         camX, camY = self.getCameraPosition(workspace)
-        if workspace != None:
-            for child in workspace.getChildren():
-                if child.type == 'Entity' and child.image != None:
-                    self.renderEntity(child, window, windowResolutionRatio, camX, camY)
+        for child in workspace.getChildren():
+            if child.type == 'Entity' and child.image != None:
+                self.renderEntity(child, window, windowResolutionRatio, camX, camY)
+            elif child.type == 'Folder':
+                for child2 in child.getChildren():
+                    if child2.type == 'Entity' and child2.image != None:
+                        self.renderEntity(child2, window, windowResolutionRatio, camX, camY)
     
     def renderEntity(self, child, window, windowResolutionRatio, camX, camY):
         image = child.image
@@ -36,8 +39,8 @@ class EngineRenderService(object):
         pos = [x, y]
         window.render_window.blit(image, pos)
         self.totalEntitiesRendered += 1
-        for child2 in child.getChildren():
-            self.renderEntity(child2, window, windowResolutionRatio, camX, camY)
+        for childA in child.getChildren():
+            self.renderEntity(childA, window, windowResolutionRatio, camX, camY)
     
     def getCameraPosition(self, workspace):
         if workspace.currentCamera != None:  # if a default camera exists:

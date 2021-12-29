@@ -6,7 +6,7 @@ class TestEntity(Entity):
         self.name = 'TestEntity'
     
     def setup(self):
-        game = self.parent.parent
+        game = self.getGameService()
         assets = game.getService('Assets')
 
         self.position = [320, 85]
