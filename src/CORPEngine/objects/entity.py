@@ -10,18 +10,10 @@ class Entity(object):
         self.position = [0, 0]
         self.render = True
         self.children = []
+        self.childrenQueue = []
         self.collisionGroup = 0
         self.size = [1, 1]
         self.rotation = 0
-    
-    def getChild(self, name):
-        for child in self.children:
-            if child.name == name:
-                return child
-        raise SyntaxError
-    
-    def getChildren(self):
-        return self.children
     
     def isColliding(self, name, parent='Workspace'):
         game = self.getGameService()
@@ -45,5 +37,43 @@ class Entity(object):
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
+    
+    def getChild(self, name):
+        for child in self.children:
+            if child.name == name:
+                return child
+        return None
+    
+    def _update(self):
+        self.updateQueue()
+        self.childrenEvents()
 
+    def updateQueue(self):
+        if len(self.childrenQueue) > 0:
+            newChild = self.childrenQueue[0]
+            self.children.append(self.childrenQueue[0])
+            del self.childrenQueue[0]
+            # SETUP/PARENT EVENTS:
+            # if the child came from another parent
+            if newChild.parent != self:
+                if hasattr(newChild, 'parentChanged'):
+                    newChild.parentChanged()
+            else: # if the child is brand new
+                if hasattr(newChild, 'setup'):
+                    newChild.setup()
+    
+    def childrenEvents(self):
+        window = self.getEngine().window
+        for child in self.children:
+            if hasattr(child, 'update'):
+                child.update(window.dt)
+                if child.type == 'ParticleEmitter':
+                    if hasattr(child, 'update'):
+                        child.update(window.dt)
+                    child.render(window.dt)
+            if hasattr(child, '_update'):
+                child._update()
+    
+    def getChildren(self):
+        return self.children
         

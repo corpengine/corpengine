@@ -7,13 +7,13 @@ class Player(Entity):
         self.name = 'Player'
     
     def setup(self):
-        game = self.parent.parent
+        game = self.getGameService()
         assets = game.getService('Assets')
         self.image = assets.getImage('player')
         
         self.speed = 4
         self.position = [320, 180]
-        self.collisionGroup = 1
+        self.collisionGroup = 0
     
     def update(self, dt):
         game = self.getGameService()

@@ -9,7 +9,7 @@ class Workspace(object):
         self.name = 'Workspace'
         self.type = 'Workspace'
         self.children = [MainCamera(self)]
-        self.childrenQueue = [Player(self), ParticleTest(self), TestEntity(self)]
+        self.childrenQueue = [ParticleTest(self), TestEntity(self)]
         self.currentCamera = self.getChild('MainCamera')
     
     def getChild(self, name):
@@ -45,6 +45,8 @@ class Workspace(object):
                     if hasattr(child, 'update'):
                         child.update(window.dt)
                     child.render(window.dt)
+            if hasattr(child, '_update'):
+                child._update()
     
     def getChildren(self):
         return self.children
