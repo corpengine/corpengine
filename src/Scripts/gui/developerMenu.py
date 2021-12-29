@@ -22,7 +22,7 @@ class DeveloperConsole(ScreenGui):
         self.addToDevMenu('checkbox', 'vsync')
         self.addToDevMenu('show', 'vsync')
     
-    def update(self):
+    def update(self, dt):
         engine = self.getEngine()
         input = self.getGameService().getService('UserInputService')
         window = engine.window

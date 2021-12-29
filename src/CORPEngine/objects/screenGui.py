@@ -13,8 +13,8 @@ class ScreenGui(object):
         self.childrenQueue = []
     
     def writeText(self, text, position, size, color, font='hp_simplified', backgroundColor=None):
-        window = self.parent.parent.parent.window
-        assets = self.parent.parent.getService('Assets')
+        window = self.getEngine().window
+        assets = self.getGameService().getService('Assets')
         fonts = assets.fonts
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
 
@@ -30,7 +30,7 @@ class ScreenGui(object):
         window.gui_window.blit(textObj, pos)
     
     def drawRect(self, color, rect):
-        game = self.parent.parent
+        game = self.getGameService()
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
 
@@ -42,7 +42,7 @@ class ScreenGui(object):
         pygame.draw.rect(window.gui_window, color, (x, y, w, h))
     
     def drawImage(self, name, position):
-        game = self.parent.parent
+        game = self.getGameService()
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
         assets = game.getService('Assets')

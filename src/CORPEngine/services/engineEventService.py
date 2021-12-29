@@ -14,8 +14,9 @@ class EngineEventService(object):
         window = game.parent.window
         guiService = game.getService('GUIService')
         input = game.getService('UserInputService')
-        debugMenu = guiService.getChild('DebugMenu')
-        developerConsole = guiService.getChild('DeveloperConsole')
+        guiFolder = guiService.getChild('GUIFolder')
+        debugMenu = guiFolder.getChild('DebugMenu')
+        developerConsole = guiFolder.getChild('DeveloperConsole')
 
         input.mouseStatus = [False, False, False]
         # pygame events

@@ -8,7 +8,7 @@ class Workspace(object):
         self.name = 'Workspace'
         self.type = 'Workspace'
         self.children = [MainCamera(self)]
-        self.childrenQueue = [ParticleTest(self), EntityFolder(self)]
+        self.childrenQueue = [EntityFolder(self)]
         self.currentCamera = self.getChild('MainCamera')
     
     def getChild(self, name):

@@ -41,7 +41,11 @@ class Folder(object):
         window = self.getEngine().window
         for child in self.children:
             if hasattr(child, 'update'):
-                child.update(window.dt)
+                if child.type == 'ScreenGUI':
+                    if child.enabled:
+                        child.update(window.dt)
+                else:
+                    child.update(window.dt)
                 if child.type == 'ParticleEmitter':
                     child.render(window.dt)
             if hasattr(child, '_update'):

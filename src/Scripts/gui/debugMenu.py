@@ -9,8 +9,8 @@ class DebugMenu(ScreenGui):
     def setup(self):
         self.enabled = False
     
-    def update(self):
-        game = self.parent.parent
+    def update(self, dt):
+        game = self.getGameService()
         window = game.parent.window
         renderService = game.getService('EngineRenderService')
         res = window.screen.get_size()
