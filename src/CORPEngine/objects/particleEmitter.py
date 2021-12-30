@@ -44,6 +44,7 @@ class ParticleEmitter(object):
         selfRect = pygame.Rect(particle[0][0], particle[0][1], particle[3], particle[3])
         if childRect.colliderect(selfRect):
             # reset y velocity
+            particle[0][1] -= particle[1][1]
             particle[1][1] = 0
         else:
             particle[1][1] += particle[4][1]*dt
