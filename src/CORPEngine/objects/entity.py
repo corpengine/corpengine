@@ -17,13 +17,22 @@ class Entity(object):
     
     def isColliding(self, name, parent='Workspace'):
         game = self.getGameService()
-        # TODO: support for objects rather than only services as parents
-        parentObj = game.getService(parent)
-        for child in parentObj.getChildren():
-            if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
-                childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
-                selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
-                return selfRect.colliderect(childRect)
+        workspace = game.getService('Workspace')
+        if parent == 'Workspace':
+            parentObj = workspace
+        else:
+            parentObj = parent
+        # collision
+        if parentObj != None:
+            for child in parentObj.getChildren():
+                if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
+                    childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
+                    childRect.width *= child.size[0]
+                    childRect.height *= child.size[1]
+                    selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
+                    selfRect.width *= self.size[0]
+                    selfRect.height *= self.size[1]
+                    return selfRect.colliderect(childRect)
         return False
     
     def getGameService(self):
