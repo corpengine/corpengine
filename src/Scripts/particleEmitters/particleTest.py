@@ -14,4 +14,4 @@ class ParticleTest(ParticleEmitter):
         if input.isMouseButtonDown('left'):
             a = randint(0, 255)
             mx, my = input.getMousePosition(True)
-            self.create([mx, my], [3, 0], (a, a, a), 8.5, (0, 1), -0.05, collidable=True)
+            self.create([mx, my], [0, 0], (a, a, a), 8.5, (0, 0.4), -0.05, collidable=True)

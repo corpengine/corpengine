@@ -1,3 +1,4 @@
+from random import randint
 import pygame
 from ..coreContent import defaultScreenSize
 
@@ -27,24 +28,31 @@ class ParticleEmitter(object):
         if particle[7]: # check if collidable
             for child in workspace.getChildren():
                 if child.type == 'Entity' and child.collisionGroup == particle[8] and child.image != None:
-                    childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
-                    childRect.width *= child.size[0]
-                    childRect.height *= child.size[1]
-                    childRect.x = (child.position[0] - camX)-childRect.width/2
-                    childRect.y = (child.position[1] - camY)-childRect.height/2
-                    selfRect = pygame.Rect(particle[0][0], particle[0][1], particle[3], particle[3])
-                    if selfRect.colliderect(childRect):
-                        # reset y velocity
-                        particle[1][1] = 0
-                    else:
-                        particle[1][1] += particle[4][1]*dt
-            # NOTE this place may have some future issues
+                    self.particleCollision(child, particle, camX, camY, dt)
+                if child.type == 'Folder':
+                    for child2 in child.getChildren():
+                        self.particleCollision(child2, particle, camX, camY, dt)
         else:
             particle[1][1] += particle[4][1]*dt
 
+    def particleCollision(self, child, particle, camX, camY, dt):
+        childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
+        childRect.width *= child.size[0]
+        childRect.height *= child.size[1]
+        childRect.x = (child.position[0] - camX)-childRect.width/2
+        childRect.y = (child.position[1] - camY)-childRect.height/2
+        selfRect = pygame.Rect(particle[0][0], particle[0][1], particle[3], particle[3])
+        if childRect.colliderect(selfRect):
+            # reset y velocity
+            particle[1][1] = 0
+        else:
+            particle[1][1] += particle[4][1]*dt
+        for child2 in child.getChildren():
+            self.particleCollision(child2, particle, camX, camY, dt)
+
     
     def render(self, dt):
-        # FIXME THIS PLACE HAS MAJOR CAMERA ISSUES AND MOSTLY NEEDS THE CAMERA POS TO BE MÖANUALLY ADDED BY THE USER.
+        # FIXME THIS PLACE HAS MAJOR CAMERA ISSUES AND MOSTLY NEEDS THE CAMERA POS TO BE MANUALLY ADDED BY THE USER.
         # FIX THIS!!!!!!!!
         game = self.getGameService()
         workspace = game.getService('Workspace')
@@ -55,8 +63,10 @@ class ParticleEmitter(object):
         # updating the particles
         for particle in self.particleData:
             # update position
-            particle[0][0] += particle[1][0]*dt
-            particle[0][1] += particle[1][1]*dt
+            if particle[1][0] > dt:
+                particle[0][0] += particle[1][0]*dt
+            if particle[1][1] > dt:
+                particle[0][1] += particle[1][1]*dt
             self.updateParticleVelocity(particle, dt)
             # update size
             particle[3] += particle[5]*dt
