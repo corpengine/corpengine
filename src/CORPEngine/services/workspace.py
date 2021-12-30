@@ -1,6 +1,7 @@
 from ...Scripts.mainCamera import MainCamera
 from ...Scripts.entities.entityFolder import EntityFolder
 from ...Scripts.entities.testing import Testing
+from ...Scripts.particleEmitters.particleTest import ParticleTest
 
 class Workspace(object):
     def __init__(self, parent):
@@ -8,7 +9,7 @@ class Workspace(object):
         self.name = 'Workspace'
         self.type = 'Workspace'
         self.children = [MainCamera(self)]
-        self.childrenQueue = [EntityFolder(self), Testing(self)]
+        self.childrenQueue = [EntityFolder(self), Testing(self), ParticleTest(self)]
         self.currentCamera = self.getChild('MainCamera')
     
     def getChild(self, name):

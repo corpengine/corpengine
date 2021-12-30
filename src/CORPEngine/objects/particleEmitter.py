@@ -27,10 +27,11 @@ class ParticleEmitter(object):
         if particle[7]: # check if collidable
             for child in workspace.getChildren():
                 if child.type == 'Entity' and child.collisionGroup == particle[8] and child.image != None:
-                    #childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
-                    childRect = child.image.get_rect()
-                    childRect.x = (child.position[0] - camX)-child.image.get_width()/2
-                    childRect.y = (child.position[1] - camY)-child.image.get_height()/2
+                    childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
+                    childRect.width *= child.size[0]
+                    childRect.height *= child.size[1]
+                    childRect.x = (child.position[0] - camX)-childRect.width/2
+                    childRect.y = (child.position[1] - camY)-childRect.height/2
                     selfRect = pygame.Rect(particle[0][0], particle[0][1], particle[3], particle[3])
                     if selfRect.colliderect(childRect):
                         # reset y velocity

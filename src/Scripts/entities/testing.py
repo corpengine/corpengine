@@ -9,9 +9,4 @@ class Testing(Entity):
         assets = self.getGameService().getService('Assets')
         self.image = assets.getImage('dev_close')
         self.size = [2.5, 2.5]
-        self.position = [100, 50]
-    
-    def update(self, dt):
-        workspace = self.getGameService().getService('Workspace')
-        entityFolder = workspace.getChild('EntityFolder')
-        print(self.isColliding('Player', entityFolder))
+        self.position = [125, 150]
