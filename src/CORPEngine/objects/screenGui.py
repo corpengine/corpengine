@@ -93,17 +93,7 @@ class ScreenGui(object):
             engine = engine.parent
         return engine
     
-    def updateMouseFocus(self, element):
-        input = self.getGameService().getService('UserInputService')
-        mx, my = input.getMousePosition()
-        if element.collidepoint(mx, my):
-            input.mouseFocus = self.name
-        else:
-            input.mouseFocus = 'Game'
-    
-    def _update(self):
-        self.updateQueue()
-        self.childrenEvents()
+    def updateMouseFocus(self):
         if self.primaryRect != None:
             window = self.getEngine().window
             input = self.getGameService().getService('UserInputService')
@@ -118,6 +108,12 @@ class ScreenGui(object):
                 input.mouseFocus = self.name
             else:
                 input.mouseFocus = 'Game'
+    
+    def _update(self):
+        self.updateQueue()
+        self.childrenEvents()
+        if self.enabled:
+            self.updateMouseFocus()
     
     def getChild(self, name):
         for child in self.children:

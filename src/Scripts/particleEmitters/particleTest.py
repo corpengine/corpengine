@@ -15,3 +15,6 @@ class ParticleTest(ParticleEmitter):
             a = randint(0, 255)
             mx, my = input.getMousePosition(True)
             self.create([mx, my], [0, 0], (a, a, a), 8.5, (0, 0.4), -0.05, collidable=True)
+        print(input.mouseFocus)
+        if game.getService('GUIService').getChild('GUIFolder') != None:
+            print(game.getService('GUIService').getChild('GUIFolder').getChild('DeveloperConsole').enabled)
