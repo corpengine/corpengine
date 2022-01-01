@@ -1,4 +1,3 @@
-from random import randint
 import pygame
 from ..coreContent import defaultScreenSize
 
@@ -7,6 +6,8 @@ class ParticleEmitter(object):
         self.parent = parent
         self.name = 'ParticleEmitter'
         self.type = 'ParticleEmitter'
+        self.children = []
+        self.childrenQueue = []
         self.particleData = []
         # particle 2D list:
         # [pos, vel, color, size, acc, sizeAccel, shape, collidable, collisionGroup]
@@ -64,10 +65,8 @@ class ParticleEmitter(object):
         # updating the particles
         for particle in self.particleData:
             # update position
-            if particle[1][0] > dt:
-                particle[0][0] += particle[1][0]*dt
-            if particle[1][1] > dt:
-                particle[0][1] += particle[1][1]*dt
+            particle[0][0] += particle[1][0]*dt
+            particle[0][1] += particle[1][1]*dt
             self.updateParticleVelocity(particle, dt)
             # update size
             particle[3] += particle[5]*dt
@@ -85,8 +84,7 @@ class ParticleEmitter(object):
                 elif particle[6] == 'rectangle':
                     size = particle[3]*windowResolutionRatio[1]
                     pygame.draw.rect(window.particle_window, particle[2], (x, y, size, size))
-                if renderService != None:
-                    renderService.totalParticlesRendered += 1
+                renderService.totalParticlesRendered += 1
     
     def getCameraPosition(self, workspace):
         if workspace.currentCamera != None:  # if a default camera exists:
@@ -100,3 +98,41 @@ class ParticleEmitter(object):
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
+    
+    def getChild(self, name):
+        for child in self.children:
+            if child.name == name:
+                return child
+        return None
+    
+    def _update(self):
+        self.updateQueue()
+        self.childrenEvents()
+
+    def updateQueue(self):
+        if len(self.childrenQueue) > 0:
+            newChild = self.childrenQueue[0]
+            self.children.append(self.childrenQueue[0])
+            del self.childrenQueue[0]
+            # SETUP/PARENT EVENTS:
+            # if the child came from another parent
+            if newChild.parent != self:
+                if hasattr(newChild, 'parentChanged'):
+                    newChild.parentChanged()
+            else: # if the child is brand new
+                if hasattr(newChild, 'setup'):
+                    newChild.setup()
+    
+    def childrenEvents(self):
+        window = self.getEngine().window
+        for child in self.children:
+            if hasattr(child, 'update'):
+                child.update(window.dt)
+                if child.type == 'ParticleEmitter':
+                    if hasattr(child, 'update'):
+                        child.render(window.dt)
+            if hasattr(child, '_update'):
+                child._update()
+    
+    def getChildren(self):
+        return self.children
