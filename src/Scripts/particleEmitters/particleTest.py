@@ -11,7 +11,7 @@ class ParticleTest(ParticleEmitter):
     def update(self, dt):
         game = self.getGameService()
         input = game.getService('UserInputService')
-        if input.isMouseButtonDown('left'):
+        if input.isMouseButtonDown('left') and input.mouseFocus == 'Game':
             a = randint(0, 255)
             mx, my = input.getMousePosition(True)
             self.create([mx, my], [0, 0], (a, a, a), 8.5, (0, 0.4), -0.05, collidable=True)
