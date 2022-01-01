@@ -20,11 +20,11 @@ class EngineRenderService(object):
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
         camX, camY = self.getCameraPosition(workspace)
         for child in workspace.getChildren():
-            if child.type == 'Entity' and child.image != None:
+            if child.type == 'Entity' and child.image != None and child.render:
                 self.renderEntity(child, window, windowResolutionRatio, camX, camY)
             elif child.type == 'Folder':
                 for child2 in child.getChildren():
-                    if child2.type == 'Entity' and child2.image != None:
+                    if child2.type == 'Entity' and child2.image != None and child2.render:
                         self.renderEntity(child2, window, windowResolutionRatio, camX, camY)
     
     def renderEntity(self, child, window, windowResolutionRatio, camX, camY):

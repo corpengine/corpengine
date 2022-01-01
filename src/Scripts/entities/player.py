@@ -14,6 +14,7 @@ class Player(Entity):
         self.speed = 4
         self.position = [320, 180]
         self.collisionGroup = 0
+        self.render = False
     
     def update(self, dt):
         game = self.getGameService()
