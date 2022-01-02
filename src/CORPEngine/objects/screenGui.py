@@ -94,7 +94,7 @@ class ScreenGui(object):
         return engine
     
     def updateMouseFocus(self):
-        if self.primaryRect != None:
+        if self.primaryRect != None and self.enabled:
             window = self.getEngine().window
             input = self.getGameService().getService('UserInputService')
             x = self.primaryRect.x + self.offsetPosition[0]
@@ -108,12 +108,16 @@ class ScreenGui(object):
                 input.mouseFocus = self.name
             else:
                 input.mouseFocus = 'Game'
+            # NOTE mouse focus may have some issues
     
     def _update(self):
+        input = self.getGameService().getService('UserInputService')
         self.updateQueue()
         self.childrenEvents()
-        if self.enabled:
-            self.updateMouseFocus()
+        self.updateMouseFocus()
+        print(self.getGameService().getService('UserInputService').mouseFocus)
+        if not self.enabled and input.mouseFocus == self.name:
+            input.mouseFocus = 'Game'
     
     def getChild(self, name):
         for child in self.children:
