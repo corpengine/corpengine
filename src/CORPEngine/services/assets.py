@@ -1,4 +1,5 @@
 import pygame
+from ..coreContent import openErrorWindow
 
 class Assets(object):
     def __init__(self, parent):
@@ -18,7 +19,8 @@ class Assets(object):
         }
     
     def getImage(self, name):
+        # NOTE maybe rewrite the asset system to work with dictionaries?
         for image in self.images:
             if image[0] == name:
                 return image[1].copy()
-        return None
+        openErrorWindow(f'no asset found named "{name}".', self.parent.parent)
