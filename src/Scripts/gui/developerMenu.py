@@ -1,4 +1,5 @@
-import pygame
+import pygame, distutils
+import distutils
 from ...CORPEngine.objects.screenGui import ScreenGui
 from ...CORPEngine.coreContent import defaultScreenSize
 
@@ -7,8 +8,10 @@ class DeveloperConsole(ScreenGui):
         super().__init__(parent)
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
-        self.valueData = []
         self.inputText = ''
+        self.values = ['vsync']
+        self.valueTypes = {'vsync': 'boolean'}
+        self.output = []
         # value data list:
         # [type, value]
     
@@ -21,8 +24,6 @@ class DeveloperConsole(ScreenGui):
         self.commandLineRect = pygame.Rect(0, 230, 405, 25)
         
         self.primaryRect = self.panelRect
-        self.addToDevMenu('checkbox', 'vsync')
-        self.addToDevMenu('show', 'vsync')
     
     def update(self, dt):
         engine = self.getEngine()
@@ -36,9 +37,6 @@ class DeveloperConsole(ScreenGui):
 
         # title text
         self.writeText('Developer Menu', (0, 0), 1, (35, 35, 35), font='roboto_mono')
-
-        #self.drawCheckBox('vsync', (200, 115))
-        self.drawValues()
 
         # close button code
         mx, my = input.getMousePosition()
@@ -54,23 +52,41 @@ class DeveloperConsole(ScreenGui):
         if closeRect.collidepoint(mx, my) and input.isMouseButtonDown('left'):
             self.enabled = False
         # render command line
-        #self.drawRect((55, 55, 55), self.commandLineRect)
-        self.writeText('>>' + self.inputText, [0, 230], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
-        print(len('>>' + self.inputText))
+        self.writeText('>>' + self.inputText, [0, 235], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
+        # render output
+        self.writeOutput()
     
+    def readLine(self):
+        settings = self.getEngine().settings
+        val = ''
+        i = 0
+        while self.inputText[i] != " ":
+            val += self.inputText[i]
+            i += 1
+        if val in self.values:
+            val2 = ''
+            i += 1
+            while i != len(self.inputText):
+                val2 += self.inputText[i]
+                i += 1
+            # value giving stuff
+            validValue = False
+            # boolean values:
+            if self.valueTypes[val] == 'boolean':
+                # converting the string to boolean
+                settings.debugValues[val] = eval(val2)
+                self.printLn(f'{val} variable set to {val2}')
+        else:
+            self.printLn('Error: no value named ' + val)
     
-    def addToDevMenu(self, type, value):
-        self.valueData.append([type, value])
+    def printLn(self, text):
+        if len(self.output) > 5:
+            del self.output[0]
+        self.output.append(text)
     
-    def drawValues(self):
+    def writeOutput(self):
         x = 0
-        y = 50
-        debugValues = self.getEngine().settings.debugValues
-        for value in self.valueData:
-            if value[0] == 'show':
-                self.writeText(f'{value[1]}:', [x, y], 1, (220, 220, 220), 'roboto_mono')
-                self.writeText(str(debugValues[value[1]]), [x+len(f'{value[1]}:')*10, y], 1, (220, 220, 220), 'roboto_mono')
-            elif value[0] == 'checkbox':
-                self.writeText(f'{value[1]}:', [x, y], 1, (220, 220, 220), 'roboto_mono')
-                self.drawCheckBox(value[1], [x+len(f'{value[1]}:')*10, y+3.5])
-            y += 16.5
+        y = 25
+        for text in self.output:
+            self.writeText(text, [x, y], 0.8, (220, 220, 220), 'roboto_mono')
+            y += 14

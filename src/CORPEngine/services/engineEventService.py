@@ -41,10 +41,14 @@ class EngineEventService(object):
                     if developerConsole != None:
                         developerConsole.enabled = not developerConsole.enabled
                 
+                # DEVELOPER CONSOLE COMMAND LINE
                 if event.key == K_BACKSPACE:
                     developerConsole.inputText = developerConsole.inputText[:-1]
                 else:
                     self.devConsoleInput(developerConsole, event)
+                if event.key == K_RETURN:
+                    developerConsole.readLine()
+                    developerConsole.inputText = ''
             
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
