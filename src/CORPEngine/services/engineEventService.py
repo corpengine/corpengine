@@ -9,6 +9,7 @@ class EngineEventService(object):
         self.type = 'EngineEventService'
         self.currentRes = 0
         self.test = ''
+        pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN])
     
     def events(self):
         game = self.parent
@@ -40,6 +41,15 @@ class EngineEventService(object):
                 if event.key == K_F6:
                     if developerConsole != None:
                         developerConsole.enabled = not developerConsole.enabled
+                
+                # fullscreen toggling
+                if event.key == K_F11:
+                    window.fullscreen = not window.fullscreen
+                    if window.fullscreen:
+                        flags = SCALED | FULLSCREEN
+                    else:
+                        flags = SCALED
+                    window.screen = pygame.display.set_mode((640, 360), flags, 32)
                 
                 # DEVELOPER CONSOLE COMMAND LINE
                 if event.key == K_BACKSPACE:

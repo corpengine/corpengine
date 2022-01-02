@@ -9,8 +9,8 @@ class DeveloperConsole(ScreenGui):
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
         self.inputText = ''
-        self.values = ['vsync']
-        self.valueTypes = {'vsync': 'boolean'}
+        self.values = ['fpsCap']
+        self.valueTypes = {'fpsCap': 'number'}
         self.output = []
         # value data list:
         # [type, value]
@@ -70,11 +70,13 @@ class DeveloperConsole(ScreenGui):
                 val2 += self.inputText[i]
                 i += 1
             # value giving stuff
-            validValue = False
             # boolean values:
             if self.valueTypes[val] == 'boolean':
                 # converting the string to boolean
                 settings.debugValues[val] = eval(val2)
+                self.printLn(f'{val} variable set to {val2}')
+            elif self.valueTypes[val] == 'number':
+                settings.debugValues[val] = int(val2)
                 self.printLn(f'{val} variable set to {val2}')
         else:
             self.printLn('Error: no value named ' + val)
