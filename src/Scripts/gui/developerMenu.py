@@ -1,5 +1,4 @@
 import pygame
-from pygame import mouse
 from ...CORPEngine.objects.screenGui import ScreenGui
 from ...CORPEngine.coreContent import defaultScreenSize
 
@@ -19,6 +18,8 @@ class DeveloperConsole(ScreenGui):
         self.offsetPosition = [320-self.panelRect.width/2, 180-self.panelRect.height/2]
         self.barRect = pygame.Rect(0, 0, 405, 23)
         self.closeRect = pygame.Rect(382, 0, 23, 23)
+        self.commandLineRect = pygame.Rect(0, 230, 405, 25)
+        
         self.primaryRect = self.panelRect
         self.addToDevMenu('checkbox', 'vsync')
         self.addToDevMenu('show', 'vsync')
@@ -52,6 +53,11 @@ class DeveloperConsole(ScreenGui):
         # check for mouse click
         if closeRect.collidepoint(mx, my) and input.isMouseButtonDown('left'):
             self.enabled = False
+        # render command line
+        #self.drawRect((55, 55, 55), self.commandLineRect)
+        self.writeText('>>' + self.inputText, [0, 230], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
+        print(len('>>' + self.inputText))
+    
     
     def addToDevMenu(self, type, value):
         self.valueData.append([type, value])

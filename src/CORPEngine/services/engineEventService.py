@@ -53,5 +53,5 @@ class EngineEventService(object):
                     input.mouseStatus[2] = True
     
     def devConsoleInput(self, developerConsole, event):
-        if developerConsole.enabled:
+        if developerConsole.enabled and len(developerConsole.inputText)+2 < 45:
             developerConsole.inputText += event.unicode
