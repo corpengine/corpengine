@@ -9,6 +9,7 @@ class DeveloperConsole(ScreenGui):
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
         self.valueData = []
+        self.inputText = ''
         # value data list:
         # [type, value]
     

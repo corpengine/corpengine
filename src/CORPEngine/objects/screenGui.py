@@ -115,7 +115,6 @@ class ScreenGui(object):
         self.updateQueue()
         self.childrenEvents()
         self.updateMouseFocus()
-        print(self.getGameService().getService('UserInputService').mouseFocus)
         if not self.enabled and input.mouseFocus == self.name:
             input.mouseFocus = 'Game'
     

@@ -8,6 +8,7 @@ class EngineEventService(object):
         self.name = 'EngineEventService'
         self.type = 'EngineEventService'
         self.currentRes = 0
+        self.test = ''
     
     def events(self):
         game = self.parent
@@ -39,9 +40,18 @@ class EngineEventService(object):
                 if event.key == K_F6:
                     if developerConsole != None:
                         developerConsole.enabled = not developerConsole.enabled
+                
+                if event.key == K_BACKSPACE:
+                    developerConsole.inputText = developerConsole.inputText[:-1]
+                else:
+                    self.devConsoleInput(developerConsole, event)
             
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     input.mouseStatus[0] = True
                 if event.button == 3:
                     input.mouseStatus[2] = True
+    
+    def devConsoleInput(self, developerConsole, event):
+        if developerConsole.enabled:
+            developerConsole.inputText += event.unicode
