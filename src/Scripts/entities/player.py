@@ -9,7 +9,7 @@ class Player(Entity):
     def setup(self):
         game = self.getGameService()
         assets = game.getService('Assets')
-        self.image = assets.getImage('q')
+        self.image = assets.getImage('player')
         
         self.speed = 4
         self.position = [320, 180]
