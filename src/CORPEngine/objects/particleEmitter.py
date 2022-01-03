@@ -76,7 +76,7 @@ class ParticleEmitter(object):
             
         # rendering
         for particle in self.particleData:
-            if not particle[0][0] - camX > defaultScreenSize[0] and not particle[0][1] - camY > defaultScreenSize[1]:
+            if not particle[0][0] > defaultScreenSize[0] and not particle[0][1] > defaultScreenSize[1]:
                 x = particle[0][0] * windowResolutionRatio[0]
                 y = particle[0][1] * windowResolutionRatio[1]
                 if particle[6] == 'circle':

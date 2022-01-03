@@ -24,5 +24,5 @@ class Player(Entity):
         if devConsole != None and not devConsole.enabled:
             input = game.getService('UserInputService')
             speed = self.speed * dt
-            self.position[0] += input.isPressed('player_left')*-speed + input.isPressed('player_right')*speed
-            self.position[1] += input.isPressed('player_up')*-speed + input.isPressed('player_down')*speed
+            self.position[0] += input.isKeyPressed('player_left')*-speed + input.isKeyPressed('player_right')*speed
+            self.position[1] += input.isKeyPressed('player_up')*-speed + input.isKeyPressed('player_down')*speed

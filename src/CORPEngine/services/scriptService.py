@@ -1,3 +1,4 @@
+from ...Scripts.globalScripts.cameraControl import CameraControlScript
 
 class ScriptService(object):
     def __init__(self, parent):
@@ -5,7 +6,7 @@ class ScriptService(object):
         self.name = 'ScriptService'
         self.type = 'ScriptService'
         self.children = []
-        self.childrenQueue = []
+        self.childrenQueue = [CameraControlScript(self)]
 
     def getChild(self, name):
         for child in self.children:

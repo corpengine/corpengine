@@ -9,7 +9,7 @@ class EngineEventService(object):
         self.type = 'EngineEventService'
         self.currentRes = 0
         self.test = ''
-        pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN])
+        pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN, VIDEORESIZE])
     
     def events(self):
         game = self.parent
@@ -36,7 +36,8 @@ class EngineEventService(object):
                     self.currentRes += 1
                     if self.currentRes == len(availableResolutions):
                         self.currentRes = 0
-                    window.screen = pygame.display.set_mode(availableResolutions[self.currentRes])
+                    flags = SCALED
+                    window.screen = pygame.display.set_mode(availableResolutions[self.currentRes], flags, 32)
                 # dev console toggling:
                 if event.key == K_F6:
                     if developerConsole != None:
