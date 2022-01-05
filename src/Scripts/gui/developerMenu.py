@@ -12,6 +12,7 @@ class DeveloperConsole(ScreenGui):
         self.values = ['fpsCap', 'renderParticles']
         self.valueTypes = {'fpsCap': 'number', 'renderParticles': 'boolean'}
         self.output = []
+        self.commandHistory = []
         # value data list:
         # [type, value]
     
@@ -85,6 +86,9 @@ class DeveloperConsole(ScreenGui):
                     self.printLn(f'Error: invalid value for {val}')
         else:
             self.printLn('Error: no value named ' + val)
+        
+        self.commandHistory.append(self.inputText)
+        print(self.commandHistory)
     
     def printLn(self, text):
         if len(self.output) > 5:
