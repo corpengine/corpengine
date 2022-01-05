@@ -1,7 +1,7 @@
 import pygame, distutils
 import distutils
 from ...CORPEngine.objects.screenGui import ScreenGui
-from ...CORPEngine.coreContent import defaultScreenSize
+from ...CORPEngine.coreContent import defaultScreenSize, openErrorWindow
 
 class DeveloperConsole(ScreenGui):
     def __init__(self, parent):
@@ -9,8 +9,8 @@ class DeveloperConsole(ScreenGui):
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
         self.inputText = ''
-        self.values = ['fpsCap']
-        self.valueTypes = {'fpsCap': 'number'}
+        self.values = ['fpsCap', 'renderParticles']
+        self.valueTypes = {'fpsCap': 'number', 'renderParticles': 'boolean'}
         self.output = []
         # value data list:
         # [type, value]
@@ -72,12 +72,17 @@ class DeveloperConsole(ScreenGui):
             # value giving stuff
             # boolean values:
             if self.valueTypes[val] == 'boolean':
-                # converting the string to boolean
-                settings.debugValues[val] = eval(val2)
-                self.printLn(f'{val} variable set to {val2}')
+                try:
+                    settings.debugValues[val] = eval(val2)
+                    self.printLn(f'{val} variable set to {val2}')
+                except Exception:
+                    self.printLn(f'Error: invalid value for {val}')
             elif self.valueTypes[val] == 'number':
-                settings.debugValues[val] = int(val2)
-                self.printLn(f'{val} variable set to {val2}')
+                try:
+                    settings.debugValues[val] = int(val2)
+                    self.printLn(f'{val} variable set to {val2}')
+                except Exception:
+                    self.printLn(f'Error: invalid value for {val}')
         else:
             self.printLn('Error: no value named ' + val)
     

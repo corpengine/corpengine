@@ -73,18 +73,19 @@ class ParticleEmitter(object):
             # delete any small particle
             if particle[3] < 0.1:
                 self.particleData.remove(particle)
-            
+    
         # rendering
-        for particle in self.particleData:
-            if not particle[0][0] > defaultScreenSize[0] and not particle[0][1] > defaultScreenSize[1]:
-                x = particle[0][0] * windowResolutionRatio[0]
-                y = particle[0][1] * windowResolutionRatio[1]
-                if particle[6] == 'circle':
-                    pygame.draw.circle(window.particle_window, particle[2], (x, y), particle[3]*windowResolutionRatio[1])
-                elif particle[6] == 'rectangle':
-                    size = particle[3]*windowResolutionRatio[1]
-                    pygame.draw.rect(window.particle_window, particle[2], (x, y, size, size))
-                renderService.totalParticlesRendered += 1
+        if self.getEngine().settings.debugValues['renderParticles']:
+            for particle in self.particleData:
+                if not particle[0][0] > defaultScreenSize[0] and not particle[0][1] > defaultScreenSize[1]:
+                    x = particle[0][0] * windowResolutionRatio[0]
+                    y = particle[0][1] * windowResolutionRatio[1]
+                    if particle[6] == 'circle':
+                        pygame.draw.circle(window.particle_window, particle[2], (x, y), particle[3]*windowResolutionRatio[1])
+                    elif particle[6] == 'rectangle':
+                        size = particle[3]*windowResolutionRatio[1]
+                        pygame.draw.rect(window.particle_window, particle[2], (x, y, size, size))
+                    renderService.totalParticlesRendered += 1
     
     def getCameraPosition(self, workspace):
         if workspace.currentCamera != None:  # if a default camera exists:

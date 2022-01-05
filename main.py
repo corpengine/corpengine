@@ -2,7 +2,6 @@ from src.CORPEngine.window import Window
 from src.CORPEngine.services.gameService import GameService
 from src.CORPEngine.coreContent import engineVersion
 from src.settings import Settings
-import traceback
 
 class Engine:
     def __init__(self):
