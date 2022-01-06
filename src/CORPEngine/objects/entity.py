@@ -1,6 +1,5 @@
 import pygame
-from ..coreContent import *
-
+from ..coreContent import openErrorWindow
 class Entity(object):
     def __init__(self, parent):
         self.parent = parent
@@ -14,6 +13,7 @@ class Entity(object):
         self.collisionGroup = 0
         self.size = [1, 1]
         self.rotation = 0
+        self.attributes = {}
     
     def isColliding(self, name, parent='Workspace'):
         game = self.getGameService()
@@ -85,4 +85,13 @@ class Entity(object):
     
     def getChildren(self):
         return self.children
+    
+    def setAttribute(self, name, val):
+        self.attributes.update({name: val})
+    
+    def getAttribute(self, name):
+        try:
+            return self.attributes[name]
+        except Exception:
+            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
         

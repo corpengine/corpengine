@@ -1,3 +1,4 @@
+from ..coreContent import openErrorWindow
 
 class Folder(object):
     def __init__(self, parent):
@@ -6,6 +7,7 @@ class Folder(object):
         self.type = 'Folder'
         self.children = []
         self.childrenQueue = []
+        self.attributes = {}
     
     def getChild(self, name):
         for child in self.children:
@@ -53,3 +55,12 @@ class Folder(object):
     
     def getChildren(self):
         return self.children
+    
+    def setAttribute(self, name, val):
+        self.attributes.update({name: val})
+    
+    def getAttribute(self, name):
+        try:
+            return self.attributes[name]
+        except Exception:
+            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())

@@ -1,5 +1,5 @@
 import pygame
-from ..coreContent import *
+from ..coreContent import defaultScreenSize, openErrorWindow
 
 class ScreenGui(object):
     def __init__(self, parent):
@@ -11,6 +11,7 @@ class ScreenGui(object):
         self.offsetPosition = [0, 0]
         self.children = []
         self.childrenQueue = []
+        self.attributes = {}
     
     def writeText(self, text, position, size, color, font='hp_simplified', backgroundColor=None):
         window = self.getEngine().window
@@ -152,3 +153,12 @@ class ScreenGui(object):
     
     def getChildren(self):
         return self.children
+    
+    def setAttribute(self, name, val):
+        self.attributes.update({name: val})
+    
+    def getAttribute(self, name):
+        try:
+            return self.attributes[name]
+        except Exception:
+            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
