@@ -60,7 +60,7 @@ class EngineEventService(object):
                 if event.key == K_RETURN:
                     developerConsole.readLine()
                     developerConsole.inputText = ''
-                if event.key == K_UP:
+                if event.key == K_UP and len(developerConsole.commandHistory) > 0:
                     developerConsole.inputText = developerConsole.commandHistory[-1]
             
             if event.type == MOUSEBUTTONDOWN:

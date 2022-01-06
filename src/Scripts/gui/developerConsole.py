@@ -37,7 +37,7 @@ class DeveloperConsole(ScreenGui):
         self.drawImage('dev_close', (382, 0))
 
         # title text
-        self.writeText('Developer Menu', (0, 0), 1, (35, 35, 35), font='roboto_mono')
+        self.writeText('Developer Console', (0, 0), 1, (35, 35, 35), font='roboto_mono')
 
         # close button code
         mx, my = input.getMousePosition()
@@ -61,34 +61,45 @@ class DeveloperConsole(ScreenGui):
         settings = self.getEngine().settings
         val = ''
         i = 0
-        while self.inputText[i] != " ":
+        while self.inputText[i] != ";":
             val += self.inputText[i]
             i += 1
-        if val in self.values:
-            val2 = ''
-            i += 1
-            while i != len(self.inputText):
-                val2 += self.inputText[i]
+        if val == 'set':
+            i += 2
+            # TODO improve this part to allow some spaces to be placed
+            val = ''
+            while self.inputText[i] != ' ':
+                val += self.inputText[i]
                 i += 1
-            # value giving stuff
-            # boolean values:
-            if self.valueTypes[val] == 'boolean':
-                try:
-                    settings.debugValues[val] = eval(val2)
-                    self.printLn(f'{val} variable set to {val2}')
-                except Exception:
-                    self.printLn(f'Error: invalid value for {val}')
-            elif self.valueTypes[val] == 'number':
-                try:
-                    settings.debugValues[val] = int(val2)
-                    self.printLn(f'{val} variable set to {val2}')
-                except Exception:
-                    self.printLn(f'Error: invalid value for {val}')
+
+            if val in self.values:
+                val2 = ''
+                i += 1
+                while i != len(self.inputText):
+                    val2 += self.inputText[i]
+                    i += 1
+                # value giving stuff
+                # boolean values:
+                if self.valueTypes[val] == 'boolean':
+                    try:
+                        settings.debugValues[val] = eval(val2)
+                        self.printLn(f'{val} variable set to {val2}')
+                    except Exception:
+                        self.printLn(f'Error: invalid value for {val}')
+                elif self.valueTypes[val] == 'number':
+                    try:
+                        settings.debugValues[val] = int(val2)
+                        self.printLn(f'{val} variable set to {val2}')
+                    except Exception:
+                        self.printLn(f'Error: invalid value for {val}')
+            else:
+                self.printLn('Error: no value named ' + val)
+        elif val == 'close':
+            self.enabled = False
         else:
-            self.printLn('Error: no value named ' + val)
+            self.printLn(f'Error: unknown keyword "{val}"')
         
         self.commandHistory.append(self.inputText)
-        print(self.commandHistory)
     
     def printLn(self, text):
         if len(self.output) > 5:

@@ -1,5 +1,5 @@
 from ...CORPEngine.objects.folder import Folder
-from .developerMenu import DeveloperConsole
+from .developerConsole import DeveloperConsole
 from .debugMenu import DebugMenu
 
 class GuiFolder(Folder):
