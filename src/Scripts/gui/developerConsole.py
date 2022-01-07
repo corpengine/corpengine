@@ -53,7 +53,11 @@ class DeveloperConsole(ScreenGui):
         if closeRect.collidepoint(mx, my) and input.isMouseButtonDown('left'):
             self.enabled = False
         # render command line
-        self.writeText('>>' + self.inputText, [0, 235], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
+        text = '>>' + self.inputText
+        if len(self.inputText) > 0:
+            text += '_'
+        self.writeText(text, [0, 235], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
+        #self.drawImage('dev_send', [0, 235])
         # render output
         self.writeOutput()
     
@@ -72,7 +76,7 @@ class DeveloperConsole(ScreenGui):
                 val += self.inputText[i]
                 i += 1
 
-            if val in self.values:
+            if val in self.values:  # DEBUG VARIABLES
                 val2 = ''
                 i += 1
                 while i != len(self.inputText):
@@ -94,6 +98,7 @@ class DeveloperConsole(ScreenGui):
                         self.printLn(f'Error: invalid value for {val}')
             else:
                 self.printLn('Error: no value named ' + val)
+        
         elif val == 'close':
             self.enabled = False
         else:
@@ -102,7 +107,7 @@ class DeveloperConsole(ScreenGui):
         self.commandHistory.append(self.inputText)
     
     def printLn(self, text):
-        if len(self.output) > 5:
+        if len(self.output) > 13:
             del self.output[0]
         self.output.append(text)
     

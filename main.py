@@ -12,6 +12,7 @@ class Engine:
         self.running = False
 
     def run(self):
+        self.window.setup()
         self.running = True
         while self.running:
             self.window.update()

@@ -21,6 +21,10 @@ class Window(object):
       
         pygame.font.init()
     
+    def setup(self):
+        assets = self.parent.game.getService('Assets')
+        pygame.display.set_icon(assets.getImage('icon'))
+    
     def update(self):
         self.updateSurfaceSizes()
         self.screen.fill((200, 200, 200))
