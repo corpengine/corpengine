@@ -1,3 +1,4 @@
+import pygame
 from src.CORPEngine.window import Window
 from src.CORPEngine.services.gameService import GameService
 from src.CORPEngine.coreContent import engineVersion
@@ -18,5 +19,6 @@ class Engine:
             self.window.update()
 
 if __name__ =='__main__':
-    print(f'>>> [CORP] Engine {engineVersion} - Made by DaGhostyBoi.')
+    print(f'[CORP] Engine {engineVersion} - Made by DaGhostyBoi.')
+    print(f'pygame version: v{pygame.version.ver}   SDL version: {pygame.version.SDL}')
     Engine().run()

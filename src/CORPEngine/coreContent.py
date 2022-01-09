@@ -1,6 +1,6 @@
 import sys, inspect, easygui
 
-engineVersion = '0.3.3'
+engineVersion = '0.4.1'
 gameVersion = '1.0'
 defaultScreenSize = (640, 360)
 availableResolutions = ((640, 360), (1280, 720), (1024, 576), (1152, 648), (1366, 768))
