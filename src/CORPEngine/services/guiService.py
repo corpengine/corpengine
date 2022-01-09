@@ -1,4 +1,5 @@
 from ...Scripts.gui.guiFolder import GuiFolder
+from ...Scripts.gui.testViewport import TestViewport
 
 class GUIService(object):
     def __init__(self, parent):
@@ -6,7 +7,7 @@ class GUIService(object):
         self.type = 'GUIService'
         self.parent = parent
         self.children = []
-        self.childrenQueue = [GuiFolder(self)]
+        self.childrenQueue = [GuiFolder(self), TestViewport(self)]
     
     def update(self):
         self.updateQueue()

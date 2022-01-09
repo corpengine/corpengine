@@ -15,7 +15,6 @@ class Window(object):
         self.dt = 0
         self.last_time = time.time()
         self.clock = pygame.time.Clock()
-        self.fps_cap = 144
         self.performance = 'Very Good'
         self.fullscreen = False
       
@@ -55,7 +54,7 @@ class Window(object):
         self.screen.blit(self.particle_window, (0, 0))
         self.screen.blit(self.gui_window, (0, 0))
         self.clock.tick(engine.settings.debugValues['fpsCap'])
-        pygame.display.update()
+        pygame.display.flip()
     
     def updateSurfaceSizes(self):
         self.render_window = self.screen.copy()

@@ -9,3 +9,4 @@ class TestRaycaster(Raycaster):
     
     def update(self, dt):
         self.drawRect((0, 0, 0), pygame.Rect(55, 25, 55, 55))
+        self.drawImage('icon', [0, 0])

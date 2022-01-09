@@ -10,6 +10,7 @@ class EngineEventService(object):
         self.currentRes = 0
         self.test = ''
         pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN, VIDEORESIZE])
+        pygame.fastevent.init()
     
     def events(self):
         game = self.parent

@@ -1,20 +1,49 @@
 import pygame
-from ..coreContent import defaultScreenSize, openErrorWindow
+from pygame.constants import WINDOWMOVED
+from ..coreContent import openErrorWindow, defaultScreenSize
+from pygame.locals import SRCALPHA
 
-class Raycaster(object):
+class Viewport(object):
     def __init__(self, parent):
-        self.name = 'Raycaster'
-        self.type = 'Raycaster'
+        self.name = 'Viewport'
+        self.type = 'Viewport'
         self.parent = parent
+        self.background = [45, 45, 45]
+        self.outline = 0
+        self.size = [75, 50]
+        self.enabled = True
+        self.transparency = 100
+        self.attributes = {}
+        self.position = [0, 0]
         self.children = []
         self.childrenQueue = []
     
-    def getCameraPosition(self, workspace):
-        if workspace.currentCamera != None:  # if a default camera exists:
-            camX, camY = workspace.currentCamera.position
-        else:
-            camX, camY = (0, 0)
-        return camX, camY
+    def updateViewport(self):
+        engine = self.getEngine()
+        window = engine.window
+
+        surface = pygame.Surface(self.size)
+        surface = surface.convert()
+        surface.fill(self.background)
+        # rendering object inside:
+        windowResolutionRatio = [self.size[0]/defaultScreenSize[0], self.size[1]/defaultScreenSize[1]]
+
+        for child in self.getChildren():
+            if child.type == 'Entity' and child.image != None:
+                # TODO make a camera system for the viewport
+                pos = [child.position[0], child.position[1]]
+                size = [child.image.get_width(), child.image.get_height()]
+                size[0] *= windowResolutionRatio[1]
+                size[1] *= windowResolutionRatio[1]
+                img = pygame.transform.scale(child.image, size)
+                img = pygame.transform.rotate(img, child.rotation)
+                pos[0] *= windowResolutionRatio[0]
+                pos[1] *= windowResolutionRatio[1]
+                pos[0] -= img.get_width()/2
+                pos[1] -= img.get_height()/2
+                surface.blit(img, pos)
+
+        window.gui_window.blit(surface, self.position)
     
     def getChild(self, name):
         for child in self.children:
@@ -25,6 +54,7 @@ class Raycaster(object):
     def _update(self):
         self.updateQueue()
         self.childrenEvents()
+        self.updateViewport()
 
     def updateQueue(self):
         if len(self.childrenQueue) > 0:
@@ -63,35 +93,6 @@ class Raycaster(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
     
-    def drawRect(self, color, rect):
-        game = self.getGameService()
-        window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
-        camX, camY = self.getCameraPosition(game.getService('Workspace'))
-
-        newRect = rect.copy()
-        x = (newRect.x - camX) * windowResolutionRatio[0]
-        y = (newRect.y - camY) * windowResolutionRatio[1]
-        w = newRect.width * windowResolutionRatio[1]
-        h = newRect.height * windowResolutionRatio[1]
-        pygame.draw.rect(window.render_window, color, (x, y, w, h))
-    
-    def drawImage(self, name, position):
-        game = self.getGameService()
-        window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
-        assets = game.getService('Assets')
-        camX, camY = self.getCameraPosition(game.getService('Workspace'))
-
-        image = assets.getImage(name)
-        pos = [position[0], position[1]]
-        x = (pos[0] - camX) * windowResolutionRatio[0]
-        y = (pos[1] - camY) * windowResolutionRatio[1]
-        w = image.get_width() * windowResolutionRatio[1]
-        h = image.get_height() * windowResolutionRatio[1]
-        image = pygame.transform.scale(image, (w, h))
-        window.render_window.blit(image, (x, y))
-
     def getGameService(self):
         game = self.parent
         while game.type != 'GameService':

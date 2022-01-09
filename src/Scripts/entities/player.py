@@ -26,3 +26,5 @@ class Player(Entity):
             speed = self.speed * dt
             self.position[0] += input.isKeyPressed('player_left')*-speed + input.isKeyPressed('player_right')*speed
             self.position[1] += input.isKeyPressed('player_up')*-speed + input.isKeyPressed('player_down')*speed
+        
+        self.rotation += 15 * dt
