@@ -7,6 +7,7 @@ from src.settings import Settings
 class Engine:
     def __init__(self):
         self.type = 'Engine'
+        pygame.mixer.init()
         self.window = Window(self)
         self.game = GameService(self)
         self.settings = Settings(self)

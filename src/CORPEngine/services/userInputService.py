@@ -15,7 +15,8 @@ class UserInputService(object):
             'right_arrow': [K_RIGHT],
             'left_arrow': [K_LEFT],
             'up_arrow': [K_UP],
-            'down_arrow': [K_DOWN]
+            'down_arrow': [K_DOWN],
+            'space': [K_SPACE]
         }
         self.mouseStatus = [False, False, False]
         self.mouseFocus = 'Game'

@@ -6,6 +6,7 @@ from .workspace import Workspace
 from .userInputService import UserInputService
 from .guiService import GUIService
 from .scriptService import ScriptService
+from .soundService import SoundService
 
 class GameService(object):
     def __init__(self, parent):
@@ -15,7 +16,7 @@ class GameService(object):
         self.children = [
             Assets(self), EngineRenderService(self), EngineEventService(self),
             UserInputService(self), Object(self), Workspace(self), GUIService(self),
-            ScriptService(self)
+            ScriptService(self), SoundService(self)
         ]
         self.childrenQueue = []
     

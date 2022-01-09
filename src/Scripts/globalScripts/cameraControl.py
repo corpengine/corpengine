@@ -9,6 +9,7 @@ class CameraControlScript(GlobalScript):
         workspace = game.getService('Workspace')
         currentCamera = workspace.currentCamera
         input = game.getService('UserInputService')
+        sound = game.getService('SoundService')
 
         speed = 4
         if currentCamera != None:

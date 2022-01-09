@@ -18,6 +18,8 @@ class Assets(object):
             'hp_simplified': pygame.font.Font('res/fonts/hp-simplified.ttf', 15),
             'roboto_mono': pygame.font.Font('res/fonts/roboto-mono.ttf', 15)
         }
+        self.sounds = {
+        }
     
     def getImage(self, name):
         try:
