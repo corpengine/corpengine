@@ -14,6 +14,7 @@ class DeveloperConsole(ScreenGui):
         self.valueTypes = {'fpsCap': 'number', 'renderParticles': 'boolean'}
         self.output = []
         self.commandHistory = []
+        self.writing = False
         # value data list:
         # [type, value]
     
@@ -27,22 +28,30 @@ class DeveloperConsole(ScreenGui):
         
         self.primaryRect = self.panelRect
     
+    def open(self):
+        self.inputText = ''
+        self.writing = False
+    
     def update(self, dt):
         hand = False
         engine = self.getEngine()
         input = self.getGameService().getService('UserInputService')
         window = engine.window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
+        mx, my = input.getMousePosition()
         # render window
         self.drawRect((38, 38, 38), self.panelRect)
         self.drawRect((230, 230, 230), self.barRect)
         self.drawImage('dev_close', (382, 0))
 
+        # update writing variable
+        if my > 280 and my < 306 and mx > 117 and mx < 520 and input.isMouseButtonDown('left'):
+            self.writing = True
+
         # title text
         self.writeText('Developer Console', (0, 0), 1, (35, 35, 35), font='roboto_mono')
 
         # close button code
-        mx, my = input.getMousePosition()
         # NOTE maybe clean up this code over here? it seems messed up ngl
         closeRect = self.closeRect.copy()
         closeRect.x += self.offsetPosition[0]
@@ -58,10 +67,14 @@ class DeveloperConsole(ScreenGui):
                 self.enabled = False
         # render command line
         text = '>>' + self.inputText
-        if len(self.inputText) > 0:
+        color = (220, 220, 220)
+        if len(self.inputText) > 0 and self.writing:
             text += '_'
+        elif not self.writing:
+            text = 'Write your code here...'
+            color = (158, 158, 158)
         self.changeCursor(window, my, input, hand)
-        self.writeText(text, [0, 235], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
+        self.writeText(text, [0, 235], 1, color, 'roboto_mono', (55, 55, 55))
         self.writeOutput()
     
     def readLine(self):

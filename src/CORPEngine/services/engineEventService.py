@@ -39,10 +39,15 @@ class EngineEventService(object):
                         self.currentRes = 0
                     flags = SCALED
                     window.screen = pygame.display.set_mode(availableResolutions[self.currentRes], flags, 32)
+                
                 # dev console toggling:
                 if event.key == K_F6:
                     if developerConsole != None:
                         developerConsole.enabled = not developerConsole.enabled
+                        if developerConsole.enabled:
+                            developerConsole.open()
+                if event.key == K_ESCAPE and developerConsole != None and developerConsole.enabled:
+                    developerConsole.writing = False
                 
                 # fullscreen toggling
                 if event.key == K_F11:
@@ -54,15 +59,16 @@ class EngineEventService(object):
                     window.screen = pygame.display.set_mode((640, 360), flags, 32)
                 
                 # DEVELOPER CONSOLE COMMAND LINE
-                if event.key == K_BACKSPACE:
-                    developerConsole.inputText = developerConsole.inputText[:-1]
-                else:
-                    self.devConsoleInput(developerConsole, event)
-                if event.key == K_RETURN:
-                    developerConsole.readLine()
-                    developerConsole.inputText = ''
-                if event.key == K_UP and len(developerConsole.commandHistory) > 0:
-                    developerConsole.inputText = developerConsole.commandHistory[-1]
+                if developerConsole.writing:
+                    if event.key == K_BACKSPACE:
+                        developerConsole.inputText = developerConsole.inputText[:-1]
+                    else:
+                        self.devConsoleInput(developerConsole, event)
+                    if event.key == K_RETURN:
+                        developerConsole.readLine()
+                        developerConsole.inputText = ''
+                    if event.key == K_UP and len(developerConsole.commandHistory) > 0:
+                        developerConsole.inputText = developerConsole.commandHistory[-1]
             
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:

@@ -21,7 +21,8 @@ class Window(object):
             'i-beam': SYSTEM_CURSOR_IBEAM,
             'hand': SYSTEM_CURSOR_HAND,
             'wait': SYSTEM_CURSOR_WAIT,
-            'arrow': SYSTEM_CURSOR_ARROW
+            'arrow': SYSTEM_CURSOR_ARROW,
+            'crosshair': SYSTEM_CURSOR_CROSSHAIR
         }
         self.cursor = 'arrow'
       
