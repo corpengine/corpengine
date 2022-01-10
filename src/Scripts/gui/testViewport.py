@@ -7,6 +7,7 @@ class TestViewport(Viewport):
         self.name = 'TestViewport'
         self.size = [640/4, 360/4]
         self.childrenQueue.append(Player(self))
+        self.enabled = False
     
     def update(self):
         game = self.getGameService()

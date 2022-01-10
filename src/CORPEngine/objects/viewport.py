@@ -54,7 +54,8 @@ class Viewport(object):
     def _update(self):
         self.updateQueue()
         self.childrenEvents()
-        self.updateViewport()
+        if self.enabled:
+            self.updateViewport()
 
     def updateQueue(self):
         if len(self.childrenQueue) > 0:

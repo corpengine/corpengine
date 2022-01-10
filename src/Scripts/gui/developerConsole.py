@@ -1,3 +1,4 @@
+from os import close
 import pygame, distutils
 import distutils
 from ...CORPEngine.objects.screenGui import ScreenGui
@@ -27,6 +28,7 @@ class DeveloperConsole(ScreenGui):
         self.primaryRect = self.panelRect
     
     def update(self, dt):
+        hand = False
         engine = self.getEngine()
         input = self.getGameService().getService('UserInputService')
         window = engine.window
@@ -50,15 +52,16 @@ class DeveloperConsole(ScreenGui):
         closeRect.width *= windowResolutionRatio[1]
         closeRect.height *= windowResolutionRatio[1]
         # check for mouse click
-        if closeRect.collidepoint(mx, my) and input.isMouseButtonDown('left'):
-            self.enabled = False
+        if closeRect.collidepoint(mx, my):
+            hand = True
+            if input.isMouseButtonDown('left'):
+                self.enabled = False
         # render command line
         text = '>>' + self.inputText
         if len(self.inputText) > 0:
             text += '_'
+        self.changeCursor(window, my, input, hand)
         self.writeText(text, [0, 235], 1, (220, 220, 220), 'roboto_mono', (55, 55, 55))
-        #self.drawImage('dev_send', [0, 235])
-        # render output
         self.writeOutput()
     
     def readLine(self):
@@ -117,3 +120,14 @@ class DeveloperConsole(ScreenGui):
         for text in self.output:
             self.writeText(text, [x, y], 0.8, (220, 220, 220), 'roboto_mono')
             y += 14
+    
+    def changeCursor(self, window, my, input, hand):
+        if input.mouseFocus == self.name:
+            if hand:
+                window.cursor = 'hand'
+            elif my > 280:
+                window.cursor = 'i-beam'
+            else:
+                window.cursor = 'arrow'
+        else:
+            window.cursor = 'arrow'
