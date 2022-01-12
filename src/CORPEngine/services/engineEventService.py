@@ -10,11 +10,11 @@ class EngineEventService(object):
         self.currentRes = 0
         self.test = ''
         pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN, VIDEORESIZE])
-        pygame.fastevent.init()
     
     def events(self):
         game = self.parent
         window = game.parent.window
+        settings = game.parent.settings
         guiService = game.getService('GUIService')
         input = game.getService('UserInputService')
         guiFolder = guiService.getChild('GUIFolder')
@@ -34,11 +34,11 @@ class EngineEventService(object):
                         debugMenu.enabled = not debugMenu.enabled
                 # change resolution
                 if event.key == K_F8:
-                    self.currentRes += 1
-                    if self.currentRes == len(availableResolutions):
-                        self.currentRes = 0
+                    settings.debugValues['currentRes'] += 1
+                    if settings.debugValues['currentRes'] == len(availableResolutions):
+                        settings.debugValues['currentRes'] = 0
                     flags = SCALED
-                    window.screen = pygame.display.set_mode(availableResolutions[self.currentRes], flags, 32)
+                    window.screen = pygame.display.set_mode(availableResolutions[settings.debugValues['currentRes']], flags, 32)
                 
                 # dev console toggling:
                 if event.key == K_F6:

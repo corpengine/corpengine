@@ -4,5 +4,6 @@ class Settings:
         self.parent = parent
         self.debugValues = {
             'fpsCap': 60,
-            'renderParticles': True
+            'renderParticles': True,
+            'currentRes': 0
         }
