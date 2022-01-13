@@ -7,8 +7,7 @@ class EngineEventService(object):
         self.parent = parent
         self.name = 'EngineEventService'
         self.type = 'EngineEventService'
-        self.currentRes = 0
-        self.test = ''
+        self.oldRes = 0
         pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN, VIDEORESIZE])
     
     def events(self):
@@ -20,8 +19,9 @@ class EngineEventService(object):
         guiFolder = guiService.getChild('GUIFolder')
         debugMenu = guiFolder.getChild('DebugMenu')
         developerConsole = guiFolder.getChild('DeveloperConsole')
-
         input.mouseStatus = [False, False, False]
+
+        self.oldRes = settings.debugValues['currentRes']
         # pygame events
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -34,11 +34,7 @@ class EngineEventService(object):
                         debugMenu.enabled = not debugMenu.enabled
                 # change resolution
                 if event.key == K_F8:
-                    settings.debugValues['currentRes'] += 1
-                    if settings.debugValues['currentRes'] == len(availableResolutions):
-                        settings.debugValues['currentRes'] = 0
-                    flags = SCALED
-                    window.screen = pygame.display.set_mode(availableResolutions[settings.debugValues['currentRes']], flags, 32)
+                    self.updateResolution(settings, window)
                 
                 # dev console toggling:
                 if event.key == K_F6:
@@ -75,7 +71,19 @@ class EngineEventService(object):
                     input.mouseStatus[0] = True
                 if event.button == 3:
                     input.mouseStatus[2] = True
+
+        # update resolution:
+        if self.oldRes != settings.debugValues['currentRes']:
+            self.updateResolution(settings, window)
+
     
     def devConsoleInput(self, developerConsole, event):
         if developerConsole.enabled and len(developerConsole.inputText)+2 < 45:
             developerConsole.inputText += event.unicode
+
+    def updateResolution(self, settings, window):
+        settings.debugValues['currentRes'] += 1
+        if settings.debugValues['currentRes'] == len(availableResolutions):
+            settings.debugValues['currentRes'] = 0
+        flags = SCALED
+        window.screen = pygame.display.set_mode(availableResolutions[settings.debugValues['currentRes']], flags, 32)

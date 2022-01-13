@@ -1,8 +1,6 @@
-from os import close
-import pygame, distutils
-import distutils
+import pygame
 from ...CORPEngine.objects.screenGui import ScreenGui
-from ...CORPEngine.coreContent import defaultScreenSize, openErrorWindow
+from ...CORPEngine.coreContent import defaultScreenSize
 
 class DeveloperConsole(ScreenGui):
     def __init__(self, parent):
@@ -10,8 +8,8 @@ class DeveloperConsole(ScreenGui):
         self.name = 'DeveloperConsole'
         self.firstMousePos = [0, 0]
         self.inputText = ''
-        self.values = ['fpsCap', 'renderParticles']
-        self.valueTypes = {'fpsCap': 'number', 'renderParticles': 'boolean'}
+        self.values = ['fpsCap', 'renderParticles', 'currentRes']
+        self.valueTypes = {'fpsCap': 'number', 'renderParticles': 'boolean', 'currentRes': 'number'}
         self.output = []
         self.commandHistory = []
         self.writing = False
@@ -38,7 +36,7 @@ class DeveloperConsole(ScreenGui):
         input = self.getGameService().getService('UserInputService')
         window = engine.window
         windowResolutionRatio = (window.screen.get_width()/defaultScreenSize[0], window.screen.get_height()/defaultScreenSize[1])
-        mx, my = input.getMousePosition()
+        mx, my = input.getMousePosition(True)
         # render window
         self.drawRect((38, 38, 38), self.panelRect)
         self.drawRect((230, 230, 230), self.barRect)

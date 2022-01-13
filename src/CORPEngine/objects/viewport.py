@@ -1,7 +1,5 @@
 import pygame
-from pygame.constants import WINDOWMOVED
 from ..coreContent import openErrorWindow, defaultScreenSize
-from pygame.locals import SRCALPHA
 
 class Viewport(object):
     def __init__(self, parent):
@@ -30,7 +28,6 @@ class Viewport(object):
 
         for child in self.getChildren():
             if child.type == 'Entity' and child.image != None:
-                # TODO make a camera system for the viewport
                 pos = [child.position[0], child.position[1]]
                 size = [child.image.get_width(), child.image.get_height()]
                 size[0] *= windowResolutionRatio[1]
