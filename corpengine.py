@@ -7,19 +7,6 @@ from pygame.locals import *
 
 # CORE FUNCTIONS/CONSTANTS:
 
-# CONSTANTS MODULE
-class Constants:
-    def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.2'
-        self.DEFAULTSCREENSIZE: tuple = (640, 360)
-        self.WINDOWTITLE: str = 'CORP Engine window'
-        self.FLAGS: int = 0
-        self.NOT_RUNNING: bool = False
-        self.RUNNING: bool = True
-        self.FPS_CAP: int = 60
-
-constants = Constants()
-
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
@@ -45,6 +32,22 @@ class Colors:
         self.LIGHTGRAY = (211, 211, 211)
         self.SILVER = (192, 192, 192)
 
+colors = Colors()
+
+# CONSTANTS MODULE
+class Constants:
+    def __init__(self) -> None:
+        self.ENGINEVERSION: str = '0.5.2'
+        self.DEFAULTSCREENSIZE: tuple = (640, 360)
+        self.WINDOWTITLE: str = 'CORP Engine window'
+        self.FLAGS: int = 0
+        self.NOT_RUNNING: bool = False
+        self.RUNNING: bool = True
+        self.FPS_CAP: int = 60
+        self.BACKGROUND_COLOR: tuple = colors.CORPWHITE
+
+constants = Constants()
+
 # FLAGS MODULE
 class Flags:
     def __init__(self):
@@ -62,7 +65,7 @@ def cprint(value) -> None:
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
     easygui.msgbox(f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.', 'CORPEngine crashed!')
-    engine.running = False
+    engine.status = constants.NOT_RUNNING
 
 
 # SERVICES:
@@ -88,7 +91,14 @@ class Assets(object):
         try:
             self.assets.update({name: pygame.image.load(path)})
         except Exception:
-            openErrorWindow(f'Invalid path for the image.')
+            openErrorWindow('Invalid path for the image.')
+    
+    def loadFont(self, path: str, name: str, size: int=16, bold: bool=False, italic: bool=False) -> None:
+        try:
+            self.fonts.update({name: pygame.font.Font('./res/fonts/rainyhearts.ttf', 16)})
+            self.fonts[name].bold = bold
+        except Exception:
+            openErrorWindow('No such file or directory.', self.parent.parent)
 
 class EngineEventService(object):
     def __init__(self, parent: object) -> None:
@@ -347,6 +357,17 @@ class UserInputService(object):
         }
         mouse = pygame.mouse.get_pressed()
         return mouse[mouseButtons[num]]
+    
+    def isMouseButtonPressed(self, button: str) -> bool:
+        mouseButtons = {
+            'left': 0,
+            'middle': 1,
+            'right': 2
+        }
+        try:
+            return self.mouseStatus[mouseButtons[button]]
+        except Exception:
+            openErrorWindow('Unknown mouse button "{button}".', self.getEngine())
     
     def getMousePosition(self, ratio=False) -> tuple:
         mx, my = pygame.mouse.get_pos()
@@ -1180,7 +1201,6 @@ class Viewport(object):
 
 class Window(object):
     def __init__(self, parent: object) -> None:
-        global ENGINEVERSION, DEFAULTSCREENSIZE, WINDOWTITLE, FLAGS
         pygame.display.set_caption(constants.WINDOWTITLE)
 
         self.parent: object = parent
@@ -1212,10 +1232,10 @@ class Window(object):
     
     def update(self) -> None:
         self.updateSurfaceSizes()
-        self.screen.fill((200, 200, 200))
-        self.render_window.fill((200, 200, 200))
-        self.gui_window.fill((200, 200, 200))
-        self.particle_window.fill((200, 200, 200))
+        self.screen.fill(constants.BACKGROUND_COLOR)
+        self.render_window.fill(constants.BACKGROUND_COLOR)
+        self.gui_window.fill(constants.BACKGROUND_COLOR)
+        self.particle_window.fill(constants.BACKGROUND_COLOR)
         game = self.parent.game
         RenderService = game.getService('EngineRenderService')
         EventService = game.getService('EngineEventService')
@@ -1267,13 +1287,15 @@ class Engine(object):
         constants.FLAGS = flags
         self.window: Window = Window(self)
         self.game: GameService = GameService(self)
-        self.status: bool = constants.NOT_RUNNING
+        self.status: any = None
+        self.type: str = 'Engine'
     
     def mainloop(self) -> None:
-        self.window.setup()
-        self.status = constants.RUNNING
-        while self.status == constants.RUNNING:
-            self.window.update()
+        if self.status != constants.NOT_RUNNING:
+            self.window.setup()
+            self.status = constants.RUNNING
+            while self.status == constants.RUNNING:
+                self.window.update()
 
 def init(windowSize: tuple=(640, 360), windowTitle: str='CORP Engine Window', flags: int=0) -> Engine:
     print(f'Powered by pygame v{pygame.version.ver} & CORP Engine v{constants.ENGINEVERSION}\nMade by PyxleDev0.')
