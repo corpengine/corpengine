@@ -93,10 +93,12 @@ class Assets(object):
         except Exception:
             openErrorWindow('Invalid path for the image.')
     
-    def loadFont(self, path: str, name: str, size: int=16, bold: bool=False, italic: bool=False) -> None:
+    def loadFont(self, path: str, name: str, size: int=16, bold: bool=False, italic: bool=False, underline: bool=False) -> None:
         try:
-            self.fonts.update({name: pygame.font.Font('./res/fonts/rainyhearts.ttf', 16)})
+            self.fonts.update({name: pygame.font.Font(path, size)})
             self.fonts[name].bold = bold
+            self.fonts[name].italic = italic
+            self.fonts[name].underline = underline
         except Exception:
             openErrorWindow('No such file or directory.', self.parent.parent)
 
@@ -233,10 +235,8 @@ class Object:  # TODO remake this class to actually have a purpose
         self.type: str = 'Object'
         self.parent: object = parent
     
-    def new(self, obj: object, parent: object) -> None:
-        workspace = self.parent.getService('Workspace')
-        newObject = obj(parent)
-        workspace.childrenQueue.append(newObject)
+    def new(self, object: object, parent: object) -> None:
+        parent.childrenQueue.append(object)
 
 class ScriptService(object):
     def __init__(self, parent) -> None:
