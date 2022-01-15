@@ -37,10 +37,10 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.2'
+        self.ENGINEVERSION: str = '0.5.3'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
-        self.FLAGS: int = 0
+        self.FLAGS: int
         self.NOT_RUNNING: bool = False
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
@@ -57,10 +57,18 @@ class Flags:
 
 flags = Flags()
 
-def cprint(value) -> None:
-    caller_frame = sys._getframe(1)
-    a = ' '*24
-    print(f'{value} {a} -- {inspect.getmodule(caller_frame)}')
+# VERSION MODULE
+class Version:
+    def getPygameVersion(self) -> str:
+        return pygame.version.ver
+    
+    def getSDLVersion(sel) -> str:
+        return pygame.version.SDL
+    
+    def getEngineVersion(self) -> str:
+        return constants.ENGINEVERSION
+
+version = Version()
 
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
@@ -1224,6 +1232,13 @@ class Window(object):
         self.cursor: str = 'arrow'
       
         pygame.font.init()
+    
+    def setBackgroundColor(self, color: tuple) -> None:
+        global constants
+        constants.BACKGROUND_COLOR = color
+    
+    def getBackgroundColor(self) -> tuple:
+        return constants.BACKGROUND_COLOR
     
     def setup(self) -> None:
         assets = self.parent.game.getService('Assets')

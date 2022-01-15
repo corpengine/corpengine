@@ -42,7 +42,7 @@ obj = engine.game.getService('Object')
 obj.new(ColorChanger(scriptService), scriptService)
 obj.new(BaseGui(guiService), guiService)
 
-constants.BACKGROUND_COLOR = colors.RED
-assets.loadFont('res/fonts/rainyhearts.ttf', 'pixel', size=32, bold=True)
+engine.window.setBackgroundColor(colors.RED)  # Set background color to red
+assets.loadFont('res/fonts/DisposableDroidBB.ttf', 'pixel', size=32)  # Load a new font
 
-engine.mainloop()
+engine.mainloop()  # start the game
