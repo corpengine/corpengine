@@ -7,9 +7,10 @@ from pygame.locals import *
 
 # CORE FUNCTIONS/CONSTANTS:
 
+# CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.1'
+        self.ENGINEVERSION: str = '0.5.2'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int = 0
@@ -18,6 +19,31 @@ class Constants:
         self.FPS_CAP: int = 60
 
 constants = Constants()
+
+# COLORS MODULE
+class Colors:
+    def __init__(self) -> None:
+        self.CORPWHITE = (224, 224, 224)
+        self.DARKGREEN = (0, 100, 0)
+        self.FORESTGREEN = (39, 139, 34)
+        self.LIME = (0, 255, 0)
+        self.GREEN = (0, 128, 0)
+        self.AQUA = (0, 255, 255)
+        self.BABYBLUE = (137, 207, 240)
+        self.BLUE = (0, 0, 255)
+        self.LIGHTBLUE = (0, 150, 255)
+        self.DARKRED = (139, 0, 0)
+        self.RED = (255, 0, 0)
+        self.MAGENTA = (255, 0, 255)
+        self.PINK = (255, 105, 180)
+        self.VIOLET = (238, 130, 238)
+        self.BROWN = (139, 69, 19)
+        self.TAN = (210, 180, 140)
+        self.WHITE = (255, 255, 255)
+        self.BLACK = (0, 0, 0)
+        self.GRAY = (128, 128, 128)
+        self.LIGHTGRAY = (211, 211, 211)
+        self.SILVER = (192, 192, 192)
 
 # FLAGS MODULE
 class Flags:
@@ -90,7 +116,7 @@ class EngineEventService(object):
                         flags = SCALED | FULLSCREEN
                     else:
                         flags = SCALED
-                    window.screen = pygame.display.set_mode(DEFAULTSCREENSIZE, flags, 32)
+                    window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, flags, 32)
             
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -114,7 +140,7 @@ class EngineRenderService(object):
         game = self.getGameService()
         workspace = self.parent.getService('Workspace')
         window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
         camX, camY = self.getCameraPosition(workspace)
         for child in workspace.getChildren():
             if child.type == 'Entity' and child.image != None and child.render:
@@ -326,7 +352,7 @@ class UserInputService(object):
         mx, my = pygame.mouse.get_pos()
         if ratio: # divide it with the resolution of the window
             window = self.getEngine().window
-            windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+            windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
             mx /= windowResolutionRatio[0]
             my /= windowResolutionRatio[1]
         return mx, my
@@ -698,7 +724,7 @@ class ParticleEmitter(object):
         game = self.getGameService()
         workspace = game.getService('Workspace')
         window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
         renderService = game.getService('EngineRenderService')
         camX, camY = self.getCameraPosition(workspace)
         # updating the particles
@@ -716,7 +742,7 @@ class ParticleEmitter(object):
         # rendering
         if self.getEngine().settings.debugValues['renderParticles']:
             for particle in self.particleData:
-                if not particle[0][0] > DEFAULTSCREENSIZE[0] and not particle[0][1] > DEFAULTSCREENSIZE[1]:
+                if not particle[0][0] > constants.DEFAULTSCREENSIZE[0] and not particle[0][1] > constants.DEFAULTSCREENSIZE[1]:
                     x = particle[0][0] * windowResolutionRatio[0]
                     y = particle[0][1] * windowResolutionRatio[1]
                     if particle[6] == 'circle':
@@ -850,7 +876,7 @@ class Raycaster(object):
     def drawRect(self, color: tuple, rect) -> None:
         game = self.getGameService()
         window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
         camX, camY = self.getCameraPosition(game.getService('Workspace'))
 
         newRect = rect.copy()
@@ -863,7 +889,7 @@ class Raycaster(object):
     def drawImage(self, name: str, position: list):
         game = self.getGameService()
         window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
         assets = game.getService('Assets')
         camX, camY = self.getCameraPosition(game.getService('Workspace'))
 
@@ -904,7 +930,7 @@ class ScreenGui(object):
         window = self.getEngine().window
         assets = self.getGameService().getService('Assets')
         fonts = assets.fonts
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
 
         textObj = fonts[font].render(str(text), True, color, backgroundColor)
         newPosition = [position[0]+self.offsetPosition[0], position[1]+self.offsetPosition[1]]
@@ -920,7 +946,7 @@ class ScreenGui(object):
     def drawRect(self, color: tuple, rect) -> None:
         game = self.getGameService()
         window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
 
         newRect = rect.copy()
         x = (newRect.x + self.offsetPosition[0]) * windowResolutionRatio[0]
@@ -932,7 +958,7 @@ class ScreenGui(object):
     def drawImage(self, name: str, position: list) -> None:
         game = self.getGameService()
         window = game.parent.window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
         assets = game.getService('Assets')
 
         image = assets.getImage(name)
@@ -950,7 +976,7 @@ class ScreenGui(object):
         input = game.getService('UserInputService')
         debugValues = self.getEngine().settings.debugValues
         window = self.getEngine().window
-        windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+        windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
 
         if debugValues[value]:
             image = assets.getImage('checkbox_true')
@@ -989,7 +1015,7 @@ class ScreenGui(object):
             y = self.primaryRect.y + self.offsetPosition[1]
             w = self.primaryRect.width
             h = self.primaryRect.height
-            windowResolutionRatio = (window.screen.get_width()/DEFAULTSCREENSIZE[0], window.screen.get_height()/DEFAULTSCREENSIZE[1])
+            windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
             rect = pygame.Rect(x*windowResolutionRatio[0], y*windowResolutionRatio[1], w*windowResolutionRatio[1], h*windowResolutionRatio[1])
             mx, my = input.getMousePosition()
             if rect.collidepoint(mx, my):
@@ -1072,7 +1098,7 @@ class Viewport(object):
         surface = surface.convert()
         surface.fill(self.background)
         # rendering object inside:
-        windowResolutionRatio = [self.size[0]/DEFAULTSCREENSIZE[0], self.size[1]/DEFAULTSCREENSIZE[1]]
+        windowResolutionRatio = [self.size[0]/constants.DEFAULTSCREENSIZE[0], self.size[1]/constants.DEFAULTSCREENSIZE[1]]
 
         for child in self.getChildren():
             if child.type == 'Entity' and child.image != None:
@@ -1155,10 +1181,10 @@ class Viewport(object):
 class Window(object):
     def __init__(self, parent: object) -> None:
         global ENGINEVERSION, DEFAULTSCREENSIZE, WINDOWTITLE, FLAGS
-        pygame.display.set_caption(WINDOWTITLE)
+        pygame.display.set_caption(constants.WINDOWTITLE)
 
         self.parent: object = parent
-        self.screen: pygame.Surface = pygame.display.set_mode((640, 360), FLAGS, 32)
+        self.screen: pygame.Surface = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, constants.FLAGS, 32)
         self.render_window: pygame.Surface = self.screen.copy()
         self.gui_window: pygame.Surface = self.screen.copy()
         self.particle_window: pygame.Surface = self.screen.copy()
@@ -1181,7 +1207,7 @@ class Window(object):
     
     def setup(self) -> None:
         assets = self.parent.game.getService('Assets')
-        pygame.display.set_caption(f'{WINDOWTITLE}')
+        pygame.display.set_caption(f'{constants.WINDOWTITLE}')
         pygame.display.set_icon(assets.getImage('icon'))
     
     def update(self) -> None:
@@ -1234,11 +1260,11 @@ class Window(object):
 
 class Engine(object):
     def __init__(self, windowSize: tuple=(640, 360), windowTitle: str='CORP Engine window', flags: int=0) -> None:
-        global DEFAULTSCREENSIZE, WINDOWTITLE, ENGINEVERSION, FLAGS
+        global constants
         pygame.mixer.init()
-        DEFAULTSCREENSIZE = windowSize
-        FLAGS = flags
-        WINDOWTITLE = windowTitle
+        constants.DEFAULTSCREENSIZE = windowSize
+        constants.WINDOWTITLE = windowTitle
+        constants.FLAGS = flags
         self.window: Window = Window(self)
         self.game: GameService = GameService(self)
         self.status: bool = constants.NOT_RUNNING
