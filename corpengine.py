@@ -7,13 +7,17 @@ from pygame.locals import *
 
 # CORE FUNCTIONS/CONSTANTS:
 
-VERSION: str = '0.5.0'
-DEFAULTSCREENSIZE: tuple = (640, 360)
-WINDOWTITLE: str = 'CORP Engine window'
-FLAGS = 0
-NOT_RUNNING = False
-RUNNING = True
-FPS_CAP = 60
+class Constants:
+    def __init__(self) -> None:
+        self.ENGINEVERSION: str = '0.5.1'
+        self.DEFAULTSCREENSIZE: tuple = (640, 360)
+        self.WINDOWTITLE: str = 'CORP Engine window'
+        self.FLAGS: int = 0
+        self.NOT_RUNNING: bool = False
+        self.RUNNING: bool = True
+        self.FPS_CAP: int = 60
+
+constants = Constants()
 
 # FLAGS MODULE
 class Flags:
@@ -76,7 +80,7 @@ class EngineEventService(object):
         # pygame events
         for event in pygame.event.get():
             if event.type == QUIT:
-                game.parent.status = NOT_RUNNING
+                game.parent.status = constants.NOT_RUNNING
             # developer tools
             if event.type == KEYDOWN:
                 # fullscreen toggling
@@ -1150,7 +1154,7 @@ class Viewport(object):
 
 class Window(object):
     def __init__(self, parent: object) -> None:
-        global VERSION, DEFAULTSCREENSIZE, WINDOWTITLE, FLAGS
+        global ENGINEVERSION, DEFAULTSCREENSIZE, WINDOWTITLE, FLAGS
         pygame.display.set_caption(WINDOWTITLE)
 
         self.parent: object = parent
@@ -1177,7 +1181,7 @@ class Window(object):
     
     def setup(self) -> None:
         assets = self.parent.game.getService('Assets')
-        pygame.display.set_caption(f'{WINDOWTITLE} - v{VERSION}')
+        pygame.display.set_caption(f'{WINDOWTITLE}')
         pygame.display.set_icon(assets.getImage('icon'))
     
     def update(self) -> None:
@@ -1207,7 +1211,7 @@ class Window(object):
         self.screen.blit(self.render_window, (0, 0))
         self.screen.blit(self.particle_window, (0, 0))
         self.screen.blit(self.gui_window, (0, 0))
-        self.clock.tick(FPS_CAP)
+        self.clock.tick(constants.FPS_CAP)
 
         if input.mouseFocus != 'Game':
             self.setCursor(self.cursor)
@@ -1230,20 +1234,21 @@ class Window(object):
 
 class Engine(object):
     def __init__(self, windowSize: tuple=(640, 360), windowTitle: str='CORP Engine window', flags: int=0) -> None:
-        global DEFAULTSCREENSIZE, WINDOWTITLE, VERSION, FLAGS
+        global DEFAULTSCREENSIZE, WINDOWTITLE, ENGINEVERSION, FLAGS
         pygame.mixer.init()
         DEFAULTSCREENSIZE = windowSize
         FLAGS = flags
         WINDOWTITLE = windowTitle
         self.window: Window = Window(self)
         self.game: GameService = GameService(self)
-        self.status: bool = NOT_RUNNING
+        self.status: bool = constants.NOT_RUNNING
     
     def mainloop(self) -> None:
         self.window.setup()
-        self.status = RUNNING
-        while self.status == RUNNING:
+        self.status = constants.RUNNING
+        while self.status == constants.RUNNING:
             self.window.update()
 
 def init(windowSize: tuple=(640, 360), windowTitle: str='CORP Engine Window', flags: int=0) -> Engine:
+    print(f'Powered by pygame v{pygame.version.ver} & CORP Engine v{constants.ENGINEVERSION}\nMade by PyxleDev0.')
     return Engine(windowSize, windowTitle, flags)
