@@ -97,9 +97,10 @@ class Assets(object):
     
     def loadImage(self, path: str, name: str) -> None:
         try:
-            self.assets.update({name: pygame.image.load(path)})
+            img = pygame.image.load(path).convert()
+            self.images.update({name: img})
         except Exception:
-            openErrorWindow('Invalid path for the image.')
+            openErrorWindow('Invalid path for the image or image unsupported.', self.parent.parent)
     
     def loadFont(self, path: str, name: str, size: int=16, bold: bool=False, italic: bool=False, underline: bool=False) -> None:
         try:
@@ -193,7 +194,6 @@ class EngineRenderService(object):
         return camX, camY
     
     def getGameService(self) -> object:
-        # TODO make an error message when the gameService is not found
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
@@ -237,7 +237,7 @@ class GUIService(object):
             if child.name == name:
                 return child
 
-class Object:  # TODO remake this class to actually have a purpose
+class Object(object):  # TODO remake this class to actually have a purpose
     def __init__(self, parent: object):
         self.name: str = 'Object'
         self.type: str = 'Object'
@@ -1284,8 +1284,8 @@ class Window(object):
         self.render_window = self.screen.copy()
         self.gui_window = self.screen.copy()
         self.particle_window = self.screen.copy()
-        self.gui_window.set_colorkey((200, 200, 200))
-        self.particle_window.set_colorkey((200, 200, 200))
+        self.gui_window.set_colorkey(constants.BACKGROUND_COLOR)
+        self.particle_window.set_colorkey(constants.BACKGROUND_COLOR)
     
     def setCursor(self, name: str) -> None:
         try:
