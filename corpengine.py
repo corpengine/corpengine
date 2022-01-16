@@ -37,7 +37,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.3'
+        self.ENGINEVERSION: str = '0.5.4'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -243,7 +243,8 @@ class Object(object):  # TODO remake this class to actually have a purpose
         self.type: str = 'Object'
         self.parent: object = parent
     
-    def new(self, object: object, parent: object) -> None:
+    def new(self, object: object) -> None:
+        parent = object.parent
         parent.childrenQueue.append(object)
 
 class ScriptService(object):
@@ -969,6 +970,7 @@ class ScreenGui(object):
         textObj = pygame.transform.scale(textObj, (objSize[0]*windowResolutionRatio[1], objSize[1]*windowResolutionRatio[1]))
         x = newPosition[0]*windowResolutionRatio[0]
         y = newPosition[1]*windowResolutionRatio[1]
+        textObj = textObj.convert_alpha()
         pos = [x, y]
         window.gui_window.blit(textObj, pos)
     
