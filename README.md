@@ -14,3 +14,6 @@ CORP Engine is an engine/toolkit made with Pygame which can really make your pyt
 ## Learning CORP Engine
 Currently, there is no wiki that can  actually make you understand how this engine works. But if you want to see some examples to learn how to work, check this repository out:
 https://github.com/PyxleDev0/corp-engine-examples/
+
+## Contributing
+If you are a random adventurer looking through the source code and have an idea or found an issue, feel free to open an issue or a pull request. Even a small contributions means a lot to me!
