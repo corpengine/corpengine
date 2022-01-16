@@ -37,7 +37,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.5'
+        self.ENGINEVERSION: str = '0.5.6'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -97,7 +97,7 @@ class Assets(object):
     
     def loadImage(self, path: str, name: str) -> None:
         try:
-            img = pygame.image.load(path).convert()
+            img = pygame.image.load(path).convert_alpha()
             self.images.update({name: img})
         except Exception:
             openErrorWindow('Invalid path for the image or image unsupported.', self.parent.parent)
@@ -357,6 +357,14 @@ class UserInputService(object):
             if not keys[key]:
                 return False
         return True
+    
+    def isCollidingWithMouse(self, object: object) -> bool:
+        # TODO add camera support
+        objRect = object.image.get_rect()
+        objRect.x = object.position[0]
+        objRect.y = object.position[1]
+        mx, my = self.getMousePosition()
+        return objRect.collidepoint(mx, my)
 
     def isMouseButtonDown(self, num: str) -> bool:
         mouseButtons = {
@@ -386,6 +394,10 @@ class UserInputService(object):
             mx /= windowResolutionRatio[0]
             my /= windowResolutionRatio[1]
         return mx, my
+    
+    def getMouseRel(self) -> tuple:
+        rx, ry = pygame.mouse.get_rel()
+        return rx, ry
     
     def getCameraPosition(self, workspace) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
