@@ -37,7 +37,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.4'
+        self.ENGINEVERSION: str = '0.5.5'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -469,6 +469,7 @@ class GameService(object):
         for service in self.children:
             if service.name == name:
                 return service
+        openErrorWindow(f'No service named "{name}".', self.parent)
     
     def update(self) -> None:
         # load the next member of the children queue
