@@ -37,7 +37,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.1'
+        self.ENGINEVERSION: str = '0.6.1b'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -1229,6 +1229,7 @@ class PhysicsEntity(object):
         self.velocity: list = [0, 0]
         self.gravity: bool = True
         self.bounce: bool = False
+        self.gravityVel: float = 0.25
     
     def isColliding(self, name, parent='Workspace') -> bool:
         game = self.getGameService()
@@ -1269,12 +1270,20 @@ class PhysicsEntity(object):
         return None
     
     def _update(self) -> None:
+        dt = self.getEngine().window.dt
+
         self.updateQueue()
         self.childrenEvents()
-        self.moveEntity()
+        self.doGravity(dt)
     
-    def moveEntity(self) -> None:
-        dt = self.getEngine().window.dt
+    def doGravity(self, dt) -> None:
+        if self.gravity and self.gravityVel != 0:
+            self.velocity[1] += self.gravityVel*dt
+            
+        
+        self.moveEntity(dt)
+    
+    def moveEntity(self, dt) -> None:
         self.position[0] += self.velocity[0]*dt
         self.position[1] += self.velocity[1]*dt
 
