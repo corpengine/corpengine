@@ -1211,6 +1211,205 @@ class Viewport(object):
             engine = engine.parent
         return engine
 
+
+class PhysicsEntity(object):
+    def __init__(self, parent: object) -> None:
+        self.parent: object = parent
+        self.name: str = 'Entity'
+        self.type: str = 'Entity'
+        self.image = None
+        self.position: list = [0, 0]
+        self.render: bool = True
+        self.children: list = []
+        self.childrenQueue: list = []
+        self.collisionGroup: int = 0
+        self.size: list = [1, 1]
+        self.rotation: float = 0
+        self.attributes: dict = {}
+        self.velocity: list = [0, 0]
+        self.gravity: bool = True
+        self.bounce: bool = False
+    
+    def isColliding(self, name, parent='Workspace') -> bool:
+        game = self.getGameService()
+        workspace = game.getService('Workspace')
+        if parent == 'Workspace':
+            parentObj = workspace
+        else:
+            parentObj = parent
+        # collision
+        if parentObj != None:
+            for child in parentObj.getChildren():
+                if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
+                    childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
+                    childRect.width *= child.size[0]
+                    childRect.height *= child.size[1]
+                    selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
+                    selfRect.width *= self.size[0]
+                    selfRect.height *= self.size[1]
+                    return selfRect.colliderect(childRect)
+        return False
+    
+    def getGameService(self) -> object:
+        game = self.parent
+        while game.type != 'GameService':
+            game = game.parent
+        return game
+    
+    def getEngine(self) -> object:
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine
+    
+    def getChild(self, name) -> object:
+        for child in self.children:
+            if child.name == name:
+                return child
+        return None
+    
+    def _update(self) -> None:
+        self.updateQueue()
+        self.childrenEvents()
+        self.moveEntity()
+    
+    def moveEntity(self) -> None:
+        dt = self.getEngine().window.dt
+        self.position[0] += self.velocity[0]*dt
+        self.position[1] += self.velocity[1]*dt
+
+    def updateQueue(self) -> None:
+        if len(self.childrenQueue) > 0:
+            newChild = self.childrenQueue[0]
+            self.children.append(self.childrenQueue[0])
+            del self.childrenQueue[0]
+            # SETUP/PARENT EVENTS:
+            # if the child came from another parent
+            if newChild.parent != self:
+                if hasattr(newChild, 'parentChanged'):
+                    newChild.parentChanged()
+            else: # if the child is brand new
+                if hasattr(newChild, 'setup'):
+                    newChild.setup()
+    
+    def childrenEvents(self) -> None:
+        window = self.getEngine().window
+        for child in self.children:
+            if hasattr(child, 'update'):
+                child.update(window.dt)
+                if child.type == 'ParticleEmitter':
+                    if hasattr(child, 'update'):
+                        child.update(window.dt)
+                    child.render(window.dt)
+            if hasattr(child, '_update'):
+                child._update()
+    
+    def getChildren(self) -> list:
+        return self.children.copy()
+    
+    def setAttribute(self, name, val) -> None:
+        self.attributes.update({name: val})
+    
+    def getAttribute(self, name):
+        try:
+            return self.attributes[name]
+        except Exception:
+            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
+
+class Folder(object):
+    def __init__(self, parent: object) -> None:
+        self.parent: object = parent
+        self.name: str = 'Folder'
+        self.type: str = 'Folder'
+        self.children: list = []
+        self.childrenQueue: list = []
+        self.attributes: dict = {}
+    
+    def getChild(self, name: str) -> object:
+        for child in self.children:
+            if child.name == name:
+                return child
+        return None
+    
+    def _update(self) -> None:
+        self.updateQueue()
+        self.childrenEvents()
+    
+    def getEngine(self) -> object:
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine
+
+    def updateQueue(self) -> None:
+        if len(self.childrenQueue) > 0:
+            newChild = self.childrenQueue[0]
+            self.children.append(self.childrenQueue[0])
+            del self.childrenQueue[0]
+            # SETUP/PARENT EVENTS:
+            # if the child came from another parent
+            if newChild.parent != self:
+                if hasattr(newChild, 'parentChanged'):
+                    newChild.parentChanged()
+            else: # if the child is brand new
+                if hasattr(newChild, 'setup'):
+                    newChild.setup()
+    
+    def childrenEvents(self) -> None:
+        window = self.getEngine().window
+        for child in self.children:
+            if hasattr(child, 'update'):
+                if child.type == 'ScreenGUI':
+                    if child.enabled:
+                        child.update(window.dt)
+                else:
+                    child.update(window.dt)
+                if child.type == 'ParticleEmitter':
+                    child.render(window.dt)
+            if hasattr(child, '_update'):
+                child._update()
+    
+    def getChildren(self) -> list:
+        return self.children.copy()
+    
+    def setAttribute(self, name, val) -> None:
+        self.attributes.update({name: val})
+    
+    def getAttribute(self, name):
+        try:
+            return self.attributes[name]
+        except Exception:
+            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
+
+class GlobalScript(object):
+    def __init__(self, parent: object):
+        self.name: str = 'GlobalScript'
+        self.type: str = 'GlobalScript'
+        self.parent: object = parent
+        self.attributes: dict = {}
+    
+    def getGameService(self) -> object:
+        game = self.parent
+        while game.type != 'GameService':
+            game = game.parent
+        return game
+    
+    def getEngine(self) -> object:
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine
+    
+    def setAttribute(self, name, val) -> None:
+        self.attributes.update({name: val})
+    
+    def getAttribute(self, name):
+        try:
+            return self.attributes[name]
+        except Exception:
+            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
+
+
 # ENGINE CLASSES & FUNCTIONS:
 
 class Window(object):
