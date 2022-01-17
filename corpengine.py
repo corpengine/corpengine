@@ -37,7 +37,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.5.6'
+        self.ENGINEVERSION: str = '0.6.1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -57,7 +57,7 @@ class Flags:
 
 flags = Flags()
 
-# VERSION MODULE
+# VERSION FUNCTION
 def version(target) -> str:
     return pygame.version.ver if target=="pygame" else (pygame.version.SDL if target.lower()=="sdl" else constants.ENGINEVERSION)
 
@@ -1307,6 +1307,9 @@ class Engine(object):
         constants.WINDOWTITLE = windowTitle
         constants.FLAGS = flags
         self.window: Window = Window(self)
+        if flags == -2147483136:  # detect fullscreen
+            self.window.fullscreen = True
+        
         self.game: GameService = GameService(self)
         self.status: any = None
         self.type: str = 'Engine'
