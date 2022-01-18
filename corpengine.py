@@ -1231,7 +1231,7 @@ class PhysicsEntity(object):
         self.bounce: bool = False
         self.gravityVel: float = 0.25
     
-    def isColliding(self, name, parent='Workspace') -> bool:
+    def isColliding(self, name, parent='Workspace', rect: pygame.Rect=None) -> bool:
         game = self.getGameService()
         workspace = game.getService('Workspace')
         if parent == 'Workspace':
@@ -1245,9 +1245,12 @@ class PhysicsEntity(object):
                     childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
                     childRect.width *= child.size[0]
                     childRect.height *= child.size[1]
-                    selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
-                    selfRect.width *= self.size[0]
-                    selfRect.height *= self.size[1]
+                    if rect == None:
+                        selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
+                        selfRect.width *= self.size[0]
+                        selfRect.height *= self.size[1]
+                    else:
+                        selfRect = rect.copy()
                     return selfRect.colliderect(childRect)
         return False
     
@@ -1271,17 +1274,27 @@ class PhysicsEntity(object):
     
     def _update(self) -> None:
         dt = self.getEngine().window.dt
-
         self.updateQueue()
         self.childrenEvents()
         self.doGravity(dt)
     
     def doGravity(self, dt) -> None:
-        if self.gravity and self.gravityVel != 0:
+        if self.gravity and self.gravityVel != 0 and self.image != None:
+            size = [self.image.get_width()*self.size[0], self.image.get_height()*self.size[1]]
+            pos = [self.position[0] - size[0]/2, self.position[1] - size[1]/2]
             self.velocity[1] += self.gravityVel*dt
-            
+            self.horizontalCollision(pos, size, dt)
         
         self.moveEntity(dt)
+    
+    def horizontalCollision(self, position: list, size: list, dt: float) -> None:
+        xCollider = pygame.Rect(position[0], position[1]+size[1]/10, size[0], size[1]-size[1]/5)
+        children = self.parent.getChildren()
+        children.remove(self)
+        for child in children:
+            if self.isColliding(child.name, self.parent, rect=xCollider):
+                print('AAA')
+        pygame.draw.rect(self.getEngine().window.gui_window, (0, 0, 0), xCollider)
     
     def moveEntity(self, dt) -> None:
         self.position[0] += self.velocity[0]*dt
