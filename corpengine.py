@@ -1,3 +1,4 @@
+from random import randint
 import pygame
 import time
 import sys
@@ -37,7 +38,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.1b'
+        self.ENGINEVERSION: str = '0.6.2'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -119,7 +120,7 @@ class EngineEventService(object):
         for event in pygame.event.get():
             if event.type == QUIT:
                 game.parent.status = constants.NOT_RUNNING
-            # developer tools
+            
             if event.type == KEYDOWN:
                 # fullscreen toggling
                 if event.key == K_F11:
@@ -329,8 +330,15 @@ class UserInputService(object):
         self.inputs: dict = {}
         self.mouseStatus: list = [False, False, False]
         self.mouseFocus: str = 'Game'
-    
-    def isKeyPressed(self, name: str) -> bool:
+        self.axisDeadzone = 0.1
+        self.setupJoysticks()
+
+    def setupJoysticks(self) -> None:
+        pygame.joystick.init()
+        self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+        print(self.joysticks)
+
+    def keyPressed(self, name: str) -> bool:
         keys = pygame.key.get_pressed()
         try:
             input = self.inputs[name]
@@ -341,13 +349,16 @@ class UserInputService(object):
         except KeyError:
             openErrorWindow(f'unknown input "{name}".', self.parent.parent)
 
-    def isMultiplePressed(self, name: str) -> bool:
+    def keyMultiplePressed(self, name: str) -> bool:
         keys = pygame.key.get_pressed()
         input = self.inputs[name]
         for key in input:
             if not keys[key]:
                 return False
         return True
+    
+    def addInput(self, name: str, value: list) -> None:
+        self.inputs.update({name: value})
     
     def isCollidingWithMouse(self, object: object) -> bool:
         # TODO add camera support
@@ -408,6 +419,21 @@ class UserInputService(object):
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
+
+    def getControllerName(self, id: int) -> None:
+        return self.joysticks[id].get_name()
+
+    def getControllerAxis(self, id: int, num: int) -> None:
+        axis = self.joysticks[id].get_axis(num)
+        if self.axisDeadzone > abs(axis):
+            axis = 0
+        return axis
+
+    def getControllerPowerLevel(self, id: int) -> None:
+        return self.joysticks[id].get_power_level()
+
+    def setAxisDeadzone(self, value: float) -> None:
+        self.axisDeadzone = value
 
 class Workspace(object):
     def __init__(self, parent: object):
@@ -535,15 +561,15 @@ class Entity(object):
             parentObj = parent
         # collision
         if parentObj != None:
-            for child in parentObj.getChildren():
-                if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
-                    childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
-                    childRect.width *= child.size[0]
-                    childRect.height *= child.size[1]
-                    selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
-                    selfRect.width *= self.size[0]
-                    selfRect.height *= self.size[1]
-                    return selfRect.colliderect(childRect)
+            child = parentObj.getChild(name)
+            if child != None:
+                childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
+                childRect.width *= child.size[0]
+                childRect.height *= child.size[1]
+                selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
+                selfRect.width *= self.size[0]
+                selfRect.height *= self.size[1]
+                return selfRect.colliderect(childRect)
         return False
     
     def getGameService(self) -> object:
@@ -1212,132 +1238,6 @@ class Viewport(object):
         return engine
 
 
-class PhysicsEntity(object):
-    def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Entity'
-        self.type: str = 'Entity'
-        self.image = None
-        self.position: list = [0, 0]
-        self.render: bool = True
-        self.children: list = []
-        self.childrenQueue: list = []
-        self.collisionGroup: int = 0
-        self.size: list = [1, 1]
-        self.rotation: float = 0
-        self.attributes: dict = {}
-        self.velocity: list = [0, 0]
-        self.gravity: bool = True
-        self.bounce: bool = False
-        self.gravityVel: float = 0.25
-    
-    def isColliding(self, name, parent='Workspace', rect: pygame.Rect=None) -> bool:
-        game = self.getGameService()
-        workspace = game.getService('Workspace')
-        if parent == 'Workspace':
-            parentObj = workspace
-        else:
-            parentObj = parent
-        # collision
-        if parentObj != None:
-            for child in parentObj.getChildren():
-                if child.name == name and child.collisionGroup == self.collisionGroup and child.type == 'Entity':
-                    childRect = pygame.Rect(child.position[0], child.position[1], child.image.get_width(), child.image.get_height())
-                    childRect.width *= child.size[0]
-                    childRect.height *= child.size[1]
-                    if rect == None:
-                        selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
-                        selfRect.width *= self.size[0]
-                        selfRect.height *= self.size[1]
-                    else:
-                        selfRect = rect.copy()
-                    return selfRect.colliderect(childRect)
-        return False
-    
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-    
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-    
-    def getChild(self, name) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
-        return None
-    
-    def _update(self) -> None:
-        dt = self.getEngine().window.dt
-        self.updateQueue()
-        self.childrenEvents()
-        self.doGravity(dt)
-    
-    def doGravity(self, dt) -> None:
-        if self.gravity and self.gravityVel != 0 and self.image != None:
-            size = [self.image.get_width()*self.size[0], self.image.get_height()*self.size[1]]
-            pos = [self.position[0] - size[0]/2, self.position[1] - size[1]/2]
-            self.velocity[1] += self.gravityVel*dt
-            self.horizontalCollision(pos, size, dt)
-        
-        self.moveEntity(dt)
-    
-    def horizontalCollision(self, position: list, size: list, dt: float) -> None:
-        xCollider = pygame.Rect(position[0], position[1]+size[1]/10, size[0], size[1]-size[1]/5)
-        children = self.parent.getChildren()
-        children.remove(self)
-        for child in children:
-            if self.isColliding(child.name, self.parent, rect=xCollider):
-                print('AAA')
-        pygame.draw.rect(self.getEngine().window.gui_window, (0, 0, 0), xCollider)
-    
-    def moveEntity(self, dt) -> None:
-        self.position[0] += self.velocity[0]*dt
-        self.position[1] += self.velocity[1]*dt
-
-    def updateQueue(self) -> None:
-        if len(self.childrenQueue) > 0:
-            newChild = self.childrenQueue[0]
-            self.children.append(self.childrenQueue[0])
-            del self.childrenQueue[0]
-            # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
-    
-    def childrenEvents(self) -> None:
-        window = self.getEngine().window
-        for child in self.children:
-            if hasattr(child, 'update'):
-                child.update(window.dt)
-                if child.type == 'ParticleEmitter':
-                    if hasattr(child, 'update'):
-                        child.update(window.dt)
-                    child.render(window.dt)
-            if hasattr(child, '_update'):
-                child._update()
-    
-    def getChildren(self) -> list:
-        return self.children.copy()
-    
-    def setAttribute(self, name, val) -> None:
-        self.attributes.update({name: val})
-    
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 class Folder(object):
     def __init__(self, parent: object) -> None:
         self.parent: object = parent
@@ -1466,6 +1366,12 @@ class Window(object):
     
     def getBackgroundColor(self) -> tuple:
         return constants.BACKGROUND_COLOR
+    
+    def setTargetFPS(self, value: int) -> None:
+        constants.FPS_CAP = value
+    
+    def getFPS(self) -> int:
+        return int(self.clock.get_fps())
     
     def setup(self) -> None:
         assets = self.parent.game.getService('Assets')
