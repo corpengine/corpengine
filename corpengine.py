@@ -38,7 +38,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.2'
+        self.ENGINEVERSION: str = '0.6.2a'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -420,20 +420,23 @@ class UserInputService(object):
             engine = engine.parent
         return engine
 
-    def getControllerName(self, id: int) -> None:
+    def getControllerName(self, id: int) -> str:
         return self.joysticks[id].get_name()
 
-    def getControllerAxis(self, id: int, num: int) -> None:
+    def getControllerAxis(self, id: int, num: int) -> float:
         axis = self.joysticks[id].get_axis(num)
         if self.axisDeadzone > abs(axis):
             axis = 0
         return axis
 
-    def getControllerPowerLevel(self, id: int) -> None:
+    def getControllerPowerLevel(self, id: int) -> str:
         return self.joysticks[id].get_power_level()
 
     def setAxisDeadzone(self, value: float) -> None:
         self.axisDeadzone = value
+
+    def getControllerButton(self, id: int, num: int) -> bool:
+        return self.joysticks[id].get_button(num)
 
 class Workspace(object):
     def __init__(self, parent: object):
