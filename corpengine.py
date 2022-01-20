@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.0a'
+        self.ENGINEVERSION: str = '0.7.0b'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -176,7 +176,7 @@ class EngineRenderService(object):
         x = ((child.position[0] - camX) * windowResolutionRatio[0]) - image.get_width()/2
         y = ((child.position[1] - camY) * windowResolutionRatio[1]) - image.get_height()/2
         pos = [x, y]
-        window.render_window.blit(image, pos)
+        window.renderWindow.blit(image, pos)
         self.totalEntitiesRendered += 1
         for childA in child.getChildren():
             self.renderEntity(childA, window, windowResolutionRatio, camX, camY)
@@ -1433,9 +1433,9 @@ class Window(object):
 
     def updateSurfaceSizes(self) -> None:
         self.renderWindow = self.screen.copy()
-        self.gui_window = self.screen.copy()
+        self.guiWindow = self.screen.copy()
         self.particleWindow = self.screen.copy()
-        self.gui_window.set_colorkey(constants.BACKGROUND_COLOR)
+        self.guiWindow.set_colorkey(constants.BACKGROUND_COLOR)
         self.particleWindow.set_colorkey(constants.BACKGROUND_COLOR)
 
     def setCursor(self, name: str) -> None:
