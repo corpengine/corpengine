@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.3a'
+        self.ENGINEVERSION: str = '0.6.3b'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -134,7 +134,6 @@ class EngineEventService(object):
                     input.mouseStatus[2] = True
                 if event.button == 2:
                     input.mouseStatus[1] = True
-                print(input.mouseStatus)
 
             # controller hotplugging
             if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
@@ -452,7 +451,7 @@ class UserInputService(object):
         return self.joysticks[id].get_button(num)
 
 class Workspace(object):
-    def __init__(self, parent: object):
+    def __init__(self, parent: object) -> None:
         self.parent: object = parent
         self.name: str = 'Workspace'
         self.type: str = 'Workspace'
@@ -502,7 +501,7 @@ class Workspace(object):
         return self.children.copy()
 
 class GameService(object):
-    def __init__(self, parent: object):
+    def __init__(self, parent: object) -> None:
         self.parent: object = parent
         self.name: str = 'GameService'
         self.type: str = 'GameService'
@@ -544,7 +543,7 @@ class Camera(object):
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
     
-    def getAttribute(self, name: str):
+    def getAttribute(self, name: str) -> any:
         try:
             return self.attributes[name]
         except Exception:
@@ -557,7 +556,7 @@ class Camera(object):
         return engine
 
 class Entity(object):
-    def __init__(self, parent: object):
+    def __init__(self, parent: object) -> None:
         self.parent: object = parent
         self.name: str = 'Entity'
         self.type: str = 'Entity'
@@ -825,10 +824,10 @@ class ParticleEmitter(object):
                     x = particle[0][0] * windowResolutionRatio[0]
                     y = particle[0][1] * windowResolutionRatio[1]
                     if particle[6] == 'circle':
-                        pygame.draw.circle(window.particle_window, particle[2], (x, y), particle[3]*windowResolutionRatio[1])
+                        pygame.draw.circle(window.particleWindow, particle[2], (x, y), particle[3] * windowResolutionRatio[1])
                     elif particle[6] == 'rectangle':
                         size = particle[3]*windowResolutionRatio[1]
-                        pygame.draw.rect(window.particle_window, particle[2], (x, y, size, size))
+                        pygame.draw.rect(window.particleWindow, particle[2], (x, y, size, size))
                     renderService.totalParticlesRendered += 1
     
     def getCameraPosition(self, workspace: object) -> tuple:
@@ -963,7 +962,7 @@ class Raycaster(object):
         y = (newRect.y - camY) * windowResolutionRatio[1]
         w = newRect.width * windowResolutionRatio[1]
         h = newRect.height * windowResolutionRatio[1]
-        pygame.draw.rect(window.render_window, color, (x, y, w, h))
+        pygame.draw.rect(window.renderWindow, color, (x, y, w, h))
     
     def drawImage(self, name: str, position: list):
         game = self.getGameService()
@@ -979,7 +978,7 @@ class Raycaster(object):
         w = image.get_width() * windowResolutionRatio[1]
         h = image.get_height() * windowResolutionRatio[1]
         image = pygame.transform.scale(image, (w, h))
-        window.render_window.blit(image, (x, y))
+        window.renderWindow.blit(image, (x, y))
 
     def getGameService(self) -> object:
         game = self.parent
@@ -1359,9 +1358,9 @@ class Window(object):
 
         self.parent: object = parent
         self.screen: pygame.Surface = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, constants.FLAGS, 32)
-        self.render_window: pygame.Surface = self.screen.copy()
-        self.gui_window: pygame.Surface = self.screen.copy()
-        self.particle_window: pygame.Surface = self.screen.copy()
+        self.renderWindow: pygame.Surface = self.screen.copy()
+        self.guiWindow: pygame.Surface = self.screen.copy()
+        self.particleWindow: pygame.Surface = self.screen.copy()
 
         self.dt: float = 0
         self.last_time: float = time.time()
@@ -1400,9 +1399,9 @@ class Window(object):
     def update(self) -> None:
         self.updateSurfaceSizes()
         self.screen.fill(constants.BACKGROUND_COLOR)
-        self.render_window.fill(constants.BACKGROUND_COLOR)
-        self.gui_window.fill(constants.BACKGROUND_COLOR)
-        self.particle_window.fill(constants.BACKGROUND_COLOR)
+        self.renderWindow.fill(constants.BACKGROUND_COLOR)
+        self.guiWindow.fill(constants.BACKGROUND_COLOR)
+        self.particleWindow.fill(constants.BACKGROUND_COLOR)
         game = self.parent.game
         RenderService = game.getService('EngineRenderService')
         EventService = game.getService('EngineEventService')
@@ -1421,9 +1420,9 @@ class Window(object):
         # rendering stuff
         RenderService.render()
         # update the screen:
-        self.screen.blit(self.render_window, (0, 0))
-        self.screen.blit(self.particle_window, (0, 0))
-        self.screen.blit(self.gui_window, (0, 0))
+        self.screen.blit(self.renderWindow, (0, 0))
+        self.screen.blit(self.particleWindow, (0, 0))
+        self.screen.blit(self.guiWindow, (0, 0))
         self.clock.tick(constants.FPS_CAP)
 
         if input.mouseFocus != 'Game':
@@ -1433,11 +1432,11 @@ class Window(object):
         pygame.display.flip()
     
     def updateSurfaceSizes(self) -> None:
-        self.render_window = self.screen.copy()
+        self.renderWindow = self.screen.copy()
         self.gui_window = self.screen.copy()
-        self.particle_window = self.screen.copy()
+        self.particleWindow = self.screen.copy()
         self.gui_window.set_colorkey(constants.BACKGROUND_COLOR)
-        self.particle_window.set_colorkey(constants.BACKGROUND_COLOR)
+        self.particleWindow.set_colorkey(constants.BACKGROUND_COLOR)
     
     def setCursor(self, name: str) -> None:
         try:
