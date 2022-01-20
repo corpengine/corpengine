@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/PyxleDev0/corp-engine)](https://github.com/PyxleDev0/corp-engine/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/Version-v0.6.0-informational)
+![Version](https://img.shields.io/badge/Version-v0.6.3-informational)
 
 # CORP Engine
 An engine made with Pygame for Python game development.

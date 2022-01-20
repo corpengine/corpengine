@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.3'
+        self.ENGINEVERSION: str = '0.6.3a'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -233,7 +233,7 @@ class GUIService(object):
             if child.name == name:
                 return child
 
-class Object(object):  # TODO remake this class to actually have a purpose
+class Object(object):
     def __init__(self, parent: object):
         self.name: str = 'Object'
         self.type: str = 'Object'
@@ -281,10 +281,10 @@ class ScriptService(object):
                 child.update(window.dt)
     
     def getChildren(self) -> list:
-        return self.children
+        return self.children.copy()
 
 class SoundService(object):
-    def __init__(self, parent: object):
+    def __init__(self, parent: object) -> None:
         self.parent: object = parent
         self.name: str = 'SoundService'
         self.type: str = 'SoundService'
@@ -327,7 +327,7 @@ class SoundService(object):
             openErrorWindow(f'Invalid value for volume or file not found.', self.parent.parent)
 
 class UserInputService(object):
-    def __init__(self, parent: object):
+    def __init__(self, parent: object) -> None:
         self.parent: object = parent
         self.name: str = 'UserInputService'
         self.type: str = 'UserInputService'
@@ -365,12 +365,12 @@ class UserInputService(object):
         self.inputs.update({name: value})
     
     def isCollidingWithMouse(self, object: object) -> bool:
-        # TODO add camera support
         objRect = object.image.get_rect()
-        objRect.x = object.position[0]
-        objRect.y = object.position[1]
+        objRect.x = object.position[0] - object.image.get_width()/2
+        objRect.y = object.position[1] - object.image.get_height()/2
+        camX, camY = self.getCameraPosition(self.getGameService().getService('Workspace'))
         mx, my = self.getMousePosition()
-        return objRect.collidepoint(mx, my)
+        return objRect.collidepoint(mx+camX, my+camY)
 
     def isMouseButtonDown(self, num: str) -> bool:
         mouseButtons = {
@@ -474,6 +474,9 @@ class Workspace(object):
             newChild = self.childrenQueue[0]
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
+            # update current camera
+            if newChild.type == 'Camera' and self.currentCamera == None:
+                self.currentCamera = newChild
             # SETUP/PARENT EVENTS:
             # if the child came from another parent
             if newChild.parent != self:
