@@ -1,4 +1,3 @@
-from random import randint
 import pygame
 import time
 import sys
@@ -38,7 +37,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.2a'
+        self.ENGINEVERSION: str = '0.6.2b'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -137,6 +136,11 @@ class EngineEventService(object):
                 if event.button == 3:
                     input.mouseStatus[2] = True
 
+            # controller hotplugging
+            if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
+                print('event triggered')
+                input.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+
 class EngineRenderService(object):
     def __init__(self, parent: object) -> None:
         self.parent: object = parent
@@ -178,7 +182,7 @@ class EngineRenderService(object):
         for childA in child.getChildren():
             self.renderEntity(childA, window, windowResolutionRatio, camX, camY)
     
-    def getCameraPosition(self, workspace: object) -> None:
+    def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
             camX, camY = workspace.currentCamera.position
         else:
@@ -331,12 +335,12 @@ class UserInputService(object):
         self.mouseStatus: list = [False, False, False]
         self.mouseFocus: str = 'Game'
         self.axisDeadzone = 0.1
+        self.joysitcks: list = []
         self.setupJoysticks()
 
     def setupJoysticks(self) -> None:
         pygame.joystick.init()
         self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-        print(self.joysticks)
 
     def keyPressed(self, name: str) -> bool:
         keys = pygame.key.get_pressed()
@@ -421,16 +425,25 @@ class UserInputService(object):
         return engine
 
     def getControllerName(self, id: int) -> str:
-        return self.joysticks[id].get_name()
+        try:
+            return self.joysticks[id].get_name()
+        except Exception:
+            openErrorWindow(f'No controller with the id {id} found.', self.getEngine())
 
     def getControllerAxis(self, id: int, num: int) -> float:
-        axis = self.joysticks[id].get_axis(num)
-        if self.axisDeadzone > abs(axis):
-            axis = 0
-        return axis
+        try:
+            axis = self.joysticks[id].get_axis(num)
+            if self.axisDeadzone > abs(axis):
+                axis = 0
+            return axis
+        except Exception:
+            openErrorWindow(f'No controller with the id {id} found.\n    (Or invalid value.)', self.getEngine())
 
     def getControllerPowerLevel(self, id: int) -> str:
-        return self.joysticks[id].get_power_level()
+        try:
+            return self.joysticks[id].get_power_level()
+        except Exception:
+            openErrorWindow(f'No controller with the id {id} found.', self.getEngine())
 
     def setAxisDeadzone(self, value: float) -> None:
         self.axisDeadzone = value
