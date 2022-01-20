@@ -5,8 +5,6 @@ import inspect
 import easygui
 from pygame.locals import *
 
-# CORE FUNCTIONS/CONSTANTS:
-
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
@@ -37,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.6.2b'
+        self.ENGINEVERSION: str = '0.6.3'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -107,7 +105,6 @@ class EngineEventService(object):
         self.parent: object = parent
         self.name: str = 'EngineEventService'
         self.type: str = 'EngineEventService'
-        pygame.event.set_allowed([QUIT, KEYDOWN, MOUSEBUTTONDOWN, VIDEORESIZE])
     
     def events(self) -> None:
         game = self.parent
@@ -135,6 +132,9 @@ class EngineEventService(object):
                     input.mouseStatus[0] = True
                 if event.button == 3:
                     input.mouseStatus[2] = True
+                if event.button == 2:
+                    input.mouseStatus[1] = True
+                print(input.mouseStatus)
 
             # controller hotplugging
             if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
