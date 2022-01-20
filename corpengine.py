@@ -77,20 +77,20 @@ class Assets(object):
         }
         self.fonts: dict = {}
         self.sounds: dict = {}
-    
+
     def getImage(self, name) -> pygame.Surface:
         try:
             return self.images[name].copy()
         except KeyError:
             openErrorWindow(f'no asset found named "{name}".', self.parent.parent)
-    
+
     def loadImage(self, path: str, name: str) -> None:
         try:
             img = pygame.image.load(path).convert_alpha()
             self.images.update({name: img})
         except Exception:
             openErrorWindow('Invalid path for the image or image unsupported.', self.parent.parent)
-    
+
     def loadFont(self, path: str, name: str, size: int=16, bold: bool=False, italic: bool=False, underline: bool=False) -> None:
         try:
             self.fonts.update({name: pygame.font.Font(path, size)})
@@ -105,7 +105,7 @@ class EngineEventService(object):
         self.parent: object = parent
         self.name: str = 'EngineEventService'
         self.type: str = 'EngineEventService'
-    
+
     def events(self) -> None:
         game = self.parent
         window = game.parent.window
@@ -116,17 +116,17 @@ class EngineEventService(object):
         for event in pygame.event.get():
             if event.type == QUIT:
                 game.parent.status = constants.NOT_RUNNING
-            
-            if event.type == KEYDOWN:
+
+            if event.type == KEYUP:
                 # fullscreen toggling
                 if event.key == K_F11:
                     window.fullscreen = not window.fullscreen
                     if window.fullscreen:
-                        flags = SCALED | FULLSCREEN
+                        fl = flags.FULLSCREEN
                     else:
-                        flags = SCALED
-                    window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, flags, 32)
-            
+                        fl = constants.FLAGS
+                    window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, fl, 32)
+
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     input.mouseStatus[0] = True
@@ -147,10 +147,10 @@ class EngineRenderService(object):
         self.type: str = 'EngineRenderService'
         self.totalEntitiesRendered: int = 0
         self.totalParticlesRendered: int = 0
-    
+
     def render(self) -> None:
         self.renderEntities()
-    
+
     def renderEntities(self) -> None:
         self.totalEntitiesRendered = 0
         game = self.getGameService()
@@ -165,7 +165,7 @@ class EngineRenderService(object):
                 for child2 in child.getChildren():
                     if child2.type == 'Entity' and child2.image != None and child2.render:
                         self.renderEntity(child2, window, windowResolutionRatio, camX, camY)
-    
+
     def renderEntity(self, child: object, window: object, windowResolutionRatio: list, camX: float, camY: float) -> None:
         image = child.image
         imageSize = (image.get_width(), image.get_height())
@@ -180,14 +180,14 @@ class EngineRenderService(object):
         self.totalEntitiesRendered += 1
         for childA in child.getChildren():
             self.renderEntity(childA, window, windowResolutionRatio, camX, camY)
-    
+
     def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
             camX, camY = workspace.currentCamera.position
         else:
             camX, camY = (0, 0)
         return camX, camY
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
@@ -201,11 +201,11 @@ class GUIService(object):
         self.parent: object = parent
         self.children: list = []
         self.childrenQueue: list = []
-    
+
     def update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
-    
+
     def updateQueue(self) -> None:
         # load the next member of the queue
         if len(self.childrenQueue) > 0:
@@ -226,7 +226,7 @@ class GUIService(object):
             if hasattr(child, 'update') and child.enabled == True:
                 child.update()
             child._update()
-    
+
     def getChild(self, name) -> object:
         for child in self.children:
             if child.name == name:
@@ -237,7 +237,7 @@ class Object(object):
         self.name: str = 'Object'
         self.type: str = 'Object'
         self.parent: object = parent
-    
+
     def new(self, object: object) -> None:
         parent = object.parent
         parent.childrenQueue.append(object)
@@ -254,7 +254,7 @@ class ScriptService(object):
         for child in self.children:
             if child.name == name:
                 return child
-    
+
     def update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
@@ -272,13 +272,13 @@ class ScriptService(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.parent.parent.window
         for child in self.children:
             if hasattr(child, 'update') and child.type == 'GlobalScript':
                 child.update(window.dt)
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
 
@@ -289,14 +289,14 @@ class SoundService(object):
         self.type: str = 'SoundService'
         self.children: list = []
         self.childrenQueue: list = []
-    
+
     def playFile(self, name: str) -> None:
         assets = self.parent.getService('Assets')
         try:
             assets.sounds[name].play()
         except Exception:
             openErrorWindow(f'No sound file named "{name}".', self.parent.parent)
-    
+
     def stopFile(self, name: str) -> None:
         assets = self.parent.getService('Assets')
         try:
@@ -310,14 +310,14 @@ class SoundService(object):
             assets.sounds[name].set_volume(value)
         except Exception:
             openErrorWindow(f'Invalid value for volume or file not found.', self.parent.parent)
-    
+
     def getVolume(self, name: str) -> float:
         assets = self.parent.getService('Assets')
         try:
             return assets.sounds[name].get_volume()
         except Exception:
             openErrorWindow('Sound file not found.', self.parent.parent)
-    
+
     def getLength(self, name) -> float:
         assets = self.parent.getService('Assets')
         try:
@@ -359,10 +359,10 @@ class UserInputService(object):
             if not keys[key]:
                 return False
         return True
-    
+
     def addInput(self, name: str, value: list) -> None:
         self.inputs.update({name: value})
-    
+
     def isCollidingWithMouse(self, object: object) -> bool:
         objRect = object.image.get_rect()
         objRect.x = object.position[0] - object.image.get_width()/2
@@ -379,7 +379,7 @@ class UserInputService(object):
         }
         mouse = pygame.mouse.get_pressed()
         return mouse[mouseButtons[num]]
-    
+
     def isMouseButtonPressed(self, button: str) -> bool:
         mouseButtons = {
             'left': 0,
@@ -390,7 +390,7 @@ class UserInputService(object):
             return self.mouseStatus[mouseButtons[button]]
         except Exception:
             openErrorWindow('Unknown mouse button "{button}".', self.getEngine())
-    
+
     def getMousePosition(self, ratio=False) -> tuple:
         mx, my = pygame.mouse.get_pos()
         if ratio: # divide it with the resolution of the window
@@ -399,24 +399,24 @@ class UserInputService(object):
             mx /= windowResolutionRatio[0]
             my /= windowResolutionRatio[1]
         return mx, my
-    
+
     def getMouseRel(self) -> tuple:
         rx, ry = pygame.mouse.get_rel()
         return rx, ry
-    
+
     def getCameraPosition(self, workspace) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
             camX, camY = workspace.currentCamera.position
         else:
             camX, camY = (0, 0)
         return camX, camY
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
@@ -458,12 +458,12 @@ class Workspace(object):
         self.children: list = []
         self.childrenQueue: list = []
         self.currentCamera = None
-    
+
     def getChild(self, name: str) -> object:
         for child in self.children:
             if child.name == name:
                 return child
-    
+
     def update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
@@ -484,7 +484,7 @@ class Workspace(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.parent.parent.window
         for child in self.children:
@@ -496,7 +496,7 @@ class Workspace(object):
                     child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
 
@@ -511,19 +511,19 @@ class GameService(object):
             ScriptService(self), SoundService(self)
         ]
         self.childrenQueue: list = []
-    
+
     def getService(self, name: str) -> object:
         for service in self.children:
             if service.name == name:
                 return service
         openErrorWindow(f'No service named "{name}".', self.parent)
-    
+
     def update(self) -> None:
         # load the next member of the children queue
         if len(self.childrenQueue) > 0:
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
-        
+
         # update children
         for service in self.children:
             if hasattr(service, 'update'):
@@ -539,10 +539,10 @@ class Camera(object):
         self.type: str = 'Camera'
         self.position: list = [0, 0]
         self.attributes: dict = {}
-    
+
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name: str) -> any:
         try:
             return self.attributes[name]
@@ -569,7 +569,7 @@ class Entity(object):
         self.size: list = [1, 1]
         self.rotation: float = 0
         self.attributes: dict = {}
-    
+
     def isColliding(self, name, parent='Workspace') -> bool:
         game = self.getGameService()
         workspace = game.getService('Workspace')
@@ -589,25 +589,25 @@ class Entity(object):
                 selfRect.height *= self.size[1]
                 return selfRect.colliderect(childRect)
         return False
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
-    
+
     def getChild(self, name) -> object:
         for child in self.children:
             if child.name == name:
                 return child
         return None
-    
+
     def _update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
@@ -625,7 +625,7 @@ class Entity(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -637,13 +637,13 @@ class Entity(object):
                     child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
@@ -658,17 +658,17 @@ class Folder(object):
         self.children: list = []
         self.childrenQueue: list = []
         self.attributes: dict = {}
-    
+
     def getChild(self, name: str) -> object:
         for child in self.children:
             if child.name == name:
                 return child
         return None
-    
+
     def _update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
@@ -688,7 +688,7 @@ class Folder(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -702,13 +702,13 @@ class Folder(object):
                     child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
@@ -721,22 +721,22 @@ class GlobalScript(object):
         self.type: str = 'GlobalScript'
         self.parent: object = parent
         self.attributes: dict = {}
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
-    
+
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
@@ -754,16 +754,16 @@ class ParticleEmitter(object):
         self.attributes: dict = {}
         # particle 2D list:
         # [pos, vel, color, size, acc, sizeAccel, shape, collidable, collisionGroup]
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def create(self, position: list, velocity: list, color: tuple, size:float, acceleration: tuple=(0, 0), sizeAccel: float=0, shape: str='circle', collidable: bool=False, collisionGroup: int=0) -> None:
         self.particleData.append([position, velocity, color, size, acceleration, sizeAccel, shape, collidable, collisionGroup])
-    
+
     def updateParticleVelocity(self, particle: list, dt: float):
         game = self.getGameService()
         workspace = game.getService('Workspace')
@@ -795,7 +795,7 @@ class ParticleEmitter(object):
         for child2 in child.getChildren():
             self.particleCollision(child2, particle, camX, camY, dt)
 
-    
+
     def render(self, dt: float) -> None:
         # FIXME THIS PLACE HAS MAJOR CAMERA ISSUES AND MOSTLY NEEDS THE CAMERA POS TO BE MANUALLY ADDED BY THE USER.
         # FIX THIS!!!!!!!!
@@ -816,7 +816,7 @@ class ParticleEmitter(object):
             # delete any small particle
             if particle[3] < 0.1:
                 self.particleData.remove(particle)
-    
+
         # rendering
         if self.getEngine().settings.debugValues['renderParticles']:
             for particle in self.particleData:
@@ -829,26 +829,26 @@ class ParticleEmitter(object):
                         size = particle[3]*windowResolutionRatio[1]
                         pygame.draw.rect(window.particleWindow, particle[2], (x, y, size, size))
                     renderService.totalParticlesRendered += 1
-    
+
     def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
             camX, camY = workspace.currentCamera.position
         else:
             camX, camY = (0, 0)
         return camX, camY
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
-    
+
     def getChild(self, name) -> object:
         for child in self.children:
             if child.name == name:
                 return child
         return None
-    
+
     def _update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
@@ -866,7 +866,7 @@ class ParticleEmitter(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -877,13 +877,13 @@ class ParticleEmitter(object):
                         child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name: str):
         try:
             return self.attributes[name]
@@ -897,19 +897,19 @@ class Raycaster(object):
         self.parent: object = parent
         self.children: list = []
         self.childrenQueue: list = []
-    
+
     def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
             camX, camY = workspace.currentCamera.position
         else:
             camX, camY = (0, 0)
         return camX, camY
-    
+
     def getChild(self, name) -> object:
         for child in self.children:
             if child.name == name:
                 return child
-    
+
     def _update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
@@ -927,7 +927,7 @@ class Raycaster(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -938,19 +938,19 @@ class Raycaster(object):
                         child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name: str):
         try:
             return self.attributes[name]
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-    
+
     def drawRect(self, color: tuple, rect) -> None:
         game = self.getGameService()
         window = game.parent.window
@@ -963,7 +963,7 @@ class Raycaster(object):
         w = newRect.width * windowResolutionRatio[1]
         h = newRect.height * windowResolutionRatio[1]
         pygame.draw.rect(window.renderWindow, color, (x, y, w, h))
-    
+
     def drawImage(self, name: str, position: list):
         game = self.getGameService()
         window = game.parent.window
@@ -985,7 +985,7 @@ class Raycaster(object):
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
@@ -1003,7 +1003,7 @@ class ScreenGui(object):
         self.children: list = []
         self.childrenQueue: list = []
         self.attributes: dict = {}
-    
+
     def writeText(self, text: str, position: list, size: float, color: tuple, font: str='hp_simplified', backgroundColor: tuple=None) -> None:
         window = self.getEngine().window
         assets = self.getGameService().getService('Assets')
@@ -1021,7 +1021,7 @@ class ScreenGui(object):
         textObj = textObj.convert_alpha()
         pos = [x, y]
         window.gui_window.blit(textObj, pos)
-    
+
     def drawRect(self, color: tuple, rect) -> None:
         game = self.getGameService()
         window = game.parent.window
@@ -1033,7 +1033,7 @@ class ScreenGui(object):
         w = newRect.width * windowResolutionRatio[1]
         h = newRect.height * windowResolutionRatio[1]
         pygame.draw.rect(window.gui_window, color, (x, y, w, h))
-    
+
     def drawImage(self, name: str, position: list) -> None:
         game = self.getGameService()
         window = game.parent.window
@@ -1048,7 +1048,7 @@ class ScreenGui(object):
         h = image.get_height() * windowResolutionRatio[1]
         image = pygame.transform.scale(image, (w, h))
         window.gui_window.blit(image, (x, y))
-    
+
     def drawCheckBox(self, value, position: list) -> None:
         game = self.getGameService()
         assets = game.getService('Assets')
@@ -1062,30 +1062,30 @@ class ScreenGui(object):
         else:
             image = assets.getImage('checkbox_false')
         pos = [(position[0] + self.offsetPosition[0]) * windowResolutionRatio[0], (position[1] + self.offsetPosition[1]) * windowResolutionRatio[1]]
-        
+
         # updating the value
         imageSize = [image.get_width(), image.get_height()]
         checkboxRect = pygame.Rect(pos[0], pos[1], imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1])
         mx, my = input.getMousePosition()
         if checkboxRect.collidepoint(mx, my) and input.mouseStatus[0]:
             debugValues[value] = not debugValues[value]
-        
+
         # rendering
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
         window.gui_window.blit(image, pos)
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
-    
+
     def updateMouseFocus(self) -> None:
         if self.primaryRect != None and self.enabled:
             window = self.getEngine().window
@@ -1102,7 +1102,7 @@ class ScreenGui(object):
             else:
                 input.mouseFocus = 'Game'
             # NOTE mouse focus may have some issues
-    
+
     def _update(self) -> None:
         input = self.getGameService().getService('UserInputService')
         self.updateQueue()
@@ -1110,7 +1110,7 @@ class ScreenGui(object):
         self.updateMouseFocus()
         if not self.enabled and input.mouseFocus == self.name:
             input.mouseFocus = 'Game'
-    
+
     def getChild(self, name: str) -> object:
         for child in self.children:
             if child.name == name:
@@ -1129,7 +1129,7 @@ class ScreenGui(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -1141,13 +1141,13 @@ class ScreenGui(object):
                     child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
@@ -1168,7 +1168,7 @@ class Viewport(object):
         self.position: list = [0, 0]
         self.children: list = []
         self.childrenQueue: list = []
-    
+
     def updateViewport(self) -> None:
         engine = self.getEngine()
         window = engine.window
@@ -1194,12 +1194,12 @@ class Viewport(object):
                 surface.blit(img, pos)
 
         window.gui_window.blit(surface, self.position)
-    
+
     def getChild(self, name) -> object:
         for child in self.children:
             if child.name == name:
                 return child
-    
+
     def _update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
@@ -1219,7 +1219,7 @@ class Viewport(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -1230,25 +1230,25 @@ class Viewport(object):
                         child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
@@ -1264,17 +1264,17 @@ class Folder(object):
         self.children: list = []
         self.childrenQueue: list = []
         self.attributes: dict = {}
-    
+
     def getChild(self, name: str) -> object:
         for child in self.children:
             if child.name == name:
                 return child
         return None
-    
+
     def _update(self) -> None:
         self.updateQueue()
         self.childrenEvents()
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
@@ -1294,7 +1294,7 @@ class Folder(object):
             else: # if the child is brand new
                 if hasattr(newChild, 'setup'):
                     newChild.setup()
-    
+
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -1308,13 +1308,13 @@ class Folder(object):
                     child.render(window.dt)
             if hasattr(child, '_update'):
                 child._update()
-    
+
     def getChildren(self) -> list:
         return self.children.copy()
-    
+
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
@@ -1327,22 +1327,22 @@ class GlobalScript(object):
         self.type: str = 'GlobalScript'
         self.parent: object = parent
         self.attributes: dict = {}
-    
+
     def getGameService(self) -> object:
         game = self.parent
         while game.type != 'GameService':
             game = game.parent
         return game
-    
+
     def getEngine(self) -> object:
         engine = self.parent
         while engine.type != 'Engine':
             engine = engine.parent
         return engine
-    
+
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
-    
+
     def getAttribute(self, name):
         try:
             return self.attributes[name]
@@ -1375,27 +1375,27 @@ class Window(object):
             'crosshair': SYSTEM_CURSOR_CROSSHAIR
         }
         self.cursor: str = 'arrow'
-      
+
         pygame.font.init()
-    
+
     def setBackgroundColor(self, color: tuple) -> None:
         global constants
         constants.BACKGROUND_COLOR = color
-    
+
     def getBackgroundColor(self) -> tuple:
         return constants.BACKGROUND_COLOR
-    
+
     def setTargetFPS(self, value: int) -> None:
         constants.FPS_CAP = value
-    
+
     def getFPS(self) -> int:
         return int(self.clock.get_fps())
-    
+
     def setup(self) -> None:
         assets = self.parent.game.getService('Assets')
         pygame.display.set_caption(f'{constants.WINDOWTITLE}')
         pygame.display.set_icon(assets.getImage('icon'))
-    
+
     def update(self) -> None:
         self.updateSurfaceSizes()
         self.screen.fill(constants.BACKGROUND_COLOR)
@@ -1430,14 +1430,14 @@ class Window(object):
         else:
             self.setCursor('arrow')
         pygame.display.flip()
-    
+
     def updateSurfaceSizes(self) -> None:
         self.renderWindow = self.screen.copy()
         self.gui_window = self.screen.copy()
         self.particleWindow = self.screen.copy()
         self.gui_window.set_colorkey(constants.BACKGROUND_COLOR)
         self.particleWindow.set_colorkey(constants.BACKGROUND_COLOR)
-    
+
     def setCursor(self, name: str) -> None:
         try:
             pygame.mouse.set_cursor(self.cursors[name])
@@ -1454,11 +1454,11 @@ class Engine(object):
         self.window: Window = Window(self)
         if flags == -2147483136:  # detect fullscreen
             self.window.fullscreen = True
-        
+
         self.game: GameService = GameService(self)
         self.status: any = None
         self.type: str = 'Engine'
-    
+
     def mainloop(self) -> None:
         if self.status != constants.NOT_RUNNING:
             self.window.setup()
