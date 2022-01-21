@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.0c'
+        self.ENGINEVERSION: str = '0.7.1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -158,28 +158,32 @@ class EngineRenderService(object):
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
         camX, camY = self.getCameraPosition(workspace)
+        fov = self.getCameraFOV(workspace)
+
         for child in workspace.getChildren():
             if child.type == 'Entity' and child.image != None and child.render:
-                self.renderEntity(child, window, windowResolutionRatio, camX, camY)
+                self.renderEntity(child, window, windowResolutionRatio, camX, camY, fov)
             elif child.type == 'Folder':
                 for child2 in child.getChildren():
                     if child2.type == 'Entity' and child2.image != None and child2.render:
-                        self.renderEntity(child2, window, windowResolutionRatio, camX, camY)
+                        self.renderEntity(child2, window, windowResolutionRatio, camX, camY, fov)
 
-    def renderEntity(self, child: object, window: object, windowResolutionRatio: list, camX: float, camY: float) -> None:
+    def renderEntity(self, child: object, window: object, windowResolutionRatio: list, camX: float, camY: float, fov: float) -> None:
         image = child.image
         imageSize = (image.get_width(), image.get_height())
         image = pygame.transform.scale(image, (imageSize[0]*child.size[0], imageSize[1]*child.size[1]))
         imageSize = (image.get_width(), image.get_height())
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
+        imageSize = (image.get_width(), image.get_height())
+        image = pygame.transform.scale(image, (imageSize[0]*(fov/100), imageSize[1]*(fov/100)))
         image = pygame.transform.rotate(image, child.rotation)
-        x = ((child.position[0] - camX) * windowResolutionRatio[0]) - image.get_width()/2
-        y = ((child.position[1] - camY) * windowResolutionRatio[1]) - image.get_height()/2
+        x = ((child.position[0] - camX)*fov/100 * windowResolutionRatio[0]) - image.get_width()/2
+        y = ((child.position[1] - camY)*fov/100 * windowResolutionRatio[1]) - image.get_height()/2
         pos = [x, y]
         window.renderWindow.blit(image, pos)
         self.totalEntitiesRendered += 1
         for childA in child.getChildren():
-            self.renderEntity(childA, window, windowResolutionRatio, camX, camY)
+            self.renderEntity(childA, window, windowResolutionRatio, camX, camY, fov)
 
     def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
@@ -187,6 +191,13 @@ class EngineRenderService(object):
         else:
             camX, camY = (0, 0)
         return camX, camY
+
+    def getCameraFOV(self, workspace: object) -> float:
+        if workspace.currentCamera == None:
+            fov = 100
+        else:
+            fov = workspace.currentCamera.fieldOfView
+        return fov
 
     def getGameService(self) -> object:
         game = self.parent
@@ -241,6 +252,10 @@ class Object(object):
     def new(self, object: object) -> None:
         parent = object.parent
         parent.childrenQueue.append(object)
+
+    def remove(self, object: object) -> None:
+        parent = object.parent
+        parent.children.remove(object)
 
 class ScriptService(object):
     def __init__(self, parent) -> None:
@@ -539,6 +554,7 @@ class Camera(object):
         self.type: str = 'Camera'
         self.position: list = [0, 0]
         self.attributes: dict = {}
+        self.fieldOfView: float = 100
 
     def setAttribute(self, name: str, val) -> None:
         self.attributes.update({name: val})
@@ -1032,7 +1048,7 @@ class ScreenGui(object):
         y = (newRect.y + self.offsetPosition[1]) * windowResolutionRatio[1]
         w = newRect.width * windowResolutionRatio[1]
         h = newRect.height * windowResolutionRatio[1]
-        pygame.draw.rect(window.gui_window, color, (x, y, w, h))
+        pygame.draw.rect(window.guiWindow, color, (x, y, w, h))
 
     def drawImage(self, name: str, position: list) -> None:
         game = self.getGameService()
@@ -1047,7 +1063,7 @@ class ScreenGui(object):
         w = image.get_width() * windowResolutionRatio[1]
         h = image.get_height() * windowResolutionRatio[1]
         image = pygame.transform.scale(image, (w, h))
-        window.gui_window.blit(image, (x, y))
+        window.guiWindow.blit(image, (x, y))
 
     def drawCheckBox(self, value, position: list) -> None:
         game = self.getGameService()
@@ -1072,7 +1088,7 @@ class ScreenGui(object):
 
         # rendering
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
-        window.gui_window.blit(image, pos)
+        window.guiWindow.blit(image, pos)
 
     def getGameService(self) -> object:
         game = self.parent
@@ -1349,6 +1365,10 @@ class GlobalScript(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
+
+# OTHER:
+def Rectangle(x: float, y: float, width: float, height: float) -> pygame.Rect:
+    return pygame.Rect(x, y, width, height)
 
 # ENGINE CLASSES & FUNCTIONS:
 
