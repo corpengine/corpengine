@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.1'
+        self.ENGINEVERSION: str = '0.7.1a'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -112,6 +112,7 @@ class EngineEventService(object):
         window = game.parent.window
         input = game.getService('UserInputService')
         input.mouseStatus = [False, False, False]
+        input.mouseWheelStatus = [0, 0]
 
         # pygame events
         for event in pygame.event.get():
@@ -127,6 +128,9 @@ class EngineEventService(object):
                     else:
                         fl = constants.FLAGS
                     window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, fl, 32)
+
+            if event.type == MOUSEWHEEL:
+                input.mouseWheelStatus = [event.x, event.y]
 
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -347,6 +351,7 @@ class UserInputService(object):
         self.type: str = 'UserInputService'
         self.inputs: dict = {}
         self.mouseStatus: list = [False, False, False]
+        self.mouseWheelStatus: list = [0, 0]
         self.mouseFocus: str = 'Game'
         self.axisDeadzone = 0.1
         self.joysticks: list = []
@@ -374,6 +379,10 @@ class UserInputService(object):
             if not keys[key]:
                 return False
         return True
+
+    def getMouseWheel(self) -> tuple:
+        input = self.getGameService().getService('UserInputService')
+        return input.mouseWheelStatus.copy()
 
     def addInput(self, name: str, value: list) -> None:
         self.inputs.update({name: value})
