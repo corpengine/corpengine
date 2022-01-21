@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.0b'
+        self.ENGINEVERSION: str = '0.7.0c'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -63,6 +63,7 @@ def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
     easygui.msgbox(f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.', 'CORPEngine crashed!')
     engine.status = constants.NOT_RUNNING
+    sys.exit()
 
 
 # SERVICES:
@@ -137,7 +138,6 @@ class EngineEventService(object):
 
             # controller hotplugging
             if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
-                print('event triggered')
                 input.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
 
 class EngineRenderService(object):
@@ -334,7 +334,7 @@ class UserInputService(object):
         self.mouseStatus: list = [False, False, False]
         self.mouseFocus: str = 'Game'
         self.axisDeadzone = 0.1
-        self.joysitcks: list = []
+        self.joysticks: list = []
         self.setupJoysticks()
 
     def setupJoysticks(self) -> None:
@@ -1020,7 +1020,7 @@ class ScreenGui(object):
         y = newPosition[1]*windowResolutionRatio[1]
         textObj = textObj.convert_alpha()
         pos = [x, y]
-        window.gui_window.blit(textObj, pos)
+        window.guiWindow.blit(textObj, pos)
 
     def drawRect(self, color: tuple, rect) -> None:
         game = self.getGameService()
@@ -1460,6 +1460,7 @@ class Engine(object):
         self.type: str = 'Engine'
 
     def mainloop(self) -> None:
+        print(f'Powered by pygame v{pygame.version.ver} & CORP Engine v{constants.ENGINEVERSION}\nMade by PyxleDev0.')
         if self.status != constants.NOT_RUNNING:
             self.window.setup()
             self.status = constants.RUNNING
@@ -1467,5 +1468,4 @@ class Engine(object):
                 self.window.update()
 
 def init(windowSize: tuple=(640, 360), windowTitle: str='CORP Engine Window', flags: int=0) -> Engine:
-    print(f'Powered by pygame v{pygame.version.ver} & CORP Engine v{constants.ENGINEVERSION}\nMade by PyxleDev0.')
     return Engine(windowSize, windowTitle, flags)
