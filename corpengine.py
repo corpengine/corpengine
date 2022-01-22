@@ -252,9 +252,10 @@ class GUIService(object):
             child._update()
 
     def getChild(self, name) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
 class Object(object):
     def __init__(self, parent: object):
@@ -268,7 +269,7 @@ class Object(object):
             parent.childrenQueue.append(object)
         else:
             parent.children.append(object)
-            setattr(parent, object.name, object)
+            setattr(object.parent, object.name, object)
             if hasattr(object, 'setup'):
                 object.setup()
 
@@ -286,9 +287,10 @@ class ScriptService(object):
         self.childrenQueue: list = []
 
     def getChild(self, name: str) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def update(self) -> None:
         self.updateQueue()
@@ -503,9 +505,10 @@ class Workspace(object):
         self.currentCamera = object
 
     def getChild(self, name: str) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def update(self) -> None:
         self.updateQueue()
@@ -553,13 +556,18 @@ class GameService(object):
             UserInputService(self), Object(self), Workspace(self), GUIService(self),
             ScriptService(self), SoundService(self)
         ]
+        self.addServicesAsAttribute()
         self.childrenQueue: list = []
 
-    def getService(self, name: str) -> object:
+    def addServicesAsAttribute(self) -> None:
         for service in self.children:
-            if service.name == name:
-                return service
-        openErrorWindow(f'No service named "{name}".', self.parent)
+            setattr(self, service.type, service)
+
+    def getService(self, name: str) -> object:
+        try:
+            return getattr(self, name)
+        except Exception:
+            openErrorWindow(f'No service named "{name}".', self.parent)
 
     def update(self) -> None:
         # load the next member of the children queue
@@ -647,10 +655,10 @@ class Entity(object):
         return engine
 
     def getChild(self, name) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
-        return None
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def _update(self) -> None:
         self.updateQueue()
@@ -704,10 +712,10 @@ class Folder(object):
         self.attributes: dict = {}
 
     def getChild(self, name: str) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
-        return None
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def _update(self) -> None:
         self.updateQueue()
@@ -887,10 +895,10 @@ class ParticleEmitter(object):
         return engine
 
     def getChild(self, name) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
-        return None
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def _update(self) -> None:
         self.updateQueue()
@@ -949,9 +957,10 @@ class Raycaster(object):
         return camX, camY
 
     def getChild(self, name) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def _update(self) -> None:
         self.updateQueue()
@@ -1155,9 +1164,10 @@ class ScreenGui(object):
             input.mouseFocus = 'Game'
 
     def getChild(self, name: str) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def updateQueue(self) -> None:
         if len(self.childrenQueue) > 0:
@@ -1239,9 +1249,10 @@ class Viewport(object):
         window.gui_window.blit(surface, self.position)
 
     def getChild(self, name) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def _update(self) -> None:
         self.updateQueue()
@@ -1309,10 +1320,10 @@ class Folder(object):
         self.attributes: dict = {}
 
     def getChild(self, name: str) -> object:
-        for child in self.children:
-            if child.name == name:
-                return child
-        return None
+        try:
+            return getattr(self, name)
+        except Exception:
+            return None
 
     def _update(self) -> None:
         self.updateQueue()
