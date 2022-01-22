@@ -269,6 +269,8 @@ class Object(object):
         else:
             parent.children.append(object)
             setattr(parent, object.name, object)
+            if hasattr(object, 'setup'):
+                object.setup()
 
     def remove(self, object: object) -> None:
         parent = object.parent
