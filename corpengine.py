@@ -44,7 +44,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.1b'
+        self.ENGINEVERSION: str = '0.7.1c'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -1418,6 +1418,9 @@ class Window(object):
         self.cursor: str = 'arrow'
 
         pygame.font.init()
+
+    def getWindowSize(self) -> tuple:
+        return self.screen.get_size()
 
     def setBackgroundColor(self, color: tuple) -> None:
         global constants
