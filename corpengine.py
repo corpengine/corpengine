@@ -44,7 +44,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.1d'
+        self.ENGINEVERSION: str = '0.8.0'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -255,21 +255,25 @@ class GUIService(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
 class Object(object):
-    def __init__(self, parent: object):
+    def __init__(self, parent: object) -> None:
         self.name: str = 'Object'
         self.type: str = 'Object'
         self.parent: object = parent
 
-    def new(self, object: object, putInQueue: bool=False) -> None:
+    def new(self, object: object, putInQueue: bool=False, addAsAttr: bool=True) -> None:
         parent = object.parent
         if putInQueue:
             parent.childrenQueue.append(object)
         else:
             parent.children.append(object)
-            setattr(object.parent, object.name, object)
+            if addAsAttr:
+                setattr(object.parent, object.name, object)
             if hasattr(object, 'setup'):
                 object.setup()
 
@@ -290,6 +294,9 @@ class ScriptService(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def update(self) -> None:
@@ -508,6 +515,9 @@ class Workspace(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def update(self) -> None:
@@ -658,6 +668,9 @@ class Entity(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def _update(self) -> None:
@@ -898,6 +911,9 @@ class ParticleEmitter(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def _update(self) -> None:
@@ -960,6 +976,9 @@ class Raycaster(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def _update(self) -> None:
@@ -1167,6 +1186,9 @@ class ScreenGui(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def updateQueue(self) -> None:
@@ -1252,6 +1274,9 @@ class Viewport(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def _update(self) -> None:
@@ -1323,6 +1348,9 @@ class Folder(object):
         try:
             return getattr(self, name)
         except Exception:
+            for child in self.children:
+                if child.name == name:
+                    return child
             return None
 
     def _update(self) -> None:
