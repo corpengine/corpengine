@@ -35,7 +35,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.1a'
+        self.ENGINEVERSION: str = '0.7.1b'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -482,6 +482,9 @@ class Workspace(object):
         self.children: list = []
         self.childrenQueue: list = []
         self.currentCamera = None
+
+    def setCurrentCamera(self, object: object) -> None:
+        self.currentCamera = object
 
     def getChild(self, name: str) -> object:
         for child in self.children:
@@ -1413,6 +1416,15 @@ class Window(object):
 
     def getBackgroundColor(self) -> tuple:
         return constants.BACKGROUND_COLOR
+
+    def setMouseVisible(self, val: bool) -> None:
+        try:
+            pygame.mouse.set_visible(val)
+        except Exception:
+            openErrorWindow(f'Boolean expected, got {val}', self.parent)
+
+    def getMouseVisible(self) -> bool:
+        return pygame.mouse.get_visible()
 
     def setTargetFPS(self, value: int) -> None:
         constants.FPS_CAP = value
