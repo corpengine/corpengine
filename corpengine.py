@@ -44,7 +44,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.7.1c'
+        self.ENGINEVERSION: str = '0.7.1d'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -237,13 +237,13 @@ class GUIService(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         for child in self.children:
@@ -262,13 +262,18 @@ class Object(object):
         self.type: str = 'Object'
         self.parent: object = parent
 
-    def new(self, object: object) -> None:
+    def new(self, object: object, putInQueue: bool=False) -> None:
         parent = object.parent
-        parent.childrenQueue.append(object)
+        if putInQueue:
+            parent.childrenQueue.append(object)
+        else:
+            parent.children.append(object)
+            setattr(parent, object.name, object)
 
     def remove(self, object: object) -> None:
         parent = object.parent
         parent.children.remove(object)
+        delattr(parent, object.name)
 
 class ScriptService(object):
     def __init__(self, parent) -> None:
@@ -293,13 +298,13 @@ class ScriptService(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.parent.parent.window
@@ -513,13 +518,13 @@ class Workspace(object):
             if newChild.type == 'Camera' and self.currentCamera == None:
                 self.currentCamera = newChild
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.parent.parent.window
@@ -655,13 +660,13 @@ class Entity(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -718,13 +723,13 @@ class Folder(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -855,17 +860,16 @@ class ParticleEmitter(object):
                 self.particleData.remove(particle)
 
         # rendering
-        if self.getEngine().settings.debugValues['renderParticles']:
-            for particle in self.particleData:
-                if not particle[0][0] > constants.DEFAULTSCREENSIZE[0] and not particle[0][1] > constants.DEFAULTSCREENSIZE[1]:
-                    x = particle[0][0] * windowResolutionRatio[0]
-                    y = particle[0][1] * windowResolutionRatio[1]
-                    if particle[6] == 'circle':
-                        pygame.draw.circle(window.particleWindow, particle[2], (x, y), particle[3] * windowResolutionRatio[1])
-                    elif particle[6] == 'rectangle':
-                        size = particle[3]*windowResolutionRatio[1]
-                        pygame.draw.rect(window.particleWindow, particle[2], (x, y, size, size))
-                    renderService.totalParticlesRendered += 1
+        for particle in self.particleData:
+            if not particle[0][0] > constants.DEFAULTSCREENSIZE[0] and not particle[0][1] > constants.DEFAULTSCREENSIZE[1]:
+                x = particle[0][0] * windowResolutionRatio[0]
+                y = particle[0][1] * windowResolutionRatio[1]
+                if particle[6] == 'circle':
+                    pygame.draw.circle(window.particleWindow, particle[2], (x, y), particle[3] * windowResolutionRatio[1])
+                elif particle[6] == 'rectangle':
+                    size = particle[3]*windowResolutionRatio[1]
+                    pygame.draw.rect(window.particleWindow, particle[2], (x, y, size, size))
+                renderService.totalParticlesRendered += 1
 
     def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
@@ -896,13 +900,13 @@ class ParticleEmitter(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -957,13 +961,13 @@ class Raycaster(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -1159,13 +1163,13 @@ class ScreenGui(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -1249,13 +1253,13 @@ class Viewport(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -1324,13 +1328,13 @@ class Folder(object):
             self.children.append(self.childrenQueue[0])
             del self.childrenQueue[0]
             # SETUP/PARENT EVENTS:
-            # if the child came from another parent
-            if newChild.parent != self:
-                if hasattr(newChild, 'parentChanged'):
-                    newChild.parentChanged()
-            else: # if the child is brand new
-                if hasattr(newChild, 'setup'):
-                    newChild.setup()
+            if hasattr(newChild, 'setup'):
+                self.setAttributeOfObject(newChild)
+                newChild.setup()
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
