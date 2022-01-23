@@ -1,6 +1,6 @@
 """
 >>>>>    CORP ENGINE    <<<<<
-A free & open-source toolkit for making games in Python programming language.
+A free & open-soucrce toolkit for making games in Python programming language.
 Made by @PyxleDev0 & Contributors
 https://github.com/pyxledev0/corp-engine
 https://github.com/pyxledev0/corp-engine-examples
@@ -44,7 +44,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.8.0b'
+        self.ENGINEVERSION: str = '0.8.0c'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -1051,14 +1051,14 @@ class Raycaster(object):
         image = pygame.transform.scale(image, (w, h))
         window.renderWindow.blit(image, (x, y))
 
-    def drawPolygon(self, color: tuple, points: list) -> None:
+    def drawPolygon(self, color: tuple, points: list, outline: int=0) -> None:
         engine = self.getEngine()
         window = engine.window
         windowResolutionRatio = (window.screen.get_width() / constants.DEFAULTSCREENSIZE[0],window.screen.get_height() / constants.DEFAULTSCREENSIZE[1])
         newPoints = []
         for point in points:
             newPoints.append((point[0]*windowResolutionRatio[0], point[1]*windowResolutionRatio[1]))
-        pygame.draw.polygon(engine.window.renderWindow, color, newPoints)
+        pygame.draw.polygon(engine.window.renderWindow, color, newPoints, outline)
 
     def getGameService(self) -> object:
         game = self.parent
