@@ -1,6 +1,6 @@
 """
 >>>>>    CORP ENGINE    <<<<<
-A free & open-soucrce toolkit for making games in Python programming language.
+A free & open-soucrce toolkit for making games in Python programming languag.
 Made by @PyxleDev0 & Contributors
 https://github.com/pyxledev0/corp-engine
 https://github.com/pyxledev0/corp-engine-examples
@@ -14,6 +14,17 @@ import inspect
 import easygui
 from pygame.locals import *
 
+
+# COLORTOOLS MODULE (Pytility)
+class ColorTools:
+    def mix(*colors: tuple) -> tuple:
+        res = [0]*3
+        for color in colors:
+            for index, param in enumerate(color):   
+                if 0 > res[index]+param > 255: 
+                    res[index] += param
+        return tuple(res)
+ 
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
@@ -22,22 +33,25 @@ class Colors:
         self.FORESTGREEN = (39, 139, 34)
         self.LIME = (0, 255, 0)
         self.GREEN = (0, 128, 0)
-        self.AQUA = (0, 255, 255)
+        self.AQUA = colors.mix(self.LIME, self.BLUE)
         self.BABYBLUE = (137, 207, 240)
         self.BLUE = (0, 0, 255)
         self.LIGHTBLUE = (0, 150, 255)
         self.DARKRED = (139, 0, 0)
         self.RED = (255, 0, 0)
-        self.MAGENTA = (255, 0, 255)
+        self.MAGENTA = colors.mix(self.RED, self.BLUE)
         self.PINK = (255, 105, 180)
         self.VIOLET = (238, 130, 238)
         self.BROWN = (139, 69, 19)
         self.TAN = (210, 180, 140)
-        self.WHITE = (255, 255, 255)
+        self.WHITE = colors.mix(self.RED, self.LIME, self.BLUE)
         self.BLACK = (0, 0, 0)
         self.GRAY = (128, 128, 128)
         self.LIGHTGRAY = (211, 211, 211)
         self.SILVER = (192, 192, 192)
+        
+        
+
 
 colors = Colors()
 
