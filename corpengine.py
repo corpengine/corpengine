@@ -1,6 +1,6 @@
 """
 >>>>>    CORP ENGINE    <<<<<
-A free & open-soucrce toolkit for making games in Python programming language.
+A free & open-sourcce toolkit for making games in Python programming language.
 Made by @PyxleDev0 & Contributors
 https://github.com/pyxledev0/corp-engine
 https://github.com/pyxledev0/corp-engine-examples
