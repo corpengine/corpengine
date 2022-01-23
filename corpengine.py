@@ -276,6 +276,7 @@ class Object(object):
                 setattr(object.parent, object.name, object)
             if hasattr(object, 'setup'):
                 object.setup()
+        object.name = type(object).__name__  # set name automatically
 
     def remove(self, object: object) -> None:
         parent = object.parent
