@@ -850,7 +850,7 @@ class ParticleEmitter(object):
         childRect.height *= child.size[1]
         childRect.x = (child.position[0] - camX)-childRect.width/2
         childRect.y = (child.position[1] - camY)-childRect.height/2
-        selfRect = pygame.Rect(particle[0][0], particle[0][1], particle[3], particle[3])
+        selfRect = pygame.Rect(particle[0][0]-camX, particle[0][1]-camY, particle[3], particle[3])
         if childRect.colliderect(selfRect):
             # reset y velocity
             particle[0][1] -= particle[1][1]
@@ -885,8 +885,8 @@ class ParticleEmitter(object):
         # rendering
         for particle in self.particleData:
             if not particle[0][0] > constants.DEFAULTSCREENSIZE[0] and not particle[0][1] > constants.DEFAULTSCREENSIZE[1]:
-                x = particle[0][0] * windowResolutionRatio[0]
-                y = particle[0][1] * windowResolutionRatio[1]
+                x = (particle[0][0]-camX) * windowResolutionRatio[0]
+                y = (particle[0][1]-camY) * windowResolutionRatio[1]
                 if particle[6] == 'circle':
                     pygame.draw.circle(window.particleWindow, particle[2], (x, y), particle[3] * windowResolutionRatio[1])
                 elif particle[6] == 'rectangle':
