@@ -8,7 +8,7 @@ https://github.com/pyxledev0/corp-engine-examples
 
 
 import pygame
-import colors # colors.py (from pyti
+import colors # colors.py (pytility)
 import time
 import sys
 import inspect
