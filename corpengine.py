@@ -14,7 +14,7 @@ import inspect
 import easygui
 from pygame.locals import *
 
- 
+
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
@@ -1069,10 +1069,11 @@ class Raycaster(object):
     def drawPolygon(self, color: tuple, points: list, outline: int=0) -> None:
         engine = self.getEngine()
         window = engine.window
+        camX, camY = self.getCameraPosition(engine.game.Workspace)
         windowResolutionRatio = (window.screen.get_width() / constants.DEFAULTSCREENSIZE[0],window.screen.get_height() / constants.DEFAULTSCREENSIZE[1])
         newPoints = []
         for point in points:
-            newPoints.append((point[0]*windowResolutionRatio[0], point[1]*windowResolutionRatio[1]))
+            newPoints.append(((point[0]-camX)*windowResolutionRatio[0], (point[1]-camY)*windowResolutionRatio[1]))
         pygame.draw.polygon(engine.window.renderWindow, color, newPoints, outline)
 
     def getGameService(self) -> object:
