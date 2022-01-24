@@ -198,12 +198,16 @@ class EngineRenderService(object):
         imageSize = (image.get_width(), image.get_height())
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
         imageSize = (image.get_width(), image.get_height())
-        image = pygame.transform.scale(image, (imageSize[0]*(fov/100), imageSize[1]*(fov/100)))
+        image = pygame.transform.scale(image, (imageSize[0], imageSize[1]))
         image = pygame.transform.rotate(image, child.rotation)
-        x = ((child.position[0] - camX)*fov/100 * windowResolutionRatio[0]) - image.get_width()/2
-        y = ((child.position[1] - camY)*fov/100 * windowResolutionRatio[1]) - image.get_height()/2
+        x = ((child.position[0] - camX) * windowResolutionRatio[0]) - image.get_width()/2
+        y = ((child.position[1] - camY) * windowResolutionRatio[1]) - image.get_height()/2
         pos = [x, y]
         window.renderWindow.blit(image, pos)
+        # scale surface by camera FOV
+        if fov != 100:
+            size = (window.renderWindow.get_width(), window.renderWindow.get_height())
+            window.renderWindow = pygame.transform.scale(window.renderWindow, (size[0]*(fov/100), size[1]*(fov/100)))
         self.totalEntitiesRendered += 1
         for childA in child.getChildren():
             self.renderEntity(childA, window, windowResolutionRatio, camX, camY, fov)
