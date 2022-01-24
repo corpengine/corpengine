@@ -40,12 +40,12 @@ class Colors:
         self.LIGHTGRAY = (211, 211, 211)
         self.SILVER = (192, 192, 192)
 
-    # Merged from @Lercdsgn (mix function from Pytility.colors)
+    # Merged from @Lercdsgn (mix function from Pytility.colors) Thanks for the credit, pyxle :p
     def mix(self, *colors: tuple) -> tuple:
         res = [0]*3
         for color in colors:
             for index, param in enumerate(color):
-                if 0 > res[index]+param > 255:
+                if 0 >= res[index]+param >= 255: # Patch-1: Fixed range not including 255 and 0 
                     res[index] += param
         return tuple(res)
 
