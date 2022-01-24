@@ -14,16 +14,6 @@ import inspect
 import easygui
 from pygame.locals import *
 
-
-# COLORTOOLS MODULE (Pytility)
-class ColorTools:
-    def mix(*colors: tuple) -> tuple:
-        res = [0]*3
-        for color in colors:
-            for index, param in enumerate(color):   
-                if 0 > res[index]+param > 255: 
-                    res[index] += param
-        return tuple(res)
  
 # COLORS MODULE
 class Colors:
@@ -33,25 +23,31 @@ class Colors:
         self.FORESTGREEN = (39, 139, 34)
         self.LIME = (0, 255, 0)
         self.GREEN = (0, 128, 0)
-        self.AQUA = colors.mix(self.LIME, self.BLUE)
-        self.BABYBLUE = (137, 207, 240)
         self.BLUE = (0, 0, 255)
+        self.AQUA = self.mix(self.LIME, self.BLUE)
+        self.BABYBLUE = (137, 207, 240)
         self.LIGHTBLUE = (0, 150, 255)
         self.DARKRED = (139, 0, 0)
         self.RED = (255, 0, 0)
-        self.MAGENTA = colors.mix(self.RED, self.BLUE)
+        self.MAGENTA = self.mix(self.RED, self.BLUE)
         self.PINK = (255, 105, 180)
         self.VIOLET = (238, 130, 238)
         self.BROWN = (139, 69, 19)
         self.TAN = (210, 180, 140)
-        self.WHITE = colors.mix(self.RED, self.LIME, self.BLUE)
+        self.WHITE = self.mix(self.RED, self.LIME, self.BLUE)
         self.BLACK = (0, 0, 0)
         self.GRAY = (128, 128, 128)
         self.LIGHTGRAY = (211, 211, 211)
         self.SILVER = (192, 192, 192)
-        
-        
 
+    # Merged from @Lercdsgn (mix function from Pytility.colors)
+    def mix(self, *colors: tuple) -> tuple:
+        res = [0]*3
+        for color in colors:
+            for index, param in enumerate(color):
+                if 0 > res[index]+param > 255:
+                    res[index] += param
+        return tuple(res)
 
 colors = Colors()
 
