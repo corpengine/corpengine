@@ -1037,7 +1037,7 @@ class Raycaster(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-    def drawRect(self, color: tuple, rect) -> None:
+    def drawRect(self, color: tuple, rect, rounded: int=0) -> None:
         game = self.getGameService()
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
@@ -1048,7 +1048,7 @@ class Raycaster(object):
         y = (newRect.y - camY) * windowResolutionRatio[1]
         w = newRect.width * windowResolutionRatio[1]
         h = newRect.height * windowResolutionRatio[1]
-        pygame.draw.rect(window.renderWindow, color, (x, y, w, h))
+        pygame.draw.rect(window.renderWindow, color, (x, y, w, h), border_radius=rounded)
 
     def drawImage(self, name: str, position: list) -> None:
         game = self.getGameService()
@@ -1117,7 +1117,7 @@ class ScreenGui(object):
         pos = [x, y]
         window.guiWindow.blit(textObj, pos)
 
-    def drawRect(self, color: tuple, rect) -> None:
+    def drawRect(self, color: tuple, rect, rounded: int=0) -> None:
         game = self.getGameService()
         window = game.parent.window
         windowResolutionRatio = (window.screen.get_width()/constants.DEFAULTSCREENSIZE[0], window.screen.get_height()/constants.DEFAULTSCREENSIZE[1])
@@ -1127,7 +1127,7 @@ class ScreenGui(object):
         y = (newRect.y + self.offsetPosition[1]) * windowResolutionRatio[1]
         w = newRect.width * windowResolutionRatio[1]
         h = newRect.height * windowResolutionRatio[1]
-        pygame.draw.rect(window.guiWindow, color, (x, y, w, h))
+        pygame.draw.rect(window.guiWindow, color, (x, y, w, h), border_radius=rounded)
 
     def drawImage(self, name: str, position: list) -> None:
         game = self.getGameService()
