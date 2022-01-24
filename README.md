@@ -1,3 +1,4 @@
+![Banner](https://github.com/PyxleDev0/corp-engine/blob/master/res/images/banner.png)
 [![GitHub license](https://img.shields.io/github/license/PyxleDev0/corp-engine)](https://github.com/PyxleDev0/corp-engine/blob/master/LICENSE)
 ![Version](https://img.shields.io/badge/Version-v0.8.0-informational)
 
@@ -22,5 +23,3 @@ If you are a random adventurer looking through the source code and have an idea 
 Contributors:
 
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=PyxleDev0/corp-engine)
-
-Check out the [Notion](https://legendary-poultry-7d6.notion.site/0f60e38bb1394151a9e641058f93b7c8?v=f534fb9823aa4b60bab77a5619bc829c) page for the status of the latest versions.
