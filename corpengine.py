@@ -58,7 +58,6 @@ class Constants:
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
-        self.NOT_RUNNING: bool = False
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
         self.BACKGROUND_COLOR: tuple = colors.CORPWHITE
@@ -81,7 +80,7 @@ def version(target) -> str:
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
     easygui.msgbox(f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.', 'CORPEngine crashed!')
-    engine.status = constants.NOT_RUNNING
+    engine.status = not constants.RUNNING
     sys.exit()
 
 
@@ -136,7 +135,7 @@ class EngineEventService(object):
         # pygame events
         for event in pygame.event.get():
             if event.type == QUIT:
-                game.parent.status = constants.NOT_RUNNING
+                game.parent.status = not constants.RUNNING
 
             if event.type == KEYUP:
                 # fullscreen toggling
@@ -1584,7 +1583,7 @@ class Engine(object):
 
     def mainloop(self) -> None:
         print(f'Powered by pygame v{pygame.version.ver} & CORP Engine v{constants.ENGINEVERSION}\nMade by PyxleDev0.')
-        if self.status != constants.NOT_RUNNING:
+        if self.status == constants.RUNNING:
             self.window.setup()
             self.status = constants.RUNNING
             while self.status == constants.RUNNING:
