@@ -143,7 +143,7 @@ class Assets(GameObject):
         try:
             self.sounds.update({name: pygame.mixer.Sound(path)})
         except Exception:
-            openErrorWindow('Sound path invalid or sound file unsuppoerted.', self.parent.parent)
+            openErrorWindow('Sound path invalid or sound file unsupported.', self.parent.parent)
 
 class EngineEventService(GameObject):
     def __init__(self, parent: object) -> None:
