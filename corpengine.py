@@ -748,11 +748,10 @@ class Entity(GameObject):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-class Folder(object):
+class Folder(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Folder'
-        self.type: str = 'Folder'
+        super().__init__(parent)
+        self.name = self.type = 'Folder'
         self.children: list = []
         self.childrenQueue: list = []
         self.attributes: dict = {}
@@ -767,12 +766,6 @@ class Folder(object):
         self.updateQueue()
         self.childrenEvents()
 
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
     def updateQueue(self) -> None:
         if len(self.childrenQueue) > 0:
             newChild = self.childrenQueue[0]
@@ -782,10 +775,6 @@ class Folder(object):
             if hasattr(newChild, 'setup'):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
-
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -813,24 +802,12 @@ class Folder(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-class GlobalScript(object):
+class GlobalScript(GameObject):
     def __init__(self, parent: object):
         self.name: str = 'GlobalScript'
         self.type: str = 'GlobalScript'
-        self.parent: object = parent
+        super().__init__(parent)
         self.attributes: dict = {}
-
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
 
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
@@ -841,23 +818,16 @@ class GlobalScript(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-class ParticleEmitter(object):
+class ParticleEmitter(GameObject):
     def __init__(self, parent: object):
-        self.parent: object = parent
-        self.name: str = 'ParticleEmitter'
-        self.type: str = 'ParticleEmitter'
+        super().__init__(parent)
+        self.name = self.type = 'ParticleEmitter'
         self.children: list = []
         self.childrenQueue: list = []
         self.particleData: list= []
         self.attributes: dict = {}
         # particle 2D list:
         # [pos, vel, color, size, acc, sizeAccel, shape, collidable, collisionGroup]
-
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
 
     def create(self, position: list, velocity: list, color: tuple, size:float, acceleration: tuple=(0, 0), sizeAccel: float=0, shape: str='circle', collidable: bool=False, collisionGroup: int=0) -> None:
         self.particleData.append([position, velocity, color, size, acceleration, sizeAccel, shape, collidable, collisionGroup])
@@ -934,12 +904,6 @@ class ParticleEmitter(object):
             camX, camY = (0, 0)
         return camX, camY
 
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
     def getChild(self, name) -> object:
         try:
             return getattr(self, name)
@@ -962,10 +926,6 @@ class ParticleEmitter(object):
             if hasattr(newChild, 'setup'):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
-
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -990,11 +950,10 @@ class ParticleEmitter(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-class Raycaster(object):
+class Raycaster(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name: str = 'Raycaster'
-        self.type: str = 'Raycaster'
-        self.parent: object = parent
+        self.name = self.type = 'Raycaster'
+        super().__init__(parent)
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -1027,10 +986,6 @@ class Raycaster(object):
             if hasattr(newChild, 'setup'):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
-
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -1094,23 +1049,10 @@ class Raycaster(object):
             newPoints.append(((point[0]-camX)*windowResolutionRatio[0], (point[1]-camY)*windowResolutionRatio[1]))
         pygame.draw.polygon(engine.window.renderWindow, color, newPoints, outline)
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
-class ScreenGui(object):
+class ScreenGui(GameObject):
     def __init__(self, parent: object) -> None:
         self.parent: object = parent
-        self.name: str = 'ScreenGUI'
-        self.type: str = 'ScreenGUI'
+        self.name = self.type = 'ScreenGui'
         self.enabled: bool = True
         self.primaryRect: pygame.Rect = None
         self.offsetPosition: list = [0, 0]
@@ -1188,18 +1130,6 @@ class ScreenGui(object):
         image = pygame.transform.scale(image, (imageSize[0]*windowResolutionRatio[1], imageSize[1]*windowResolutionRatio[1]))
         window.guiWindow.blit(image, pos)
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
     def updateMouseFocus(self) -> None:
         if self.primaryRect != None and self.enabled:
             window = self.getEngine().window
@@ -1244,10 +1174,6 @@ class ScreenGui(object):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
 
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
-
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -1272,11 +1198,10 @@ class ScreenGui(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-class Viewport(object):
+class Viewport(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name: str = 'Viewport'
-        self.type: str = 'Viewport'
-        self.parent: object = parent
+        self.name = self.type = 'Viewport'
+        super().__init__(parent)
         self.background: list = [45, 45, 45]
         self.outline: float = 0
         self.size: list = [75, 50]
@@ -1338,10 +1263,6 @@ class Viewport(object):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
 
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
-
     def childrenEvents(self) -> None:
         window = self.getEngine().window
         for child in self.children:
@@ -1365,24 +1286,11 @@ class Viewport(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
 
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
-
-class Folder(object):
+class Folder(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Folder'
-        self.type: str = 'Folder'
+        super().__init__(parent)
+        self.name = self.type = 'Folder'
         self.children: list = []
         self.childrenQueue: list = []
         self.attributes: dict = {}
@@ -1400,12 +1308,6 @@ class Folder(object):
         self.updateQueue()
         self.childrenEvents()
 
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
     def updateQueue(self) -> None:
         if len(self.childrenQueue) > 0:
             newChild = self.childrenQueue[0]
@@ -1415,10 +1317,6 @@ class Folder(object):
             if hasattr(newChild, 'setup'):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
-
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -1446,24 +1344,11 @@ class Folder(object):
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
-class GlobalScript(object):
+class GlobalScript(GameObject):
     def __init__(self, parent: object):
-        self.name: str = 'GlobalScript'
-        self.type: str = 'GlobalScript'
-        self.parent: object = parent
+        self.name = self.type = 'GlobalScript'
+        super().__init__(parent)
         self.attributes: dict = {}
-
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
 
     def setAttribute(self, name, val) -> None:
         self.attributes.update({name: val})
