@@ -10,7 +10,7 @@ classifiers = [
 
 setup(
     name='corpengine1',
-    version='1.0',
+    version='1.0.1',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description=open('desc.txt').read(),
     url='https://corpengine.github.io/',
