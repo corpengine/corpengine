@@ -54,7 +54,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.9.0'
+        self.ENGINEVERSION: str = '1.0.0'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -247,9 +247,10 @@ class EngineRenderService(GameObject):
             fov = workspace.currentCamera.fieldOfView
         return fov
 
-class GuiService(GameObject):
-    def __init__(self, parent) -> None:
-        self.name = self.type = 'GuiService'
+class GUIService(GameObject):
+    def __init__(self, parent: object) -> None:
+        self.name = 'GUIService'
+        self.type = 'GUIService'
         super().__init__(parent)
         self.children: list = []
         self.childrenQueue: list = []
@@ -556,21 +557,24 @@ class Workspace(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-class GameService(GameObject):
+class GameService(object):
     def __init__(self, parent: object) -> None:
-        super().__init__(parent)
+        self.parent = parent
         self.name = self.type = 'GameService'
         self.children: list = [
             Assets(self), EngineRenderService(self), EngineEventService(self),
-            UserInputService(self), Object(self), Workspace(self), GuiService(self),
+            UserInputService(self), Object(self), Workspace(self), GUIService(self),
             ScriptService(self), SoundService(self)
         ]
-        self.addServicesAsAttribute()
-        self.childrenQueue: list = []
-
-    def addServicesAsAttribute(self) -> None:
-        for service in self.children:
-            setattr(self, service.type, service)
+        self.Assets = Assets(self)
+        self.EngineRenderService = EngineRenderService(self)
+        self.EngineEventService = EngineEventService(self)
+        self.UserInputService = UserInputService(self)
+        self.Object = Object(self)
+        self.Workspace = Workspace(self)
+        self.GUIService = GUIService(self)
+        self.ScriptService = ScriptService(self)
+        self.SoundService = SoundService(self)
 
     def getService(self, name: str) -> object:
         try:
@@ -579,11 +583,6 @@ class GameService(GameObject):
             openErrorWindow(f'No service named "{name}".', self.parent)
 
     def update(self) -> None:
-        # load the next member of the children queue
-        if len(self.childrenQueue) > 0:
-            self.children.append(self.childrenQueue[0])
-            del self.childrenQueue[0]
-
         # update children
         for service in self.children:
             if hasattr(service, 'update'):
