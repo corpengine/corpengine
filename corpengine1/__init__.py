@@ -560,12 +560,8 @@ class Workspace(GameObject):
 class GameService(object):
     def __init__(self, parent: object) -> None:
         self.parent = parent
+        # TODO this code fricking sucks, fix it pls :)
         self.name = self.type = 'GameService'
-        self.children: list = [
-            Assets(self), EngineRenderService(self), EngineEventService(self),
-            UserInputService(self), Object(self), Workspace(self), GUIService(self),
-            ScriptService(self), SoundService(self)
-        ]
         self.Assets = Assets(self)
         self.EngineRenderService = EngineRenderService(self)
         self.EngineEventService = EngineEventService(self)
@@ -575,6 +571,11 @@ class GameService(object):
         self.GUIService = GUIService(self)
         self.ScriptService = ScriptService(self)
         self.SoundService = SoundService(self)
+        self.children: list = [
+            self.Assets, self.EngineRenderService, self.EngineEventService,
+            self.UserInputService, self.Object, self.Workspace, self.GUIService,
+            self.ScriptService, self.SoundService
+        ]
 
     def getService(self, name: str) -> object:
         try:
