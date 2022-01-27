@@ -87,7 +87,7 @@ def openErrorWindow(text, engine) -> None:
 class GameObject(object):
     def __init__(self, parent: object) -> None:
         self.name = self.type = 'Object'
-        self.parent = parent
+        self.parent: object = parent
 
     def setAttributeOfObject(self, object: object) -> None:
         if not hasattr(self, object.name):
@@ -105,28 +105,12 @@ class GameObject(object):
             engine = engine.parent
         return engine
 
-    def addComponent(self, name: str) -> None:
-        components = {'RectCollider': TestComponent()}
-        try:
-            components[name].add(self)
-        except Exception:
-            openErrorWindow(f'No component named "{name}".', self.getEngine())
-
-# COMPONENTS:
-class TestComponent:
-    def add(self, object):
-        setattr(object, 'foo', self.foo)
-
-    def foo(self, a):
-        return a + 4
-
 # SERVICES:
 
-class Assets(object):
+class Assets(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Assets'
-        self.type: str = 'Assets'
+        super().__init__(parent)
+        self.name = self.type = 'Assets'
         self.images: dict = {
             'icon': pygame.image.load('res/images/icon.png').convert_alpha()
         }
@@ -155,11 +139,10 @@ class Assets(object):
         except Exception:
             openErrorWindow('No such file or directory.', self.parent.parent)
 
-class EngineEventService(object):
+class EngineEventService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'EngineEventService'
-        self.type: str = 'EngineEventService'
+        super().__init__(parent)
+        self.name = self.type = 'EngineEventService'
 
     def events(self) -> None:
         game = self.parent
@@ -198,11 +181,10 @@ class EngineEventService(object):
             if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
                 input.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
 
-class EngineRenderService(object):
+class EngineRenderService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'EngineRenderService'
-        self.type: str = 'EngineRenderService'
+        super().__init__(parent)
+        self.name = self.type = 'EngineRenderService'
         self.totalEntitiesRendered: int = 0
         self.totalParticlesRendered: int = 0
 
@@ -261,17 +243,10 @@ class EngineRenderService(object):
             fov = workspace.currentCamera.fieldOfView
         return fov
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-class GUIService(object):
+class GuiService(GameObject):
     def __init__(self, parent) -> None:
-        self.name: str = 'GUIService'
-        self.type: str = 'GUIService'
-        self.parent: object = parent
+        self.name = self.type = 'GuiService'
+        super().__init__(parent)
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -290,10 +265,6 @@ class GUIService(object):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
 
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
-
     def childrenEvents(self) -> None:
         for child in self.children:
             if hasattr(child, 'update') and child.enabled == True:
@@ -309,11 +280,10 @@ class GUIService(object):
                     return child
             return None
 
-class Object(object):
+class Object(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name: str = 'Object'
-        self.type: str = 'Object'
-        self.parent: object = parent
+        self.name = self.type = 'Object'
+        super().__init__(parent)
 
     def new(self, object: object, putInQueue: bool=False, addAsAttr: bool=True) -> None:
         parent = object.parent
@@ -332,11 +302,10 @@ class Object(object):
         parent.children.remove(object)
         delattr(parent, object.name)
 
-class ScriptService(object):
+class ScriptService(GameObject):
     def __init__(self, parent) -> None:
-        self.parent: object = parent
-        self.name: str = 'ScriptService'
-        self.type: str = 'ScriptService'
+        super().__init__(parent)
+        self.name = self.type = 'ScriptService'
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -363,10 +332,6 @@ class ScriptService(object):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
 
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
-
     def childrenEvents(self) -> None:
         window = self.parent.parent.window
         for child in self.children:
@@ -376,11 +341,10 @@ class ScriptService(object):
     def getChildren(self) -> list:
         return self.children.copy()
 
-class SoundService(object):
+class SoundService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'SoundService'
-        self.type: str = 'SoundService'
+        super().__init__(parent)
+        self.name = self.type = 'SoundService'
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -419,11 +383,10 @@ class SoundService(object):
         except Exception:
             openErrorWindow(f'Invalid value for volume or file not found.', self.parent.parent)
 
-class UserInputService(object):
+class UserInputService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'UserInputService'
-        self.type: str = 'UserInputService'
+        super().__init__(parent)
+        self.name = self.type = 'UserInputService'
         self.inputs: dict = {}
         self.mouseStatus: list = [False, False, False]
         self.mouseWheelStatus: list = [0, 0]
@@ -510,18 +473,6 @@ class UserInputService(object):
             camX, camY = (0, 0)
         return camX, camY
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
     def getControllerName(self, id: int) -> str:
         try:
             return self.joysticks[id].get_name()
@@ -549,11 +500,10 @@ class UserInputService(object):
     def getControllerButton(self, id: int, num: int) -> bool:
         return self.joysticks[id].get_button(num)
 
-class Workspace(object):
+class Workspace(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Workspace'
-        self.type: str = 'Workspace'
+        super().__init__(parent)
+        self.name = self.type = 'Workspace'
         self.children: list = []
         self.childrenQueue: list = []
         self.currentCamera = None
@@ -587,10 +537,6 @@ class Workspace(object):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
 
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
-
     def childrenEvents(self) -> None:
         window = self.parent.parent.window
         for child in self.children:
@@ -606,14 +552,13 @@ class Workspace(object):
     def getChildren(self) -> list:
         return self.children.copy()
 
-class GameService(object):
+class GameService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'GameService'
-        self.type: str = 'GameService'
+        super().__init__(parent)
+        self.name = self.type = 'GameService'
         self.children: list = [
             Assets(self), EngineRenderService(self), EngineEventService(self),
-            UserInputService(self), Object(self), Workspace(self), GUIService(self),
+            UserInputService(self), Object(self), Workspace(self), GuiService(self),
             ScriptService(self), SoundService(self)
         ]
         self.addServicesAsAttribute()
@@ -643,13 +588,11 @@ class GameService(object):
 
 # OBJECT CLASSES:
 
-class Camera(object):
+class Camera(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Camera'
-        self.type: str = 'Camera'
+        super().__init__(parent)
+        self.name = self.type = 'Camera'
         self.position: list = [0, 0]
-        self.attributes: dict = {}
         self.fieldOfView: float = 100
 
     def setAttribute(self, name: str, val) -> None:
@@ -660,12 +603,6 @@ class Camera(object):
             return self.attributes[name]
         except Exception:
             openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
 
 class Entity(GameObject):
     def __init__(self, parent: object) -> None:
@@ -679,7 +616,6 @@ class Entity(GameObject):
         self.collisionGroup: int = 0
         self.size: list = [1, 1]
         self.rotation: float = 0
-        self.attributes: dict = {}
 
     def isColliding(self, name, parent='Workspace') -> bool:
         game = self.getGameService()
@@ -739,22 +675,12 @@ class Entity(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-    def setAttribute(self, name, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 class Folder(GameObject):
     def __init__(self, parent: object) -> None:
         super().__init__(parent)
         self.name = self.type = 'Folder'
         self.children: list = []
         self.childrenQueue: list = []
-        self.attributes: dict = {}
 
     def getChild(self, name: str) -> object:
         try:
@@ -793,30 +719,11 @@ class Folder(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-    def setAttribute(self, name, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 class GlobalScript(GameObject):
     def __init__(self, parent: object):
         self.name: str = 'GlobalScript'
         self.type: str = 'GlobalScript'
         super().__init__(parent)
-        self.attributes: dict = {}
-
-    def setAttribute(self, name, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
 
 class ParticleEmitter(GameObject):
     def __init__(self, parent: object):
@@ -825,7 +732,6 @@ class ParticleEmitter(GameObject):
         self.children: list = []
         self.childrenQueue: list = []
         self.particleData: list= []
-        self.attributes: dict = {}
         # particle 2D list:
         # [pos, vel, color, size, acc, sizeAccel, shape, collidable, collisionGroup]
 
@@ -941,15 +847,6 @@ class ParticleEmitter(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-    def setAttribute(self, name: str, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name: str):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 class Raycaster(GameObject):
     def __init__(self, parent: object) -> None:
         self.name = self.type = 'Raycaster'
@@ -1001,15 +898,6 @@ class Raycaster(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-    def setAttribute(self, name: str, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name: str):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
     def drawRect(self, color: tuple, rect, rounded: int=0) -> None:
         game = self.getGameService()
         window = game.parent.window
@@ -1058,7 +946,6 @@ class ScreenGui(GameObject):
         self.offsetPosition: list = [0, 0]
         self.children: list = []
         self.childrenQueue: list = []
-        self.attributes: dict = {}
 
     def writeText(self, text: str, position: list, size: float, color: tuple, font: str='hp_simplified', backgroundColor: tuple=None) -> None:
         window = self.getEngine().window
@@ -1189,15 +1076,6 @@ class ScreenGui(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-    def setAttribute(self, name: str, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 class Viewport(GameObject):
     def __init__(self, parent: object) -> None:
         self.name = self.type = 'Viewport'
@@ -1207,7 +1085,6 @@ class Viewport(GameObject):
         self.size: list = [75, 50]
         self.enabled: bool = True
         self.transparency: int = 100
-        self.attributes: dict = {}
         self.position: list = [0, 0]
         self.children: list = []
         self.childrenQueue: list = []
@@ -1277,23 +1154,12 @@ class Viewport(GameObject):
     def getChildren(self) -> list:
         return self.children.copy()
 
-    def setAttribute(self, name: str, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
-
 class Folder(GameObject):
     def __init__(self, parent: object) -> None:
         super().__init__(parent)
         self.name = self.type = 'Folder'
         self.children: list = []
         self.childrenQueue: list = []
-        self.attributes: dict = {}
 
     def getChild(self, name: str) -> object:
         try:
@@ -1334,31 +1200,6 @@ class Folder(GameObject):
 
     def getChildren(self) -> list:
         return self.children.copy()
-
-    def setAttribute(self, name, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
-class GlobalScript(GameObject):
-    def __init__(self, parent: object):
-        self.name = self.type = 'GlobalScript'
-        super().__init__(parent)
-        self.attributes: dict = {}
-
-    def setAttribute(self, name, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name):
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 
 # OTHER:
 def Rectangle(x: float, y: float, width: float, height: float) -> pygame.Rect:
