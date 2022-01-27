@@ -1,0 +1,8 @@
+README.md
+setup.py
+corpengine1/__init__.py
+corpengine1.egg-info/PKG-INFO
+corpengine1.egg-info/SOURCES.txt
+corpengine1.egg-info/dependency_links.txt
+corpengine1.egg-info/requires.txt
+corpengine1.egg-info/top_level.txt
