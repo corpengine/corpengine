@@ -1,0 +1,29 @@
+Metadata-Version: 1.1
+Name: corpengine1
+Version: 1.0
+Summary: Fast, Organized, Object-Oriented Python Game Development
+Home-page: https://corpengine.github.io/
+Author: UNKNOWN
+Author-email: UNKNOWN
+License: MIT
+Description: CORP Engine is a game engine/toolkit made in Python using the Pygame library.
+        
+        Benefits of using CORP Engine
+        
+        - It can really make your python game development experience more organized, faster, and better in general.
+        - It has **built-in parent-children system** with **game objects** and **services** to use. 
+        - It is very simple and efficient to work with compared to Pygame.
+        - Also, the entire engine code is in a **single file**, making it _really_ easy to set up.
+        
+        Learning CORP Engine
+        
+        There is no wiki for now, but you can check https://github.com/corpengine/examples/
+        for some examples to start with.
+        
+Keywords: corpengine
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3

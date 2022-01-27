@@ -54,7 +54,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.9.0.dev1'
+        self.ENGINEVERSION: str = '0.9.0'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -111,9 +111,7 @@ class Assets(GameObject):
     def __init__(self, parent: object) -> None:
         super().__init__(parent)
         self.name = self.type = 'Assets'
-        self.images: dict = {
-            'icon': pygame.image.load('res/images/icon.png').convert_alpha()
-        }
+        self.images: dict = {}
         self.fonts: dict = {}
         self.sounds: dict = {}
 
@@ -1267,7 +1265,6 @@ class Window(object):
     def setup(self) -> None:
         assets = self.parent.game.getService('Assets')
         pygame.display.set_caption(f'{constants.WINDOWTITLE}')
-        pygame.display.set_icon(assets.getImage('icon'))
 
     def update(self) -> None:
         self.updateSurfaceSizes()
