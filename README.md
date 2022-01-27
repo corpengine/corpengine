@@ -21,7 +21,7 @@ CORP Engine is a game engine/toolkit made in Python using the Pygame library.
 
 
 ## Learning CORP Engine
-There is no wiki for now but [here](https://github.com/corpnegine/examples/) are some examples and the source code also includes typehints and comments!
+There is no wiki for now but [here](https://github.com/corpengine/examples/) are some examples and the source code also includes typehints and comments!
 
 ## Contributing
 If you are a random adventurer looking through the source code and have an idea or found a problem, feel free to open an [issue](https://github.com/corpengine/corpengine/issues) or a [pull request](https://github.com/corpengine/corpengine/pulls). 
