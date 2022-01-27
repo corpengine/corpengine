@@ -1,6 +1,6 @@
 import corpengine
 from corpengine import flags
 
-engine = corpengine.init(windowTitle='Example Window', flags=flags.RESIZABLE|flags.SCALED)
+engine = corpengine.init(flags=flags.SCALED)
 
 engine.mainloop()
