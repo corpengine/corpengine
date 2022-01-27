@@ -1,6 +1,6 @@
 """
 >>>>>    CORP ENGINE    <<<<<
-A free & open-soucrce toolkit for making games in Python programming language.
+A free & open-source toolkit for making games in Python programming language.
 Made by @PyxleDev0 & Contributors
 https://github.com/pyxledev0/corp-engine
 https://github.com/pyxledev0/corp-engine-examples
@@ -54,7 +54,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '0.8.0c'
+        self.ENGINEVERSION: str = '0.9.0.dev1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -83,6 +83,42 @@ def openErrorWindow(text, engine) -> None:
     engine.status = not constants.RUNNING
     sys.exit()
 
+# ROOT CLASSES:
+class GameObject(object):
+    def __init__(self, parent: object) -> None:
+        self.name = self.type = 'Object'
+        self.parent = parent
+
+    def setAttributeOfObject(self, object: object) -> None:
+        if not hasattr(self, object.name):
+            setattr(self, object.name, object)
+
+    def getGameService(self) -> object:
+        game = self.parent
+        while game.type != 'GameService':
+            game = game.parent
+        return game
+
+    def getEngine(self) -> object:
+        engine = self.parent
+        while engine.type != 'Engine':
+            engine = engine.parent
+        return engine
+
+    def addComponent(self, name: str) -> None:
+        components = {'RectCollider': TestComponent()}
+        try:
+            components[name].add(self)
+        except Exception:
+            openErrorWindow(f'No component named "{name}".', self.getEngine())
+
+# COMPONENTS:
+class TestComponent:
+    def add(self, object):
+        setattr(object, 'foo', self.foo)
+
+    def foo(self, a):
+        return a + 4
 
 # SERVICES:
 
@@ -631,11 +667,10 @@ class Camera(object):
             engine = engine.parent
         return engine
 
-class Entity(object):
+class Entity(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name: str = 'Entity'
-        self.type: str = 'Entity'
+        super().__init__(parent)
+        self.name = self.type = 'Entity'
         self.image = None
         self.position: list = [0, 0]
         self.render: bool = True
@@ -666,18 +701,6 @@ class Entity(object):
                 return selfRect.colliderect(childRect)
         return False
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
-
-    def getEngine(self) -> object:
-        engine = self.parent
-        while engine.type != 'Engine':
-            engine = engine.parent
-        return engine
-
     def getChild(self, name) -> object:
         try:
             return getattr(self, name)
@@ -700,10 +723,6 @@ class Entity(object):
             if hasattr(newChild, 'setup'):
                 self.setAttributeOfObject(newChild)
                 newChild.setup()
-
-    def setAttributeOfObject(self, object: object) -> None:
-        if not hasattr(self, object.name):
-            setattr(self, object.name, object)
 
     def childrenEvents(self) -> None:
         window = self.getEngine().window
@@ -1583,10 +1602,10 @@ class Engine(object):
 
     def mainloop(self) -> None:
         print(f'Powered by pygame v{pygame.version.ver} & CORP Engine v{constants.ENGINEVERSION}\nMade by PyxleDev0.')
-        if self.status == constants.RUNNING:
+        if self.status == None:
             self.window.setup()
             self.status = constants.RUNNING
-            while self.status == constants.RUNNING:
+            while self.status:
                 self.window.update()
 
 def init(windowSize: tuple=(640, 360), windowTitle: str='CORP Engine Window', flags: int=0) -> Engine:
