@@ -139,6 +139,12 @@ class Assets(GameObject):
         except Exception:
             openErrorWindow('No such file or directory.', self.parent.parent)
 
+    def loadSound(self, path: str, name: str) -> None:
+        try:
+            self.sounds.update({name: pygame.mixer.Sound(path)})
+        except Exception:
+            openErrorWindow('Invalid path for the sound or sound unsupported.', self.parent.parent)
+
 class EngineEventService(GameObject):
     def __init__(self, parent: object) -> None:
         super().__init__(parent)
