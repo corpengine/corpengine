@@ -119,14 +119,14 @@ class Assets(GameObject):
         try:
             return self.images[name].copy()
         except KeyError:
-            openErrorWindow(f'no asset found named "{name}".', self.parent.parent)
+            openErrorWindow(f'No asset found named "{name}".', self.parent.parent)
 
     def loadImage(self, path: str, name: str) -> None:
         try:
             img = pygame.image.load(path).convert_alpha()
             self.images.update({name: img})
         except Exception:
-            openErrorWindow('Invalid path for the image or image unsupported.', self.parent.parent)
+            openErrorWindow('Image path invalid or image file unsupported.', self.parent.parent)
 
     def loadFont(self, path: str, name: str, size: int=16, bold: bool=False, italic: bool=False, underline: bool=False) -> None:
         try:
@@ -141,7 +141,7 @@ class Assets(GameObject):
         try:
             self.sounds.update({name: pygame.mixer.Sound(path)})
         except Exception:
-            openErrorWindow('Invalid path for the sound or sound unsupported.', self.parent.parent)
+            openErrorWindow('Sound path invalid or sound file unsupported.', self.parent.parent)
 
 class EngineEventService(GameObject):
     def __init__(self, parent: object) -> None:
