@@ -3,23 +3,31 @@
 ![Version](https://img.shields.io/badge/Version-v0.8.0-informational)
 
 # CORP Engine
-An engine made with Pygame for Python game development.
 
-## What is CORP Engine and Why Should I Use It?
-CORP Engine is an engine/toolkit made with Pygame which can really make your python game development experience more organized, faster, and better in general. It works with a built-in parent-children system with gameObjects and services to use. Also, the entire engine code is in a single file, making it _really_ easy to set up.
+## What is CORP Engine?
+CORP Engine is a game engine/toolkit made in Python using the Pygame library.
 
-### Guide For Setting up CORP Engine
-* You can use this repository as a template if you want, or  `git clone` it to your local machine. _(This will require git.)_
-* Alternatively, you can download `corpengine.py` file and `res` folder to a new project folder, but I would still recommend method 1.
+### Why should I use it?
+- It can really make your python game development experience more organized, faster, and better in general.
+- It has **built-in parent-children system** with **game objects** and **services** to use. 
+- It is very simple and efficient to work with compared to Pygame.
+- Also, the entire engine code is in a **single file**, making it _really_ easy to set up.
+
+### How can I set it up?
+* You can use this repository as a template or  `git clone` it to your local machine. _This will require [git](https://git-scm.com)._ (Recommended method) 
+* Alternatively, you can download the `corpengine.py` file (and `res` folder) manually.
+
+![image](https://user-images.githubusercontent.com/75680333/151244534-53a48093-6251-4a3a-a582-bb32df089257.png)
 
 
 ## Learning CORP Engine
-Currently, there is no wiki that can  actually make you understand how this engine works. But if you want to see some examples to learn how to work, check this repository out:
-https://github.com/PyxleDev0/corp-engine-examples/
+There is no wiki for now but [here](https://github.com/corpnegine/examples/) are some examples and the source code also includes typehints and comments!
 
 ## Contributing
-If you are a random adventurer looking through the source code and have an idea or found an issue, feel free to open an issue or a pull request. Even a small contributions means a lot to me!
+If you are a random adventurer looking through the source code and have an idea or found a problem, feel free to open an [issue](https://github.com/corpengine/corpengine/issues) or a [pull request](https://github.com/corpengine/corpengine/pulls). 
 
-Contributors:
+Even a small contribution means a lot!
+
+### Contributors
 
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=PyxleDev0/corp-engine)
