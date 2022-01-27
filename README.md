@@ -1,6 +1,6 @@
 ![Banner](https://imagizer.imageshack.com/img922/2867/oKxyGS.png)
 [![GitHub license](https://img.shields.io/github/license/PyxleDev0/corp-engine)](https://github.com/PyxleDev0/corp-engine/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/Version-v0.8.0-informational)
+![Version](https://img.shields.io/badge/Version-v1.0-informational)
 
 # CORP Engine
 
@@ -14,8 +14,11 @@ CORP Engine is a game engine/toolkit made in Python using the Pygame library.
 - Also, the entire engine code is in a **single file**, making it _really_ easy to set up.
 
 ### How can I set it up?
-* You can use this repository as a template or  `git clone` it to your local machine. _This will require [git](https://git-scm.com)._ (Recommended method) 
-* Alternatively, you can download the `corpengine.py` file (and `res` folder) manually.
+* Download the package using pip:
+
+   `pip install corpengine1`
+
+* Or you could use this repository as a template if you want to contribute to the engine.
 
 ![image](https://user-images.githubusercontent.com/75680333/151244534-53a48093-6251-4a3a-a582-bb32df089257.png)
 
