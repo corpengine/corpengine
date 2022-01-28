@@ -64,6 +64,7 @@ class Constants:
         self.ENGINEVERSION: str = '1.1.1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
+        self.WINDOWICON
         self.FLAGS: int
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
@@ -100,11 +101,11 @@ class GameObject(object):
         if not hasattr(self, object.name):
             setattr(self, object.name, object)
 
-    def getGameService(self) -> object:
-        game = self.parent
-        while game.type != 'GameService':
-            game = game.parent
-        return game
+    def getService(self, serviceName) -> object: # self-service, unintented pun :)
+        service = self.parent
+        while service.type != f'{service}Service':
+            service = service.parent
+        return service
 
     def getEngine(self) -> object:
         engine = self.parent
@@ -1215,9 +1216,8 @@ def Rectangle(x: float, y: float, width: float, height: float) -> pygame.Rect:
 # ENGINE CLASSES & FUNCTIONS:
 
 class Window(object):
-    def __init__(self, parent: object) -> None:
+    def __init__(self, parent: object) -> None: 
         pygame.display.set_caption(constants.WINDOWTITLE)
-
         self.parent: object = parent
         self.screen: pygame.Surface = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, constants.FLAGS, 32)
         self.renderWindow: pygame.Surface = self.screen.copy()
@@ -1239,7 +1239,18 @@ class Window(object):
         self.cursor: str = 'arrow'
 
         pygame.font.init()
-
+        
+    def setWindowTitle(title):
+        constants.WINDOWTITLE = title
+        pygame.display.set_caption(constants.WINDOWTITLE)
+        
+    def getWindowTitle():
+        return constants.WINDOWTITLE
+    
+    def setWindowIcon(icon):
+        constants.WINDOWICON = icon
+        pygame.display.set_icon(constants.WINDOWICON)
+        
     def getWindowSize(self) -> tuple:
         return self.screen.get_size()
 
@@ -1249,17 +1260,17 @@ class Window(object):
 
     def getBackgroundColor(self) -> tuple:
         return constants.BACKGROUND_COLOR
-
-    def setMouseVisible(self, val: bool) -> None:
+    
+    def setMouseVisible(self, visible: bool) -> None:
         try:
-            pygame.mouse.set_visible(val)
+            pygame.mouse.set_visible(visible)
         except Exception:
-            openErrorWindow(f'Boolean expected, got {val}', self.parent)
+            openErrorWindow(f'Boolean expected, got {visible}', self.parent)
 
     def getMouseVisible(self) -> bool:
         return pygame.mouse.get_visible()
 
-    def setTargetFPS(self, value: int) -> None:
+    def setMaxFPS(self, value: int) -> None:
         constants.FPS_CAP = value
 
     def getFPS(self) -> int:
