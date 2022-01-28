@@ -54,7 +54,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.1.1'
+        self.ENGINEVERSION: str = '1.0.1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -468,15 +468,11 @@ class UserInputService(GameObject):
         return mx, my
 
     def getMouseRel(self) -> tuple:
-        rx, ry = pygame.mouse.get_rel()
-        return rx, ry
+       return pygame.mouse.get_rel()
 
     def getCameraPosition(self, workspace) -> tuple:
-        if workspace.currentCamera != None:  # if a default camera exists:
-            camX, camY = workspace.currentCamera.position
-        else:
-            camX, camY = (0, 0)
-        return camX, camY
+         return workspace.currentCamera.position if workspace.currentCamera != None else (0,0)
+                # --if a default camera exists--
 
     def getControllerName(self, id: int) -> str:
         try:
