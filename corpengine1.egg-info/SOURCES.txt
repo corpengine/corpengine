@@ -6,3 +6,7 @@ corpengine1.egg-info/SOURCES.txt
 corpengine1.egg-info/dependency_links.txt
 corpengine1.egg-info/requires.txt
 corpengine1.egg-info/top_level.txt
+corpengine1/examples/__init__.py
+corpengine1/examples/keyboardInput.py
+corpengine1/examples/window.py
+corpengine1/examples/assets/__init__.py
