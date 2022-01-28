@@ -48,10 +48,11 @@ class Colors:
                 if 0 >= res[index]+param >= 255: # Patch-1: Fixed range not including 255 and 0 
                     res[index] += param
         return tuple(res)
-    def all(value):
+
+    def all(self, value):
         return tuple([value] * 3)
     
-    def onlyFill(place, value=255):
+    def onlyFill(self, place, value=255):
         colors = [0] * 3
         colors[place] = value
         return tuple(colors)
@@ -61,7 +62,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.2.dev1'
+        self.ENGINEVERSION: str = '1.2.dev2'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -438,12 +439,16 @@ class UserInputService(GameObject):
         self.inputs.update({name: value})
 
     def isCollidingWithMouse(self, object: object) -> bool:
-        objRect = object.image.get_rect()
-        objRect.x = object.position[0] - object.image.get_width()/2
-        objRect.y = object.position[1] - object.image.get_height()/2
+        if type(object).__name__ == 'Rect':
+            objRect = object
+        else:
+            objRect = object.image.get_rect()
+            objRect.x = object.position[0] - object.image.get_width() / 2
+            objRect.y = object.position[1] - object.image.get_height() / 2
+
         camX, camY = self.getCameraPosition(self.getGameService().getService('Workspace'))
         mx, my = self.getMousePosition()
-        return objRect.collidepoint(mx+camX, my+camY)
+        return objRect.collidepoint(mx + camX, my + camY)
 
     def isMouseButtonDown(self, num: str) -> bool:
         mouseButtons = {

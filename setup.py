@@ -8,11 +8,11 @@ classifiers = [
     'Programming Language :: Python :: 3'
 ]
 
-changelog = 'v1.2.dev1\n\nFixed an issue about GlobalScripts.'
+changelog = 'v1.2.dev2\n\nAdded corpengine1.Rectangle functionality for the isCollidingWithMouse() method in UserInputService.'
 
 setup(
     name='corpengine1',
-    version='1.2.dev1',
+    version='1.2.dev2',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine' + '\n\nChangelog:\n'+changelog,
     url='https://corpengine.github.io/',
