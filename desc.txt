@@ -8,5 +8,9 @@ Benefits of using CORP Engine
 
 Learning CORP Engine
 
-There is no wiki for now, but you can check https://github.com/corpengine/examples/
-for some examples to start with.
+Check out https://github.com/corpengine1/examples/ to look at some examples to start with.
+There is also a documentation work in progress:
+https://corpengine.github.io/docs
+
+Check out the GitHub repository:
+httpd://github.com/corpengine/corpengine
