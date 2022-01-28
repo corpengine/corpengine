@@ -40,7 +40,7 @@ class Colors:
         self.LIGHTGRAY = self.all(211)
         self.SILVER = self.all(192)
 
-    # Pytility @LercDsgn - thanks for the credit :p
+    # Pytility @LercDsgn - thanks for the credit, pyxle :p
     def mix(self, *colors: tuple) -> tuple: 
         res = [0]*3
         for color in colors:
