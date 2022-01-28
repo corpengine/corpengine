@@ -8,11 +8,11 @@ classifiers = [
     'Programming Language :: Python :: 3'
 ]
 
-changelog = 'v1.2.dev2\n\nAdded corpengine1.Rectangle functionality for the isCollidingWithMouse() method in UserInputService.'
+changelog = 'v1.2.dev3\n\nFixed color range checking at Colors.mix and list element numbers.'
 
 setup(
     name='corpengine1',
-    version='1.2.dev2',
+    version='1.2.dev3',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine' + '\n\nChangelog:\n'+changelog,
     url='https://corpengine.github.io/',

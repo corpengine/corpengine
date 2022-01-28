@@ -21,9 +21,9 @@ class Colors:
         self.CORPWHITE = self.all(224)
         self.DARKGREEN = self.onlyFill(2, 100)
         self.FORESTGREEN = (39, 139, 34)
-        self.LIME = self.onlyFill(2)
+        self.LIME = self.onlyFill(1)
         self.GREEN = self.onlyFill(2, 128)
-        self.BLUE = self.onlyFill(3)
+        self.BLUE = self.onlyFill(2)
         self.AQUA = self.mix(self.LIME, self.BLUE)
         self.BABYBLUE = (137, 207, 240)
         self.LIGHTBLUE = (0, 150, 255)
@@ -41,17 +41,17 @@ class Colors:
         self.SILVER = self.all(192)
 
     # Pytility @LercDsgn - thanks for the credit, pyxle :p
-    def mix(self, *colors: tuple) -> tuple: 
-        res = [0]*3
+    def mix(self, *colors: tuple) -> tuple:
+        res = [0] * 3
         for color in colors:
             for index, param in enumerate(color):
-                if 0 >= res[index]+param >= 255: # Patch-1: Fixed range not including 255 and 0 
+                if res[index]+param < 256 and res[index]+param > -1: # 1.2.dev3: fixed value range checking
                     res[index] += param
         return tuple(res)
 
     def all(self, value):
         return tuple([value] * 3)
-    
+
     def onlyFill(self, place, value=255):
         colors = [0] * 3
         colors[place] = value
@@ -62,7 +62,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.2.dev2'
+        self.ENGINEVERSION: str = '1.2.dev3'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
