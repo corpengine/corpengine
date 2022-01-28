@@ -18,37 +18,44 @@ from pygame.locals import *
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
-        self.CORPWHITE = (224, 224, 224)
-        self.DARKGREEN = (0, 100, 0)
+        self.CORPWHITE = self.all(224)
+        self.DARKGREEN = self.onlyFill(2, 100)
         self.FORESTGREEN = (39, 139, 34)
-        self.LIME = (0, 255, 0)
-        self.GREEN = (0, 128, 0)
-        self.BLUE = (0, 0, 255)
+        self.LIME = self.onlyFill(2)
+        self.GREEN = self.onlyFill(2, 128)
+        self.BLUE = self.onlyFill(3)
         self.AQUA = self.mix(self.LIME, self.BLUE)
         self.BABYBLUE = (137, 207, 240)
         self.LIGHTBLUE = (0, 150, 255)
-        self.DARKRED = (139, 0, 0)
-        self.RED = (255, 0, 0)
+        self.DARKRED = self.onlyFill(1, 139)
+        self.RED = self.onlyFill(1)
         self.MAGENTA = self.mix(self.RED, self.BLUE)
         self.PINK = (255, 105, 180)
         self.VIOLET = (238, 130, 238)
         self.BROWN = (139, 69, 19)
         self.TAN = (210, 180, 140)
         self.WHITE = self.mix(self.RED, self.LIME, self.BLUE)
-        self.BLACK = (0, 0, 0)
-        self.GRAY = (128, 128, 128)
-        self.LIGHTGRAY = (211, 211, 211)
-        self.SILVER = (192, 192, 192)
+        self.BLACK = self.all(0)
+        self.GRAY = self.all(128)
+        self.LIGHTGRAY = self.all(211)
+        self.SILVER = self.all(192)
 
-    # Merged from @Lercdsgn (mix function from Pytility.colors) Thanks for the credit, pyxle :p
-    def mix(self, *colors: tuple) -> tuple:
+    # Pytility @LercDsgn - thanks for the credit, pyxle :p
+    def mix(self, *colors: tuple) -> tuple: 
         res = [0]*3
         for color in colors:
             for index, param in enumerate(color):
                 if 0 >= res[index]+param >= 255: # Patch-1: Fixed range not including 255 and 0 
                     res[index] += param
         return tuple(res)
-
+    def all(value):
+        return tuple([value] * 3)
+    
+    def onlyFill(place, value=255):
+        colors = [0] * 3
+        colors[place] = value
+        return tuple(colors)
+    
 colors = Colors()
 
 # CONSTANTS MODULE
@@ -468,15 +475,11 @@ class UserInputService(GameObject):
         return mx, my
 
     def getMouseRel(self) -> tuple:
-        rx, ry = pygame.mouse.get_rel()
-        return rx, ry
+       return pygame.mouse.get_rel()
 
     def getCameraPosition(self, workspace) -> tuple:
-        if workspace.currentCamera != None:  # if a default camera exists:
-            camX, camY = workspace.currentCamera.position
-        else:
-            camX, camY = (0, 0)
-        return camX, camY
+         return workspace.currentCamera.position if workspace.currentCamera != None else (0,0)
+                # --if a default camera exists--
 
     def getControllerName(self, id: int) -> str:
         try:
