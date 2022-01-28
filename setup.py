@@ -8,11 +8,11 @@ classifiers = [
     'Programming Language :: Python :: 3'
 ]
 
-changelog = 'v1.1.1\nA recent hotfix has been made for the examples module to include the assets directory with it.'
+changelog = 'v1.2.dev1\n\nFixed an issue about GlobalScripts.'
 
 setup(
     name='corpengine1',
-    version='1.1.1',
+    version='1.2.dev1',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine' + '\n\nChangelog:\n'+changelog,
     url='https://corpengine.github.io/',

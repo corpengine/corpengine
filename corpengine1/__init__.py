@@ -54,7 +54,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.1.1'
+        self.ENGINEVERSION: str = '1.2.dev1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -725,9 +725,8 @@ class Folder(GameObject):
 
 class GlobalScript(GameObject):
     def __init__(self, parent: object):
-        self.name: str = 'GlobalScript'
-        self.type: str = 'GlobalScript'
         super().__init__(parent)
+        self.name = self.type = 'GlobalScript'
 
 class ParticleEmitter(GameObject):
     def __init__(self, parent: object):
