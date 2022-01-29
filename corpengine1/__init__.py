@@ -14,7 +14,6 @@ import inspect
 import easygui
 from pygame.locals import *
 
-
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
@@ -29,9 +28,9 @@ class Colors:
         self.BLACK     =   self.all(0)
         
         # Single Colors (Full)
-        self.RED  =        self.onlyFill(1)
-        self.LIME =        self.onlyFill(2)
-        self.BLUE =        self.onlyFill(3)
+        self.RED  =        self.onlyFill(0)
+        self.LIME =        self.onlyFill(1)
+        self.BLUE =        self.onlyFill(2)
         
         # Single Colors (Toned)
         self.DARKGREEN =   self.onlyFill(2, 100)
@@ -102,15 +101,30 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.2.dev5'
+        self.ENGINEVERSION: str = '1.2'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
+        self.WINDOWICON: pygame.Surface = None
         self.FLAGS: int
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
         self.BACKGROUND_COLOR: tuple = colors.CORPWHITE
 
 constants = Constants()
+
+
+# VERSION MODULE
+class Version:
+    def getSDLVersion(self) -> str:
+        return pygame.version.SDL
+
+    def getPygameVersion(self) -> str:
+        return pygame.version.ver
+
+    def getEngineVersion(self) -> str:
+        return constants.ENGINEVERSION
+
+version = Version()
 
 # FLAGS MODULE
 class Flags:
@@ -120,10 +134,6 @@ class Flags:
         self.FULLSCREEN = FULLSCREEN | SCALED
 
 flags = Flags()
-
-# VERSION FUNCTION
-def version(target) -> str:
-    return pygame.version.ver if target=="pygame" else (pygame.version.SDL if target.lower()=="sdl" else constants.ENGINEVERSION)
 
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
@@ -167,7 +177,7 @@ class Assets(GameObject):
         try:
             return self.images[name].copy()
         except KeyError:
-            openErrorWindow(f'No asset found named "{name}".', self.parent.parent)
+            openErrorWindow(f'No image found named "{name}".', self.parent.parent)
 
     def loadImage(self, path: str, name: str) -> None:
         try:
@@ -1282,6 +1292,10 @@ class Window(object):
 
         pygame.font.init()
 
+    def setIcon(self, name: str) -> None:
+        assets = self.parent.game.Assets
+        pygame.display.set_icon(assets.getImage(name))
+
     def getWindowSize(self) -> tuple:
         return self.screen.get_size()
 
@@ -1340,10 +1354,7 @@ class Window(object):
         self.screen.blit(self.guiWindow, (0, 0))
         self.clock.tick(constants.FPS_CAP)
 
-        if input.mouseFocus != 'Game':
-            self.setCursor(self.cursor)
-        else:
-            self.setCursor('arrow')
+        self.setCursor(self.cursor)
         pygame.display.flip()
 
     def updateSurfaceSizes(self) -> None:

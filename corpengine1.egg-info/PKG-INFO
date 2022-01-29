@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: corpengine1
-Version: 1.2.dev4
+Version: 1.2.dev5
 Summary: Fast, Organized, Object-Oriented Python Game Development
 Home-page: https://corpengine.github.io/
 Author: CORPEngine Organization + Contributors
@@ -9,9 +9,9 @@ License: MIT
 Description: github repository: https://github.com/corpengine/corpengine
         
         Changelog:
-        v1.2.dev3
+        v1.2.dev5
         
-        Fixed color range checking at Colors.mix and list element numbers.
+        new setIcon() at Window & set cursor fixes
 Keywords: corpengine
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
