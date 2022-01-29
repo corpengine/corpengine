@@ -1,16 +1,17 @@
 Metadata-Version: 1.1
 Name: corpengine1
-Version: 1.1.1
+Version: 1.2.dev5
 Summary: Fast, Organized, Object-Oriented Python Game Development
 Home-page: https://corpengine.github.io/
-Author: UNKNOWN
+Author: CORPEngine Organization + Contributors
 Author-email: UNKNOWN
 License: MIT
 Description: github repository: https://github.com/corpengine/corpengine
         
         Changelog:
-        v1.1.1
-        A recent hotfix has been made for the examples module to include the assets directory with it.
+        v1.2.dev5
+        
+        new setIcon() at Window & set cursor fixes
 Keywords: corpengine
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable

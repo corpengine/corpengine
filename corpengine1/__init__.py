@@ -14,16 +14,50 @@ import inspect
 import easygui
 from pygame.locals import *
 
-
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
-        self.CORPWHITE = self.all(224)
-        self.DARKGREEN = self.onlyFill(2, 100)
+        
+        # Black-White (r = g = b)
+        self.WHITE     =   self.all(255)
+        self.CORPWHITE =   self.all(224)
+        self.LIGHTGRAY =   self.all(211)
+        self.SILVER    =   self.all(192)
+        self.GRAY      =   self.all(128)
+        self.DARKGRAY  =   self.all(64)
+        self.BLACK     =   self.all(0)
+        
+        # Single Colors (Full)
+        self.RED  =        self.onlyFill(0)
+        self.LIME =        self.onlyFill(1)
+        self.BLUE =        self.onlyFill(2)
+        
+        # Single Colors (Toned)
+        self.DARKGREEN =   self.onlyFill(2, 100)
+        self.DARKRED   =   self.onlyFill(1, 139)
+        self.GREEN     =   self.onlyFill(2, 128)
+        
+        # Double Colors (Full)
+        self.MAGENTA =     self.mix(self.RED, self.BLUE) # self.onlyEmpty(2) 
+        self.AQUA    =     self.mix(self.LIME, self.BLUE) # self.onlyEmpty(1)
+        self.YELLOW  =     self.mix(self.RED, self.LIME) # self.onlyEmpty(3)
+        
+        # Double colors (Toned)
+        self.LIGHTBLUE =   (0, 150, 255)
+        self.ORANGE    =   (255, 170, 0)
+        
+        # Triple Colors (Toned)
+        self.PINK =        (255, 105, 180)
+        self.VIOLET =      (238, 130, 238)
+        self.BROWN =       (139, 69, 19)
+        self.TAN =         (210, 180, 140)
         self.FORESTGREEN = (39, 139, 34)
-        self.LIME = self.onlyFill(2)
+        self.BABYBLUE =    (137, 207, 240)
+        
+
+        self.LIME = self.onlyFill(1)
         self.GREEN = self.onlyFill(2, 128)
-        self.BLUE = self.onlyFill(3)
+        self.BLUE = self.onlyFill(2)
         self.AQUA = self.mix(self.LIME, self.BLUE)
         self.BABYBLUE = (137, 207, 240)
         self.LIGHTBLUE = (0, 150, 255)
@@ -39,20 +73,26 @@ class Colors:
         self.GRAY = self.all(128)
         self.LIGHTGRAY = self.all(211)
         self.SILVER = self.all(192)
-
+        
     # Pytility @LercDsgn - thanks for the credit, pyxle :p
-    def mix(self, *colors: tuple) -> tuple: 
-        res = [0]*3
+    def mix(self, *colors: tuple) -> tuple:
+        res = [0] * 3
         for color in colors:
             for index, param in enumerate(color):
-                if 0 >= res[index]+param >= 255: # Patch-1: Fixed range not including 255 and 0 
+                if res[index]+param < 256 and res[index]+param > -1: # 1.2.dev3: fixed value range checking
                     res[index] += param
         return tuple(res)
-    def all(value):
-        return tuple([value] * 3)
     
-    def onlyFill(place, value=255):
+    def all(self, value):
+        return tuple([value] * 3)
+
+    def onlyFill(self, place, value=255):
         colors = [0] * 3
+        colors[place] = value
+        return tuple(colors)
+    
+    def onlyEmpty(self, place, value = 0):
+        colors = [255] * 3
         colors[place] = value
         return tuple(colors)
     
@@ -61,15 +101,30 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.1.1'
+        self.ENGINEVERSION: str = '1.2'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
+        self.WINDOWICON: pygame.Surface = None
         self.FLAGS: int
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
         self.BACKGROUND_COLOR: tuple = colors.CORPWHITE
 
 constants = Constants()
+
+
+# VERSION MODULE
+class Version:
+    def getSDLVersion(self) -> str:
+        return pygame.version.SDL
+
+    def getPygameVersion(self) -> str:
+        return pygame.version.ver
+
+    def getEngineVersion(self) -> str:
+        return constants.ENGINEVERSION
+
+version = Version()
 
 # FLAGS MODULE
 class Flags:
@@ -79,10 +134,6 @@ class Flags:
         self.FULLSCREEN = FULLSCREEN | SCALED
 
 flags = Flags()
-
-# VERSION FUNCTION
-def version(target) -> str:
-    return pygame.version.ver if target=="pygame" else (pygame.version.SDL if target.lower()=="sdl" else constants.ENGINEVERSION)
 
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
@@ -126,7 +177,7 @@ class Assets(GameObject):
         try:
             return self.images[name].copy()
         except KeyError:
-            openErrorWindow(f'No asset found named "{name}".', self.parent.parent)
+            openErrorWindow(f'No image found named "{name}".', self.parent.parent)
 
     def loadImage(self, path: str, name: str) -> None:
         try:
@@ -256,9 +307,8 @@ class EngineRenderService(GameObject):
 
 class GUIService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = 'GUIService'
-        self.type = 'GUIService'
         super().__init__(parent)
+        self.name = self.type = 'GUIService'
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -294,8 +344,8 @@ class GUIService(GameObject):
 
 class Object(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = self.type = 'Object'
         super().__init__(parent)
+        self.name = self.type = 'Object'
 
     def new(self, object: object, putInQueue: bool=False, addAsAttr: bool=True) -> None:
         parent = object.parent
@@ -438,12 +488,16 @@ class UserInputService(GameObject):
         self.inputs.update({name: value})
 
     def isCollidingWithMouse(self, object: object) -> bool:
-        objRect = object.image.get_rect()
-        objRect.x = object.position[0] - object.image.get_width()/2
-        objRect.y = object.position[1] - object.image.get_height()/2
+        if type(object).__name__ == 'Rect':
+            objRect = object
+        else:
+            objRect = object.image.get_rect()
+            objRect.x = object.position[0] - object.image.get_width() / 2
+            objRect.y = object.position[1] - object.image.get_height() / 2
+
         camX, camY = self.getCameraPosition(self.getGameService().getService('Workspace'))
         mx, my = self.getMousePosition()
-        return objRect.collidepoint(mx+camX, my+camY)
+        return objRect.collidepoint(mx + camX, my + camY)
 
     def isMouseButtonDown(self, num: str) -> bool:
         mouseButtons = {
@@ -562,8 +616,7 @@ class Workspace(GameObject):
 
 class GameService(object):
     def __init__(self, parent: object) -> None:
-        self.parent = parent
-        # TODO this code fricking sucks, fix it pls :)
+        self.parent: object = parent
         self.name = self.type = 'GameService'
         self.Assets = Assets(self)
         self.EngineRenderService = EngineRenderService(self)
@@ -728,9 +781,8 @@ class Folder(GameObject):
 
 class GlobalScript(GameObject):
     def __init__(self, parent: object):
-        self.name: str = 'GlobalScript'
-        self.type: str = 'GlobalScript'
         super().__init__(parent)
+        self.name = self.type = 'GlobalScript'
 
 class ParticleEmitter(GameObject):
     def __init__(self, parent: object):
@@ -856,8 +908,8 @@ class ParticleEmitter(GameObject):
 
 class Raycaster(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = self.type = 'Raycaster'
         super().__init__(parent)
+        self.name = self.type = 'Raycaster'
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -946,7 +998,7 @@ class Raycaster(GameObject):
 
 class ScreenGui(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
+        super().__init__(parent)
         self.name = self.type = 'ScreenGui'
         self.enabled: bool = True
         self.primaryRect: pygame.Rect = None
@@ -1085,8 +1137,8 @@ class ScreenGui(GameObject):
 
 class Viewport(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = self.type = 'Viewport'
         super().__init__(parent)
+        self.name = self.type = 'Viewport'
         self.background: list = [45, 45, 45]
         self.outline: float = 0
         self.size: list = [75, 50]
@@ -1240,6 +1292,10 @@ class Window(object):
 
         pygame.font.init()
 
+    def setIcon(self, name: str) -> None:
+        assets = self.parent.game.Assets
+        pygame.display.set_icon(assets.getImage(name))
+
     def getWindowSize(self) -> tuple:
         return self.screen.get_size()
 
@@ -1298,10 +1354,7 @@ class Window(object):
         self.screen.blit(self.guiWindow, (0, 0))
         self.clock.tick(constants.FPS_CAP)
 
-        if input.mouseFocus != 'Game':
-            self.setCursor(self.cursor)
-        else:
-            self.setCursor('arrow')
+        self.setCursor(self.cursor)
         pygame.display.flip()
 
     def updateSurfaceSizes(self) -> None:

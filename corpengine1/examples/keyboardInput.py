@@ -12,7 +12,7 @@ class MyEntity(corp.Entity):
     def setup(self) -> None:
         # loading & setting image
         assets = engine.game.Assets
-        assets.loadImage('assets/square.png', 'square')
+        assets.loadImage('data/square.png', 'square')
         self.image = assets.getImage('square')
         # adding input keys:
         input = engine.game.UserInputService
@@ -40,7 +40,7 @@ class Ui(corp.ScreenGui):
     def setup(self) -> None:
         # load font:
         assets = engine.game.Assets
-        assets.loadFont('assets/Dongle-Regular.ttf', 'font', 64)
+        assets.loadFont('data/Dongle-Regular.ttf', 'font', 64)
 
     def update(self) -> None:
         self.writeText('Use WASD or Arrow Keys to Move', [160, 0], 1, corp.colors.BLACK, 'font')
