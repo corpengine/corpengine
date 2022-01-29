@@ -12,7 +12,7 @@ changelog = 'v1.2.dev3\n\nFixed color range checking at Colors.mix and list elem
 
 setup(
     name='corpengine1',
-    version='1.2.dev4',
+    version='1.2.dev5',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine' + '\n\nChangelog:\n'+changelog,
     url='https://corpengine.github.io/',

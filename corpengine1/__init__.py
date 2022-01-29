@@ -102,7 +102,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.2.dev4'
+        self.ENGINEVERSION: str = '1.2.dev5'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.FLAGS: int
@@ -297,9 +297,8 @@ class EngineRenderService(GameObject):
 
 class GUIService(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = 'GUIService'
-        self.type = 'GUIService'
         super().__init__(parent)
+        self.name = self.type = 'GUIService'
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -335,8 +334,8 @@ class GUIService(GameObject):
 
 class Object(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = self.type = 'Object'
         super().__init__(parent)
+        self.name = self.type = 'Object'
 
     def new(self, object: object, putInQueue: bool=False, addAsAttr: bool=True) -> None:
         parent = object.parent
@@ -607,8 +606,7 @@ class Workspace(GameObject):
 
 class GameService(object):
     def __init__(self, parent: object) -> None:
-        self.parent = parent
-        # TODO this code fricking sucks, fix it pls :)
+        self.parent: object = parent
         self.name = self.type = 'GameService'
         self.Assets = Assets(self)
         self.EngineRenderService = EngineRenderService(self)
@@ -900,8 +898,8 @@ class ParticleEmitter(GameObject):
 
 class Raycaster(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = self.type = 'Raycaster'
         super().__init__(parent)
+        self.name = self.type = 'Raycaster'
         self.children: list = []
         self.childrenQueue: list = []
 
@@ -990,7 +988,7 @@ class Raycaster(GameObject):
 
 class ScreenGui(GameObject):
     def __init__(self, parent: object) -> None:
-        self.parent: object = parent
+        super().__init__(parent)
         self.name = self.type = 'ScreenGui'
         self.enabled: bool = True
         self.primaryRect: pygame.Rect = None
@@ -1129,8 +1127,8 @@ class ScreenGui(GameObject):
 
 class Viewport(GameObject):
     def __init__(self, parent: object) -> None:
-        self.name = self.type = 'Viewport'
         super().__init__(parent)
+        self.name = self.type = 'Viewport'
         self.background: list = [45, 45, 45]
         self.outline: float = 0
         self.size: list = [75, 50]
