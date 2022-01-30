@@ -17,7 +17,7 @@ from pygame.locals import *
 # COLORS MODULE
 class Colors:
     def __init__(self) -> None:
-        
+
         # Black-White (r = g = b)
         self.WHITE     =   self.all(255)
         self.CORPWHITE =   self.all(224)
@@ -26,26 +26,26 @@ class Colors:
         self.GRAY      =   self.all(128)
         self.DARKGRAY  =   self.all(64)
         self.BLACK     =   self.all(0)
-        
+
         # Single Colors (Full)
-        self.RED  =        self.onlyFill(0)
-        self.LIME =        self.onlyFill(1)
-        self.BLUE =        self.onlyFill(2)
-        
+        self.RED  =        self.onlyFill(1)
+        self.LIME =        self.onlyFill(2)
+        self.BLUE =        self.onlyFill(3)
+
         # Single Colors (Toned)
         self.DARKGREEN =   self.onlyFill(2, 100)
         self.DARKRED   =   self.onlyFill(1, 139)
         self.GREEN     =   self.onlyFill(2, 128)
-        
+
         # Double Colors (Full)
         self.MAGENTA =     self.mix(self.RED, self.BLUE) # self.onlyEmpty(2) 
         self.AQUA    =     self.mix(self.LIME, self.BLUE) # self.onlyEmpty(1)
         self.YELLOW  =     self.mix(self.RED, self.LIME) # self.onlyEmpty(3)
-        
+
         # Double colors (Toned)
         self.LIGHTBLUE =   (0, 150, 255)
         self.ORANGE    =   (255, 170, 0)
-        
+
         # Triple Colors (Toned)
         self.PINK =        (255, 105, 180)
         self.VIOLET =      (238, 130, 238)
@@ -53,26 +53,7 @@ class Colors:
         self.TAN =         (210, 180, 140)
         self.FORESTGREEN = (39, 139, 34)
         self.BABYBLUE =    (137, 207, 240)
-        
 
-        self.LIME = self.onlyFill(1)
-        self.GREEN = self.onlyFill(2, 128)
-        self.BLUE = self.onlyFill(2)
-        self.AQUA = self.mix(self.LIME, self.BLUE)
-        self.BABYBLUE = (137, 207, 240)
-        self.LIGHTBLUE = (0, 150, 255)
-        self.DARKRED = self.onlyFill(1, 139)
-        self.RED = self.onlyFill(1)
-        self.MAGENTA = self.mix(self.RED, self.BLUE)
-        self.PINK = (255, 105, 180)
-        self.VIOLET = (238, 130, 238)
-        self.BROWN = (139, 69, 19)
-        self.TAN = (210, 180, 140)
-        self.WHITE = self.mix(self.RED, self.LIME, self.BLUE)
-        self.BLACK = self.all(0)
-        self.GRAY = self.all(128)
-        self.LIGHTGRAY = self.all(211)
-        self.SILVER = self.all(192)
         
     # Pytility @LercDsgn - thanks for the credit, pyxle :p
     def mix(self, *colors: tuple) -> tuple:
