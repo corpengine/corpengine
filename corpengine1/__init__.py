@@ -38,7 +38,7 @@ class Colors:
         self.GREEN     =   self.onlyFill(2, 128)
         
         # Double Colors (Full)
-        self.MAGENTA =     self.mix(self.RED, self.BLUE) # self.onlyEmpty(2) 
+        self.MAGENTA =     self.mix(self.RED, self.BLUE) # self.onlyEmpty(2)
         self.AQUA    =     self.mix(self.LIME, self.BLUE) # self.onlyEmpty(1)
         self.YELLOW  =     self.mix(self.RED, self.LIME) # self.onlyEmpty(3)
         
@@ -47,33 +47,13 @@ class Colors:
         self.ORANGE    =   (255, 170, 0)
         
         # Triple Colors (Toned)
-        self.PINK =        (255, 105, 180)
         self.VIOLET =      (238, 130, 238)
-        self.BROWN =       (139, 69, 19)
         self.TAN =         (210, 180, 140)
         self.FORESTGREEN = (39, 139, 34)
         self.BABYBLUE =    (137, 207, 240)
-        
-
-        self.LIME = self.onlyFill(1)
-        self.GREEN = self.onlyFill(2, 128)
-        self.BLUE = self.onlyFill(2)
-        self.AQUA = self.mix(self.LIME, self.BLUE)
-        self.BABYBLUE = (137, 207, 240)
-        self.LIGHTBLUE = (0, 150, 255)
-        self.DARKRED = self.onlyFill(1, 139)
-        self.RED = self.onlyFill(1)
-        self.MAGENTA = self.mix(self.RED, self.BLUE)
         self.PINK = (255, 105, 180)
-        self.VIOLET = (238, 130, 238)
         self.BROWN = (139, 69, 19)
-        self.TAN = (210, 180, 140)
-        self.WHITE = self.mix(self.RED, self.LIME, self.BLUE)
-        self.BLACK = self.all(0)
-        self.GRAY = self.all(128)
-        self.LIGHTGRAY = self.all(211)
-        self.SILVER = self.all(192)
-        
+
     # Pytility @LercDsgn - thanks for the credit, pyxle :p
     def mix(self, *colors: tuple) -> tuple:
         res = [0] * 3
@@ -101,7 +81,7 @@ colors = Colors()
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.2'
+        self.ENGINEVERSION: str = '1.3.dev1'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
         self.WINDOWTITLE: str = 'CORP Engine window'
         self.WINDOWICON: pygame.Surface = None
@@ -696,6 +676,12 @@ class Entity(GameObject):
                 selfRect.height *= self.size[1]
                 return selfRect.colliderect(childRect)
         return False
+
+    def isCollidingToRect(self, rect: pygame.Rect) -> bool:
+        selfRect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
+        selfRect.width *= self.size[0]
+        selfRect.height *= self.size[1]
+        return selfRect.colliderect(rect)
 
     def getChild(self, name) -> object:
         try:

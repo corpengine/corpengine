@@ -9,4 +9,3 @@ corpengine1.egg-info/top_level.txt
 corpengine1/examples/__init__.py
 corpengine1/examples/keyboardInput.py
 corpengine1/examples/window.py
-corpengine1/examples/assets/__init__.py
