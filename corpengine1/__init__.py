@@ -2,8 +2,8 @@
 >>>>>    CORP ENGINE    <<<<<
 A free & open-source toolkit for making games in Python programming language.
 Made by @PyxleDev0 & Contributors
-https://github.com/pyxledev0/corp-engine
-https://github.com/pyxledev0/corp-engine-examples
+https://github.com/corpengine/corpengine
+https://github.com/corpengine/corpengine-examples
 """
 
 
@@ -13,98 +13,22 @@ import sys
 import inspect
 import easygui
 from pygame.locals import *
-
-# COLORS MODULE
-class Colors:
-    def __init__(self) -> None:
-        
-        # Black-White (r = g = b)
-        self.WHITE     =   self.all(255)
-        self.CORPWHITE =   self.all(224)
-        self.LIGHTGRAY =   self.all(211)
-        self.SILVER    =   self.all(192)
-        self.GRAY      =   self.all(128)
-        self.DARKGRAY  =   self.all(64)
-        self.BLACK     =   self.all(0)
-        
-        # Single Colors (Full)
-        self.RED  =        self.onlyFill(0)
-        self.LIME =        self.onlyFill(1)
-        self.BLUE =        self.onlyFill(2)
-        
-        # Single Colors (Toned)
-        self.DARKGREEN =   self.onlyFill(2, 100)
-        self.DARKRED   =   self.onlyFill(1, 139)
-        self.GREEN     =   self.onlyFill(2, 128)
-        
-        # Double Colors (Full)
-        self.MAGENTA =     self.mix(self.RED, self.BLUE) # self.onlyEmpty(2)
-        self.AQUA    =     self.mix(self.LIME, self.BLUE) # self.onlyEmpty(1)
-        self.YELLOW  =     self.mix(self.RED, self.LIME) # self.onlyEmpty(3)
-        
-        # Double colors (Toned)
-        self.LIGHTBLUE =   (0, 150, 255)
-        self.ORANGE    =   (255, 170, 0)
-        
-        # Triple Colors (Toned)
-        self.VIOLET =      (238, 130, 238)
-        self.TAN =         (210, 180, 140)
-        self.FORESTGREEN = (39, 139, 34)
-        self.BABYBLUE =    (137, 207, 240)
-        self.PINK = (255, 105, 180)
-        self.BROWN = (139, 69, 19)
-
-    # Pytility @LercDsgn - thanks for the credit, pyxle :p
-    def mix(self, *colors: tuple) -> tuple:
-        res = [0] * 3
-        for color in colors:
-            for index, param in enumerate(color):
-                if res[index]+param < 256 and res[index]+param > -1: # 1.2.dev3: fixed value range checking
-                    res[index] += param
-        return tuple(res)
-    
-    def all(self, value):
-        return tuple([value] * 3)
-
-    def onlyFill(self, place, value=255):
-        colors = [0] * 3
-        colors[place] = value
-        return tuple(colors)
-    
-    def onlyEmpty(self, place, value = 0):
-        colors = [255] * 3
-        colors[place] = value
-        return tuple(colors)
-    
-colors = Colors()
+from .colors import CORPWHITE
 
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
-        self.ENGINEVERSION: str = '1.3.dev1'
+        self.ENGINEVERSION: str = '1.3.dev2'
         self.DEFAULTSCREENSIZE: tuple = (640, 360)
-        self.WINDOWTITLE: str = 'CORP Engine window'
+        self.WINDOWTITLE: str = 'CORP Engine Window'
         self.WINDOWICON: pygame.Surface = None
         self.FLAGS: int
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
-        self.BACKGROUND_COLOR: tuple = colors.CORPWHITE
+        self.BACKGROUND_COLOR: tuple = CORPWHITE
 
 constants = Constants()
 
-
-# VERSION MODULE
-class Version:
-    def getSDLVersion(self) -> str:
-        return pygame.version.SDL
-
-    def getPygameVersion(self) -> str:
-        return pygame.version.ver
-
-    def getEngineVersion(self) -> str:
-        return constants.ENGINEVERSION
-
-version = Version()
 
 # FLAGS MODULE
 class Flags:

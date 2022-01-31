@@ -1,20 +1,19 @@
 from setuptools import setup, find_packages
 
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
+    'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Operating System :: OS Independent',
     'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python :: 3'
+    'Programming Language :: Python :: 3 :: Only',
+    'Natural Language :: English',
 ]
-
-changelog = 'v1.3.dev1\n\n- '
 
 setup(
     name='corpengine1',
-    version='1.3.dev1',
+    version='1.3.dev2',
     description='Fast, Organized, Object-Oriented Python Game Development',
-    long_description='github repository: https://github.com/corpengine/corpengine' + '\n\nChangelog:\n'+changelog,
+    long_description='github repository: https://github.com/corpengine/corpengine',
     url='https://corpengine.github.io/',
     author='CORPEngine Organization + Contributors',
     license='MIT',
