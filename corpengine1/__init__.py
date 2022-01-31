@@ -26,18 +26,11 @@ class Constants:
         self.RUNNING: bool = True
         self.FPS_CAP: int = 60
         self.BACKGROUND_COLOR: tuple = CORPWHITE
-
-constants = Constants()
-
-
-# FLAGS MODULE
-class Flags:
-    def __init__(self):
         self.RESIZABLE = RESIZABLE
         self.SCALED = SCALED
         self.FULLSCREEN = FULLSCREEN | SCALED
 
-flags = Flags()
+constants = Constants()
 
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
@@ -127,7 +120,7 @@ class EngineEventService(GameObject):
                 if event.key == K_F11:
                     window.fullscreen = not window.fullscreen
                     if window.fullscreen:
-                        fl = flags.FULLSCREEN
+                        fl = constants.FULLSCREEN
                     else:
                         fl = constants.FLAGS
                     window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, fl, 32)
