@@ -27,15 +27,6 @@ class Camera(GameObject):
         self.position: list = [0, 0]
         self.fieldOfView: float = 100
 
-    def setAttribute(self, name: str, val) -> None:
-        self.attributes.update({name: val})
-
-    def getAttribute(self, name: str) -> any:
-        try:
-            return self.attributes[name]
-        except Exception:
-            openErrorWindow(f'unknown attribute "{name}".', self.getEngine())
-
 class Entity(GameObject):
     def __init__(self, parent: object) -> None:
         super().__init__(parent)

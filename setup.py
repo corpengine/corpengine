@@ -8,13 +8,11 @@ classifiers = [
     'Programming Language :: Python :: 3'
 ]
 
-changelog = 'v1.2\n\n*Some object & service naming fixes\n*Added back the version module\n*new colors methods: all, onlyFill, onlyEmpty\n*Fixed color range checking in colors.mix()\n*Optional Rectangle support for isCollidingWithMouse()\n*'
-
 setup(
     name='corpengine1',
-    version='1.2',
+    version='1.3.dev20',
     description='Fast, Organized, Object-Oriented Python Game Development',
-    long_description='github repository: https://github.com/corpengine/corpengine' + '\n\nChangelog:\n'+changelog,
+    long_description='github repository: https://github.com/corpengine/corpengine',
     url='https://corpengine.github.io/',
     author='CORPEngine Organization + Contributors',
     license='MIT',

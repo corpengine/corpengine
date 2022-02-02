@@ -1,17 +1,10 @@
-Metadata-Version: 1.1
+Metadata-Version: 2.1
 Name: corpengine1
-Version: 1.2.dev5
+Version: 1.3.dev10
 Summary: Fast, Organized, Object-Oriented Python Game Development
 Home-page: https://corpengine.github.io/
 Author: CORPEngine Organization + Contributors
-Author-email: UNKNOWN
 License: MIT
-Description: github repository: https://github.com/corpengine/corpengine
-        
-        Changelog:
-        v1.2.dev5
-        
-        new setIcon() at Window & set cursor fixes
 Keywords: corpengine
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
@@ -19,3 +12,7 @@ Classifier: Intended Audience :: Developers
 Classifier: Operating System :: OS Independent
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3
+License-File: LICENSE
+
+github repository: https://github.com/corpengine/corpengine
+

@@ -1,6 +1,6 @@
 from pygame.constants import FULLSCREEN, SCALED, RESIZABLE
 
-ENGINEVERSION: str = '1.3.dev1'
+ENGINEVERSION: str = '1.3.dev20'
 DEFAULTSCREENSIZE: tuple = (640, 360)
 WINDOWTITLE: str = 'CORP Engine Window'
 WINDOWICON = None

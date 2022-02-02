@@ -22,7 +22,11 @@ from corpengine1 import objects
 
 def openErrorWindow(text, engine) -> None:
     callerFrame = sys._getframe(2)
-    easygui.msgbox(f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.', 'CORPEngine crashed!')
+    easygui.msgbox(
+        f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.',
+        'CORPEngine crashed!',
+        'Ok'
+    )
     engine.status = not constants.RUNNING
     sys.exit()
 
@@ -77,34 +81,35 @@ class EngineEventService(objects.GameObject):
         input.mouseWheelStatus = [0, 0]
 
         # pygame events
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                game.parent.status = not constants.RUNNING
+        event = pygame.event.poll()
+        
+        if event.type == QUIT:
+            game.parent.status = not constants.RUNNING
 
-            if event.type == KEYUP:
-                # fullscreen toggling
-                if event.key == K_F11:
-                    window.fullscreen = not window.fullscreen
-                    if window.fullscreen:
-                        fl = flags.FULLSCREEN
-                    else:
-                        fl = constants.FLAGS
-                    window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, fl, 32)
+        if event.type == KEYUP:
+            # fullscreen toggling
+            if event.key == K_F11:
+                window.fullscreen = not window.fullscreen
+                if window.fullscreen:
+                    fl = constants.FULLSCREEN
+                else:
+                    fl = constants.FLAGS
+                window.screen = pygame.display.set_mode(constants.DEFAULTSCREENSIZE, fl, 32)
 
-            if event.type == MOUSEWHEEL:
-                input.mouseWheelStatus = [event.x, event.y]
+        if event.type == MOUSEWHEEL:
+            input.mouseWheelStatus = [event.x, event.y]
 
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    input.mouseStatus[0] = True
-                if event.button == 3:
-                    input.mouseStatus[2] = True
-                if event.button == 2:
-                    input.mouseStatus[1] = True
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                input.mouseStatus[0] = True
+            if event.button == 3:
+                input.mouseStatus[2] = True
+            if event.button == 2:
+                input.mouseStatus[1] = True
 
-            # controller hotplugging
-            if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
-                input.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+        # controller hotplugging
+        if event.type == JOYDEVICEADDED or event.type == JOYDEVICEREMOVED:
+            input.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
 
 class EngineRenderService(objects.GameObject):
     def __init__(self, parent: object) -> None:
@@ -152,7 +157,8 @@ class EngineRenderService(objects.GameObject):
             window.renderWindow = pygame.transform.scale(window.renderWindow, (size[0]*(fov/100), size[1]*(fov/100)))
         self.totalEntitiesRendered += 1
         for childA in child.getChildren():
-            self.renderEntity(childA, window, windowResolutionRatio, camX, camY, fov)
+            if childA.type == 'Entity' and childA.image != None and childA.render:
+                self.renderEntity(childA, window, windowResolutionRatio, camX, camY, fov)
 
     def getCameraPosition(self, workspace: object) -> tuple:
         if workspace.currentCamera != None:  # if a default camera exists:
