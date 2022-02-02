@@ -15,7 +15,7 @@ import easygui
 from pygame.locals import *
 from .colors import CORPWHITE
 from .objects import GameObject
-
+import .version
 # CONSTANTS MODULE
 class Constants:
     def __init__(self) -> None:
