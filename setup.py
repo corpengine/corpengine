@@ -18,6 +18,5 @@ setup(
     license='MIT',
     classifiers=classifiers,
     keywords='corpengine',
-    packages=find_packages(),
     install_requires=['easygui', 'raylib']
 )
