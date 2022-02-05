@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
+    'Development Status :: 1 - Planning',
     'Intended Audience :: Developers',
     'Operating System :: OS Independent',
     'License :: OSI Approved :: MIT License',
@@ -9,8 +9,8 @@ classifiers = [
 ]
 
 setup(
-    name='corpengine1',
-    version='1.3.dev20',
+    name='corpengine2',
+    version='0.1.0',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine',
     url='https://corpengine.github.io/',
@@ -19,5 +19,5 @@ setup(
     classifiers=classifiers,
     keywords='corpengine',
     packages=find_packages(),
-    install_requires=['easygui', 'pygame']
+    install_requires=['easygui', 'raylib']
 )
