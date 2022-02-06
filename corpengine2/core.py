@@ -1,23 +1,6 @@
 import raylib as rl
-import easygui
-import inspect
-import sys
 from corpengine2 import colors
-
-def openErrorWindow(text: str, engine: object) -> None:
-    callerFrame = sys._getframe(2)
-    easygui.msgbox(
-        f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.',
-        'CORPEngine crashed!',
-        'Ok'
-    )
-    engine.status = False
-    sys.exit()
-
-class GameObject(object):
-    def __init__(self, parent: object) -> None:
-        self.parent: object = parent
-        self.name = type(self).__name__
+from corpengine2.objects import GameService
 
 class Window(object):
     def __init__(self, parent: object) -> None:
@@ -29,9 +12,6 @@ class Window(object):
         rl.SetConfigFlags(self.windowFlags)      
         rl.InitWindow(self.screenWidth, self.screenHeight, str.encode(self.title))
         rl.SetTargetFPS(self.targetFPS)
-        iconImg = rl.LoadImage(b"resources/icon.png")
-        rl.SetWindowIcon(iconImg)
-        rl.UnloadImage(iconImg)
 
     def update(self) -> None:
         # Updating process
@@ -48,6 +28,7 @@ class Engine(object):
         self.window.title = title
         self.window.windowFlags = 0
         self.status = None
+        self.game = GameService(self)
 
         # built-in functions:
         self.setConfigFlags = rl.SetConfigFlags
