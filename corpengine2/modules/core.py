@@ -22,6 +22,11 @@ def OpenErrorWindow(text: str, engine: object):
     engine.status = False
     sys.exit()
 
+def GetDeltaTime():
+    return rl.GetFrameTime() * 60
+    # Maybe make the delta multiplied with the Target FPS
+    # instead of 60?
+
 class Window(object):
     def __init__(self, parent: object):
         self.parent = parent
@@ -36,9 +41,12 @@ class Window(object):
 
     def _Update(self):
         # Updating process
+        game = self.parent.game
+        game._Update()
         # Drawing Process
         rl.BeginDrawing()
         rl.ClearBackground(self.__backgroundColor)
+        game.EngineRenderService._Render()
         rl.DrawFPS(20, 20)
         rl.EndDrawing()
     
@@ -63,7 +71,7 @@ class Engine(object):
         self.status = True
         while not rl.WindowShouldClose() and self.status:
             self.window._Update()
-        # de-initilization process
+        # De-initilization process
         rl.CloseWindow()
 
         assets = self.game.Assets

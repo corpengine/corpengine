@@ -9,12 +9,18 @@ class GameService(Service):
     def __init__(self, parent):
         super().__init__(parent)
         self.Assets = Assets(self)
+        self.EngineRenderService = EngineRenderService(self)
+        self.Workspace = Workspace(self)
     
     def GetService(self, name):
         if hasattr(self, name):
             return getattr(self, name)
         else:
             core.OpenErrorWindow(f"No service named \"{name}\".", self.parent)
+    
+    def _Update(self):
+        pass
+
 
 class Assets(Service):
     def __init__(self, parent):
@@ -34,3 +40,31 @@ class Assets(Service):
         except Exception:
             # NOTE this error does not function properly!
             core.OpenErrorWindow("Invalid path for image or file unsupported.", self.parent.parent)
+
+class Workspace(Service):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.__children = {}
+    
+    def GetChild(self, name):
+        try:
+            return self.__children[name]
+        except Exception:
+            return None
+    
+    def GetChildren(self):
+        return self.__children.values()
+    
+    def _Update(self):
+        for child in self.GetChildren():
+            if hasattr(child, "Update"):
+                child.Update()
+
+class EngineRenderService(Service):
+    def __init__(self, parent):
+        super().__init__(parent)
+    
+    def _Render(self):
+        # Entity rendering
+        pass
+        
