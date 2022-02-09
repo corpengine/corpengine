@@ -1,3 +1,1 @@
-from typing import Final
-
-CORPWHITE: Final = (224, 224, 224, 255)
+CORPWHITE = (224, 224, 224, 255)

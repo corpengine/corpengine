@@ -1,6 +1,5 @@
 import raylib as rl
 from pyray import Image
-from typing import Final
 import easygui
 import inspect
 import sys
@@ -23,23 +22,25 @@ class GameObject(object):
 class GameService(GameObject):
     def __init__(self, parent: object) -> None:
         super().__init__(parent)
-        self.type: Final = "GameService"
+        self.type = "GameService"
+        self.Assets = Assets(self)
 
 class Assets(GameObject):
-    def __init__(self, parent: object) -> None:
+    def __init__(self, parent: object):
         super().__init__(parent)
-        self.type: Final = "Assets"
-        self.images: dict = {}
-        self.textures: dict = {}
+        self.type = "Assets"
+        self.images = {}
+        self.textures = {}
     
-    def getImage(self, name: str) -> Image:
+    def getImage(self, name: str):
         try:
             return self.images[name]
         except Exception:
             openErrorWindow(f"No such image with name \"{name}\"", engine)
     
-    def loadImage(self, name: str, path: str) -> None:
+    def loadImage(self, name: str, path: str):
         try:
-            self.images.update({name: rl.LoadImage(path)})
+            self.images.update({name: rl.LoadImage(str.encode(path))})
         except Exception:
+            # NOTE this error does not function properly!
             openErrorWindow("Invalid path for image or file unsupported.", self.parent.parent)
