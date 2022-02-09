@@ -1,4 +1,5 @@
 import raylib as rl
+import sys, inspect, easygui
 from corpengine2.modules.colors import CORPWHITE
 from corpengine2.modules.services import GameService
 from corpengine2.modules.constants import ENGINE_VERSION
@@ -43,7 +44,10 @@ class Window(object):
     
     def SetBackgroundColor(self, color):
         self.__backgroundColor = color
-        
+    
+    def GetBackgroundColor(self):
+        return self.__backgroundColor
+    
 
 class Engine(object):
     def __init__(self, screenWidth, screenHeight, title):
