@@ -27,6 +27,12 @@ def GetDeltaTime():
     # Maybe make the delta multiplied with the Target FPS
     # instead of 60?
 
+def NewObject(object):
+    objParent = object.parent
+    objParent._AddChild(object)
+    if hasattr(object, "Setup"):
+        object.Setup()
+
 class Window(object):
     def __init__(self, parent: object):
         self.parent = parent

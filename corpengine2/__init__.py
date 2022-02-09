@@ -5,5 +5,5 @@ from corpengine2.modules.core import *
 from corpengine2.modules.objects import *
 
 def InitEngine(screenWidth, screenHeight, title):
-    """Initialize an Engine class"""
+    """Initialize an Engine class"""    
     return Engine(screenWidth, screenHeight, title)

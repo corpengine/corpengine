@@ -1,4 +1,4 @@
-> This package is not ready for production.
+> CORP Engine 2 is not ready for production.
 
 # CORP Engine 2
 

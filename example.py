@@ -5,10 +5,11 @@ engine = InitEngine(960, 540, "Corporation")
 class Test(Entity):
     def Setup(self):
         print("Setup event")
+        self.texture = None
     
     def Update(self):
-        print("Update event")
+        pass
 
-engine.game.Object.New(Test(engine.game.Workspace))
+NewObject(Test(engine.game.Workspace))
 
 engine.Mainloop()

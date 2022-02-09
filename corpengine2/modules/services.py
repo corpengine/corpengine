@@ -1,4 +1,6 @@
+import raylib as rl
 from corpengine2.modules import core
+from corpengine2.modules.colors import WHITE
 
 class Service(object):
     def __init__(self, parent):
@@ -9,9 +11,8 @@ class GameService(Service):
     def __init__(self, parent):
         super().__init__(parent)
         self.Assets = Assets(self)
-        self.EngineRenderService = EngineRenderService(self)
         self.Workspace = Workspace(self)
-        self.Object = GameObjectService(self)
+        self.EngineRenderService = EngineRenderService(self)
     
     def GetService(self, name):
         if hasattr(self, name):
@@ -69,15 +70,9 @@ class Workspace(Service):
 class EngineRenderService(Service):
     def __init__(self, parent):
         super().__init__(parent)
+        self.Workspace = self.parent.Workspace
     
     def _Render(self):
-        # Entity rendering
-        pass
-
-class GameObjectService(Service):
-    def __init__(self, parent):
-        super().__init__(parent)
-    
-    def New(self, object):
-        objParent = object.parent
-        objParent._AddChild(object)
+        for child in self.Workspace.GetChildren():
+            if child.type == "Entity" and child.texture != None:
+                rl.DrawTextureEx(child.texture, child.position, child.rotation, child.scale, WHITE)
