@@ -11,6 +11,7 @@ class GameService(Service):
         self.Assets = Assets(self)
         self.EngineRenderService = EngineRenderService(self)
         self.Workspace = Workspace(self)
+        self.Object = GameObjectService(self)
     
     def GetService(self, name):
         if hasattr(self, name):
@@ -19,7 +20,7 @@ class GameService(Service):
             core.OpenErrorWindow(f"No service named \"{name}\".", self.parent)
     
     def _Update(self):
-        pass
+        self.Workspace._Update()
 
 
 class Assets(Service):
@@ -59,6 +60,11 @@ class Workspace(Service):
         for child in self.GetChildren():
             if hasattr(child, "Update"):
                 child.Update()
+    
+    def _AddChild(self, obj):
+        self.__children.update({obj.name: obj})
+        if hasattr(object, "Setup"):
+            object.Setup()
 
 class EngineRenderService(Service):
     def __init__(self, parent):
@@ -67,4 +73,11 @@ class EngineRenderService(Service):
     def _Render(self):
         # Entity rendering
         pass
-        
+
+class GameObjectService(Service):
+    def __init__(self, parent):
+        super().__init__(parent)
+    
+    def New(self, object):
+        objParent = object.parent
+        objParent._AddChild(object)
