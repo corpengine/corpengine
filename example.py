@@ -1,7 +1,5 @@
-import corpengine2 as cp
+from corpengine2 import *
 
-engine = cp.init(800, 500, "CORPORATION")
+engine = InitEngine(960, 540, "Corporation")
 
-engine.setConfigFlags(cp.constants.FLAG_WINDOW_RESIZABLE)
-
-engine.mainloop()
+engine.Mainloop()

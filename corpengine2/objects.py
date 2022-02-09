@@ -4,7 +4,7 @@ import easygui
 import inspect
 import sys
 
-def openErrorWindow(text: str, engine: object) -> None:
+def OpenErrorWindow(text: str, engine: object) -> None:
     callerFrame = sys._getframe(2)
     easygui.msgbox(
         f'file: {inspect.getmodule(callerFrame)} in line {callerFrame.f_lineno}\n\n -- {text}\n\nReach PyxleDev0 on github out with the error location to help me out.',
@@ -36,11 +36,11 @@ class Assets(GameObject):
         try:
             return self.images[name]
         except Exception:
-            openErrorWindow(f"No such image with name \"{name}\"", engine)
+            OpenErrorWindow(f"No such image with name \"{name}\"", engine)
     
     def loadImage(self, name: str, path: str):
         try:
             self.images.update({name: rl.LoadImage(str.encode(path))})
         except Exception:
             # NOTE this error does not function properly!
-            openErrorWindow("Invalid path for image or file unsupported.", self.parent.parent)
+            OpenErrorWindow("Invalid path for image or file unsupported.", self.parent.parent)
