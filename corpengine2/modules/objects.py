@@ -51,6 +51,8 @@ class GameObject(object):
             OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
         else:
             self.__components.update({newObj.type: newObj})
+            if newObj.type == "ScriptComponent":
+                newObj.Setup()
 
     def _Update(self):
         for child in self.GetChildren():

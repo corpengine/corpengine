@@ -11,6 +11,7 @@ SetTargetFPS = rl.SetTargetFPS
 SetStateFlags = rl.SetWindowState
 SetWindowTitle = rl.SetWindowTitle
 SetWindowMinimum = rl.SetWindowMinSize
+SetExitKey = rl.SetExitKey
 
 def OpenErrorWindow(text: str, engine: object):
     callerFrame = sys._getframe(2)
@@ -30,8 +31,6 @@ def GetDeltaTime():
 def NewObject(object):
     objParent = object.parent
     objParent._AddChild(object)
-    if hasattr(object, "Setup"):
-        object.Setup()
 
 class Window(object):
     def __init__(self, parent: object):
@@ -72,9 +71,10 @@ class Engine(object):
         self.window.title = title
         self.status = None
         self.game = GameService(self)
+        
+        self.window._Setup()
     
     def Mainloop(self):
-        self.window._Setup()
         self.status = True
         while not rl.WindowShouldClose() and self.status:
             self.window._Update()

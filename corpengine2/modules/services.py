@@ -34,14 +34,17 @@ class Assets(Service):
         try:
             return self.images[name]
         except Exception:
-            core.OpenErrorWindow(f"No such image with name \"{name}\"", engine)
+            core.OpenErrorWindow(f"No such image with name \"{name}\"", self.parent.parent)
     
     def LoadImage(self, name, path):
-        try:
-            self.images.update({name: rl.LoadImage(str.encode(path))})
-        except Exception:
-            # NOTE this error does not function properly!
-            core.OpenErrorWindow("Invalid path for image or file unsupported.", self.parent.parent)
+        self.images.update({name: rl.LoadImage(str.encode(path))})
+
+    def LoadTexture(self, name, path):
+        """tip: this method returns the texture, so you won't have to use GetTexture!"""
+        texture = rl.LoadTexture(str.encode(path))
+        self.textures.update({name: rl.LoadTexture(str.encode(path))})
+        return texture
+
 
 class Workspace(Service):
     def __init__(self, parent):

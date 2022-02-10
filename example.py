@@ -5,10 +5,12 @@ Game = Engine.game  # TODO change the game to be capitalized
 
 class PlayerScriptComponent(ScriptComponent):
     def Setup(self):
-        print("Setup event.")
+        self.parent.position = Vector2(480, 270)
+        self.parent.texture = Game.Assets.LoadTexture("test", "stone.png")
     
     def Update(self):
-        print(GetDeltaTime())
+        return
+        print(self.parent.texture)
 
 Player = NewEntity("Player", Game.Workspace)
 Player.AddComponent(PlayerScriptComponent)
