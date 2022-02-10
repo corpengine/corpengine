@@ -1,15 +1,8 @@
 from corpengine2 import *
 
-engine = InitEngine(960, 540, "Corporation")
+Engine = InitEngine(960, 540, "Corporation")
+Game = Engine.game  # TODO change the game to be capitalized
 
-class Test(Entity):
-    def Setup(self):
-        print("Setup event")
-        self.texture = None
-    
-    def Update(self):
-        pass
+NewEntity("Player", Game.Workspace)
 
-NewObject(Test(engine.game.Workspace))
-
-engine.Mainloop()
+Engine.Mainloop()

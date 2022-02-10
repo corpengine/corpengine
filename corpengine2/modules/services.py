@@ -58,9 +58,11 @@ class Workspace(Service):
         return self.__children.values()
     
     def _Update(self):
+        """
         for child in self.GetChildren():
             if hasattr(child, "Update"):
-                child.Update()
+                child.Update()"""
+        pass
     
     def _AddChild(self, obj):
         self.__children.update({obj.name: obj})
@@ -74,5 +76,5 @@ class EngineRenderService(Service):
     
     def _Render(self):
         for child in self.Workspace.GetChildren():
-            if child.type == "Entity" and child.texture != None:
+            if child._type == "Entity" and child.texture != None:
                 rl.DrawTextureEx(child.texture, child.position, child.rotation, child.scale, WHITE)
