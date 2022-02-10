@@ -23,9 +23,6 @@ class GameObject(object):
     
     def _AddChild(self, obj):
         self.__children.update({obj.name: obj})
-        """
-        if hasattr(object, "Setup"):
-            object.Setup()"""
     
     def GetChild(self, name):
         try:
@@ -49,13 +46,18 @@ class GameObject(object):
         return self.__components.values()
     
     def AddComponent(self, obj):
-        self.__components.update({obj.__name__: obj(self)})
+        newObj = obj(self)
+        if self.HasComponent(newObj.type):
+            OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
+        else:
+            self.__components.update({newObj.type: newObj})
 
     def _Update(self):
-        """
         for child in self.GetChildren():
-            if hasattr(child, "Update"):
-                child.Update()"""
+            if child.HasComponent("ScriptComponent"):
+                ScriptComponent = child.GetComponent("ScriptComponent")
+                if hasattr(ScriptComponent, "Update"):
+                    ScriptComponent.Update()
 
 class Entity(GameObject):
     def __init__(self, parent):
@@ -75,3 +77,4 @@ def NewEntity(name, parent, texture=None, scale=1, rotation=0, position=Vector2(
     newObject.rotation = rotation
     newObject.position = position
     parent._AddChild(newObject)
+    return newObject

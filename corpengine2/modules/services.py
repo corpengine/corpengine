@@ -58,11 +58,11 @@ class Workspace(Service):
         return self.__children.values()
     
     def _Update(self):
-        """
         for child in self.GetChildren():
-            if hasattr(child, "Update"):
-                child.Update()"""
-        pass
+            if child.HasComponent("ScriptComponent"):
+                ScriptComponent = child.GetComponent("ScriptComponent")
+                if hasattr(ScriptComponent, "Update"):
+                    ScriptComponent.Update()
     
     def _AddChild(self, obj):
         self.__children.update({obj.name: obj})

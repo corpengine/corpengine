@@ -4,8 +4,13 @@ Engine = InitEngine(960, 540, "Corporation")
 Game = Engine.game  # TODO change the game to be capitalized
 
 class PlayerScriptComponent(ScriptComponent):
-    pass
+    def Setup(self):
+        print("Setup event.")
+    
+    def Update(self):
+        print(GetDeltaTime())
 
-NewEntity("Player", Game.Workspace)
+Player = NewEntity("Player", Game.Workspace)
+Player.AddComponent(PlayerScriptComponent)
 
 Engine.Mainloop()
