@@ -79,5 +79,12 @@ class EngineRenderService(Service):
     
     def _Render(self):
         for child in self.Workspace.GetChildren():
-            if child._type == "Entity" and child.texture != None:
-                rl.DrawTextureEx(child.texture, child.position, child.rotation, child.scale, WHITE)
+            if child.HasComponent("TextureComponent"):
+                TextureComponent = child.GetComponent("TextureComponent")
+                TransformComponent = child.GetComponent("TransformComponent")
+                position = TransformComponent.position
+                rotation = TransformComponent.rotation
+                scale = TransformComponent.scale
+                texture = TextureComponent.texture
+                if texture != None:
+                    rl.DrawTextureEx(texture, position, rotation, scale, WHITE)

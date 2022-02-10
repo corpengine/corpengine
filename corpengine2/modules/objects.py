@@ -1,10 +1,11 @@
 from pyray import Vector2
 from corpengine2.modules.core import OpenErrorWindow
+from corpengine2.modules.components import TransformComponent, TextureComponent
 
 class GameObject(object):
     def __init__(self, parent):
         self.parent = parent
-        self.name = self._type = "GameObject"
+        self.name = self._type = type(self).__name__
         self.__components = {}
     
     def GetGameService(self):
@@ -46,7 +47,11 @@ class GameObject(object):
         return self.__components.values()
     
     def AddComponent(self, obj):
-        newObj = obj(self)
+        try:
+            newObj = obj(self)
+        except Exception:
+            newObj = obj
+
         if self.HasComponent(newObj.type):
             OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
         else:
@@ -62,21 +67,15 @@ class GameObject(object):
                     ScriptComponent.Update()
 
 class Entity(GameObject):
-    def __init__(self, parent):
+    def __init__(self, parent, texture=None):
         super().__init__(parent)
         self.__children = {}
         self.__components = {}
-        self.texture = None
-        self.scale = 1
-        self.rotation = 0
-        self.position = Vector2(0, 0)
+        self.AddComponent(TransformComponent)
+        self.AddComponent(TextureComponent(self, texture))
 
 def NewEntity(name, parent, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
-    newObject = Entity(parent)
+    newObject = Entity(parent, texture)
     newObject.__name__ = newObject.name = name
-    newObject.texture = texture
-    newObject.scale = scale
-    newObject.rotation = rotation
-    newObject.position = position
     parent._AddChild(newObject)
     return newObject
