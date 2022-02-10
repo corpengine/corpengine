@@ -65,6 +65,7 @@ class Window(object):
 
 class Engine(object):
     def __init__(self, screenWidth, screenHeight, title):
+        self._type = "Engine"
         self.window = Window(self)
         self.window.screenWidth = screenWidth
         self.window.screenHeight = screenHeight

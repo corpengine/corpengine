@@ -5,7 +5,7 @@ from corpengine2.modules.colors import WHITE
 class Service(object):
     def __init__(self, parent):
         self.parent = parent
-        self.name = self.__type = type(self).__name__
+        self.name = self._type = type(self).__name__
 
 class GameService(Service):
     def __init__(self, parent):
