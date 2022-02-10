@@ -67,15 +67,15 @@ class GameObject(object):
                     ScriptComponent.Update()
 
 class Entity(GameObject):
-    def __init__(self, parent, texture=None):
+    def __init__(self, parent, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
         super().__init__(parent)
         self.__children = {}
         self.__components = {}
-        self.AddComponent(TransformComponent)
+        self.AddComponent(TransformComponent(scale, rotation, position))
         self.AddComponent(TextureComponent(self, texture))
 
 def NewEntity(name, parent, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
-    newObject = Entity(parent, texture)
+    newObject = Entity(parent, texture, scale, rotation, position)
     newObject.__name__ = newObject.name = name
     parent._AddChild(newObject)
     return newObject

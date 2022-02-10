@@ -1,4 +1,5 @@
 import raylib as rl
+from pyray import Vector2
 from corpengine2.modules import core
 from corpengine2.modules.colors import WHITE
 
@@ -44,6 +45,12 @@ class Assets(Service):
         texture = rl.LoadTexture(str.encode(path))
         self.textures.update({name: rl.LoadTexture(str.encode(path))})
         return texture
+    
+    def GetTexture(self, name):
+        try:
+            return self.textures[name]
+        except Exception:
+            core.OpenErrorWindow(f"No such texture with name \"{name}\".", self.parent.parent)
 
 
 class Workspace(Service):
@@ -81,10 +88,12 @@ class EngineRenderService(Service):
         for child in self.Workspace.GetChildren():
             if child.HasComponent("TextureComponent"):
                 TextureComponent = child.GetComponent("TextureComponent")
-                TransformComponent = child.GetComponent("TransformComponent")
-                position = TransformComponent.position
-                rotation = TransformComponent.rotation
-                scale = TransformComponent.scale
-                texture = TextureComponent.texture
-                if texture != None:
-                    rl.DrawTextureEx(texture, position, rotation, scale, WHITE)
+                if TextureComponent.texture != None:
+                    TransformComponent = child.GetComponent("TransformComponent")
+                    position = Vector2(0, 0)
+                    rotation = TransformComponent.rotation
+                    scale = TransformComponent.scale
+                    texture = TextureComponent.texture
+                    # FIXME for some reason DrawTextureEx does not work after
+                    # the TransformComponent update.
+                    rl.DrawTextureV(texture, position, WHITE)
