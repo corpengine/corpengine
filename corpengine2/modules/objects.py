@@ -60,6 +60,15 @@ class GameObject(object):
             setattr(self, newObj.type, newObj)
             if newObj.type == "Script" and newObj.enabled and hasattr(newObj, "Setup"):
                 newObj.Setup()
+    
+    def RemoveComponent(self, name):
+        try:
+            if not name == "Transform":
+                del self.__components[name]
+            else:
+                OpenErrorWindow("Transform component not removable", self.GetEngine())
+        except Exception:
+            OpenErrorWindow(f"No component in object named \"{name}\"", self.GetEngine())
 
     def _Update(self):
         for child in self.GetChildren():

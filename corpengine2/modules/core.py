@@ -9,9 +9,12 @@ SetConfigFlags = rl.SetConfigFlags
 GetFPS = rl.GetFPS
 SetTargetFPS = rl.SetTargetFPS
 SetStateFlags = rl.SetWindowState
-SetWindowTitle = rl.SetWindowTitle
 SetWindowMinimum = rl.SetWindowMinSize
 SetExitKey = rl.SetExitKey
+
+def SetWindowTitle(title):
+    """Set the window title"""
+    rl.SetWindowTitle(str.encode(title))
 
 def OpenErrorWindow(text: str, engine: object):
     callerFrame = sys._getframe(2)
@@ -52,7 +55,6 @@ class Window(object):
         rl.BeginDrawing()
         rl.ClearBackground(self.__backgroundColor)
         game.EngineRenderService._Render()
-        rl.DrawFPS(20, 20)
         rl.EndDrawing()
     
     def SetBackgroundColor(self, color):
