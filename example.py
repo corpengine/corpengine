@@ -3,13 +3,15 @@ from corpengine2 import *
 Engine = InitEngine(960, 540, "Corporation")
 Game = Engine.Game
 
-Player = GameObject(Engine.Game.Workspace)
-print(Player.GetComponents())
+Player = NewGameObject("Player", Engine)
 
-class TestComponent(ScriptComponent):
+class Test(ScriptComponent):
+    def Setup(self):
+        pass
+    
     def Update(self):
-        print("nice")
+        print("test")
 
-Player.AddComponent(TestComponent)
+Player.AddComponent(Test)
 
 Engine.Mainloop()

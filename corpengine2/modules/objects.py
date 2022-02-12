@@ -7,7 +7,7 @@ class GameObject(object):
         self.parent = parent
         self.name = self._type = type(self).__name__
         self.__components = {}
-        self.AddComponent(TransformComponent(scale, rotation, position))
+        self.AddComponent(TransformComponent(self, scale, rotation, position))
 
     def GetGameService(self):
         game = self.parent
@@ -75,8 +75,15 @@ class Entity(GameObject):
         self.AddComponent(TextureComponent(self, texture))
 
 def NewEntity(name, engine, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
-    """Create & return an Entity GameObject"""
+    """Create & return a GameObject with Texture"""
     newObject = Entity(engine.Game.Workspace, texture, scale, rotation, position)
+    newObject.__name__ = newObject.name = name
+    engine.Game.Workspace._AddChild(newObject)
+    return newObject
+
+def NewGameObject(name, engine, scale=1, rotation=0, position=Vector2(0, 0)):
+    """Create & return a plain GameObject"""
+    newObject = GameObject(engine.Game.Workspace, scale, rotation, position)
     newObject.__name__ = newObject.name = name
     engine.Game.Workspace._AddChild(newObject)
     return newObject

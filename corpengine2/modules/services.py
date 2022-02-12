@@ -92,7 +92,4 @@ class EngineRenderService(Service):
                     rotation = TransformComponent.rotation
                     scale = TransformComponent.scale
                     texture = TextureComponent.texture
-                    # FIXME for some reason DrawTextureEx does not work after
-                    # the TransformComponent update.
-                    print(rotation)
                     rl.DrawTextureEx(texture, position, rotation, scale, WHITE)
