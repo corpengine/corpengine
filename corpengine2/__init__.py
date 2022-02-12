@@ -5,6 +5,8 @@ from corpengine2.modules.core import *
 from corpengine2.modules.objects import *
 from corpengine2.modules.components import *
 
-def InitEngine(screenWidth, screenHeight, title):
-    """Initialize an Engine class"""    
-    return Engine(screenWidth, screenHeight, title)
+Engine = EngineClass()
+
+def InitEngine(screenWidth=960, screenHeight=540, title="CORP Engine 2 Window"):
+    """Initialize the Engine"""    
+    return Engine._Init(screenWidth, screenHeight, title)

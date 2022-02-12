@@ -62,16 +62,17 @@ class Window(object):
         return self.__backgroundColor
     
 
-class Engine(object):
-    def __init__(self, screenWidth, screenHeight, title):
+class EngineClass(object):
+    def __init__(self):
         self._type = "Engine"
+        self.status = None
+        self.Game = GameService(self)
         self.window = Window(self)
+    
+    def _Init(self, screenWidth, screenHeight, title):
         self.window.screenWidth = screenWidth
         self.window.screenHeight = screenHeight
         self.window.title = title
-        self.status = None
-        self.Game = GameService(self)
-        
         self.window._Setup()
     
     def Mainloop(self):

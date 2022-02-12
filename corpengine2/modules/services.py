@@ -71,7 +71,7 @@ class Workspace(Service):
         for child in self.GetChildren():
             if child.HasComponent("Script"):
                 Script = child.GetComponent("Script")
-                if hasattr(Script, "Update"):
+                if Script.enabled and hasattr(Script, "Update"):
                     Script.Update()
     
     def _AddChild(self, obj):
