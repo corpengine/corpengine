@@ -4,6 +4,7 @@ class Script(object):
     def __init__(self, parent):
         self.parent = parent
         self.type = "Script"
+        self.enabled = True
 
 class Transform(object):
     def __init__(self, parent, scale=1, rotation=0, position=Vector2(0, 0)):
@@ -18,3 +19,4 @@ class Texture(object):
         self.parent = parent
         self.type = "Texture"
         self.texture = texture
+        self.enabled = True

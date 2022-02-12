@@ -86,7 +86,7 @@ class EngineRenderService(Service):
         for child in self.Workspace.GetChildren():
             if child.HasComponent("Texture"):
                 Texture = child.GetComponent("Texture")
-                if Texture.texture != None:
+                if Texture.enabled and Texture.texture != None:
                     Transform = child.GetComponent("Transform")
                     position = Transform.position
                     rotation = Transform.rotation

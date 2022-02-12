@@ -58,14 +58,14 @@ class GameObject(object):
         else:
             self.__components.update({newObj.type: newObj})
             setattr(self, newObj.type, newObj)
-            if newObj.type == "Script" and hasattr(newObj, "Setup"):
+            if newObj.type == "Script" and newObj.enabled and hasattr(newObj, "Setup"):
                 newObj.Setup()
 
     def _Update(self):
         for child in self.GetChildren():
             if child.HasComponent("Script"):
                 Script = child.GetComponent("Script")
-                if hasattr(Script, "Update"):
+                if Script.enabled and hasattr(Script, "Update"):
                     Script.Update()
 
 class Entity(GameObject):
