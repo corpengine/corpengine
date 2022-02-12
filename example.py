@@ -1,17 +1,12 @@
 from corpengine2 import *
 
-Engine = InitEngine(960, 540, "Corporation")
-Game = Engine.Game
+Engine = InitEngine(960, 540, "CORP Engine 2 Window")
 
-Player = NewGameObject("Player", Engine)
-
-class Test(Script):
-    def Setup(self):
-        pass
-    
+class TestComponent(Script):
     def Update(self):
-        print("test")
+        print(self.parent.Transform.position.x)
 
-Player.AddComponent(Test)
+Player = NewEntity("Player", Engine)
+Player.AddComponent(TestComponent)
 
 Engine.Mainloop()

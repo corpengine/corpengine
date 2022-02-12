@@ -69,10 +69,10 @@ class Workspace(Service):
     
     def _Update(self):
         for child in self.GetChildren():
-            if child.HasComponent("ScriptComponent"):
-                ScriptComponent = child.GetComponent("ScriptComponent")
-                if hasattr(ScriptComponent, "Update"):
-                    ScriptComponent.Update()
+            if child.HasComponent("Script"):
+                Script = child.GetComponent("Script")
+                if hasattr(Script, "Update"):
+                    Script.Update()
     
     def _AddChild(self, obj):
         self.__children.update({obj.name: obj})
@@ -84,12 +84,12 @@ class EngineRenderService(Service):
     
     def _Render(self):
         for child in self.Workspace.GetChildren():
-            if child.HasComponent("TextureComponent"):
-                TextureComponent = child.GetComponent("TextureComponent")
-                if TextureComponent.texture != None:
-                    TransformComponent = child.GetComponent("TransformComponent")
-                    position = TransformComponent.position
-                    rotation = TransformComponent.rotation
-                    scale = TransformComponent.scale
-                    texture = TextureComponent.texture
+            if child.HasComponent("Texture"):
+                Texture = child.GetComponent("Texture")
+                if Texture.texture != None:
+                    Transform = child.GetComponent("Transform")
+                    position = Transform.position
+                    rotation = Transform.rotation
+                    scale = Transform.scale
+                    texture = Texture.texture
                     rl.DrawTextureEx(texture, position, rotation, scale, WHITE)

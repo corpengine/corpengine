@@ -81,7 +81,7 @@ class Engine(object):
         # De-initilization process
         rl.CloseWindow()
 
-        assets = self.game.Assets
+        assets = self.Game.Assets
 
         textures = assets.textures
         for texture in textures:

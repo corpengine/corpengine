@@ -57,15 +57,16 @@ class GameObject(object):
             OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
         else:
             self.__components.update({newObj.type: newObj})
-            if newObj.type == "ScriptComponent" and hasattr(newObj, "Setup"):
+            setattr(self, newObj.type, newObj)
+            if newObj.type == "Script" and hasattr(newObj, "Setup"):
                 newObj.Setup()
 
     def _Update(self):
         for child in self.GetChildren():
-            if child.HasComponent("ScriptComponent"):
-                ScriptComponent = child.GetComponent("ScriptComponent")
-                if hasattr(ScriptComponent, "Update"):
-                    ScriptComponent.Update()
+            if child.HasComponent("Script"):
+                Script = child.GetComponent("Script")
+                if hasattr(Script, "Update"):
+                    Script.Update()
 
 class Entity(GameObject):
     def __init__(self, parent, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
