@@ -1,11 +1,11 @@
 from pyray import Vector2
 
-class ScriptComponent(object):
+class Script(object):
     def __init__(self, parent):
         self.parent = parent
         self.type = "ScriptComponent"
 
-class TransformComponent(object):
+class Transform(object):
     def __init__(self, parent, scale=1, rotation=0, position=Vector2(0, 0)):
         self.parent = parent
         self.type = "TransformComponent"
@@ -13,7 +13,7 @@ class TransformComponent(object):
         self.rotation = rotation
         self.position = position
 
-class TextureComponent(object):
+class Texture(object):
     def __init__(self, parent, texture=None):
         self.parent = parent
         self.type = "TextureComponent"

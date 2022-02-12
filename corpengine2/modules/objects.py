@@ -1,13 +1,13 @@
 from pyray import Vector2
 from corpengine2.modules.core import OpenErrorWindow
-from corpengine2.modules.components import TransformComponent, TextureComponent
+from corpengine2.modules.components import Transform, Texture
 
 class GameObject(object):
     def __init__(self, parent, scale=1, rotation=0, position=Vector2(0, 0)):
         self.parent = parent
         self.name = self._type = type(self).__name__
         self.__components = {}
-        self.AddComponent(TransformComponent(self, scale, rotation, position))
+        self.AddComponent(Transform(self, scale, rotation, position))
 
     def GetGameService(self):
         game = self.parent
@@ -72,7 +72,7 @@ class Entity(GameObject):
         super().__init__(parent, scale, rotation, position)
         self.__children = {}
         self.__components = {}
-        self.AddComponent(TextureComponent(self, texture))
+        self.AddComponent(Texture(self, texture))
 
 def NewEntity(name, engine, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
     """Create & return a GameObject with Texture"""

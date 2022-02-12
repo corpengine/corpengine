@@ -5,7 +5,7 @@ Game = Engine.Game
 
 Player = NewGameObject("Player", Engine)
 
-class Test(ScriptComponent):
+class Test(Script):
     def Setup(self):
         pass
     
