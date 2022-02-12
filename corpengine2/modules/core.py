@@ -46,7 +46,7 @@ class Window(object):
 
     def _Update(self):
         # Updating process
-        game = self.parent.game
+        game = self.parent.Game
         game._Update()
         # Drawing Process
         rl.BeginDrawing()
@@ -70,7 +70,7 @@ class Engine(object):
         self.window.screenHeight = screenHeight
         self.window.title = title
         self.status = None
-        self.game = GameService(self)
+        self.Game = GameService(self)
         
         self.window._Setup()
     

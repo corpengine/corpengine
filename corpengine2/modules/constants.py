@@ -1,3 +1,3 @@
 from raylib import *
 
-ENGINE_VERSION = "0.3.0"
+ENGINE_VERSION = "2.0 Open-Alpha"

@@ -3,11 +3,12 @@ from corpengine2.modules.core import OpenErrorWindow
 from corpengine2.modules.components import TransformComponent, TextureComponent
 
 class GameObject(object):
-    def __init__(self, parent):
+    def __init__(self, parent, scale=1, rotation=0, position=Vector2(0, 0)):
         self.parent = parent
         self.name = self._type = type(self).__name__
         self.__components = {}
-    
+        self.AddComponent(TransformComponent(scale, rotation, position))
+
     def GetGameService(self):
         game = self.parent
         while game.name != "GameService":
@@ -56,7 +57,7 @@ class GameObject(object):
             OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
         else:
             self.__components.update({newObj.type: newObj})
-            if newObj.type == "ScriptComponent":
+            if newObj.type == "ScriptComponent" and hasattr(newObj, "Setup"):
                 newObj.Setup()
 
     def _Update(self):
@@ -68,14 +69,14 @@ class GameObject(object):
 
 class Entity(GameObject):
     def __init__(self, parent, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
-        super().__init__(parent)
+        super().__init__(parent, scale, rotation, position)
         self.__children = {}
         self.__components = {}
-        self.AddComponent(TransformComponent(scale, rotation, position))
         self.AddComponent(TextureComponent(self, texture))
 
-def NewEntity(name, parent, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
-    newObject = Entity(parent, texture, scale, rotation, position)
+def NewEntity(name, engine, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
+    """Create & return an Entity GameObject"""
+    newObject = Entity(engine.Game.Workspace, texture, scale, rotation, position)
     newObject.__name__ = newObject.name = name
-    parent._AddChild(newObject)
+    engine.Game.Workspace._AddChild(newObject)
     return newObject

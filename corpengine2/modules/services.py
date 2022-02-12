@@ -76,8 +76,6 @@ class Workspace(Service):
     
     def _AddChild(self, obj):
         self.__children.update({obj.name: obj})
-        if hasattr(object, "Setup"):
-            object.Setup()
 
 class EngineRenderService(Service):
     def __init__(self, parent):
@@ -90,10 +88,11 @@ class EngineRenderService(Service):
                 TextureComponent = child.GetComponent("TextureComponent")
                 if TextureComponent.texture != None:
                     TransformComponent = child.GetComponent("TransformComponent")
-                    position = Vector2(0, 0)
+                    position = TransformComponent.position
                     rotation = TransformComponent.rotation
                     scale = TransformComponent.scale
                     texture = TextureComponent.texture
                     # FIXME for some reason DrawTextureEx does not work after
                     # the TransformComponent update.
-                    rl.DrawTextureV(texture, position, WHITE)
+                    print(rotation)
+                    rl.DrawTextureEx(texture, position, rotation, scale, WHITE)

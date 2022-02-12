@@ -1,8 +1,15 @@
 from corpengine2 import *
 
 Engine = InitEngine(960, 540, "Corporation")
-Game = Engine.game  # TODO change the game to be capitalized
+Game = Engine.Game
 
-Player = NewEntity("Player", Game.Workspace, Game.Assets.LoadTexture("stone", "stone.png"))
+Player = GameObject(Engine.Game.Workspace)
+print(Player.GetComponents())
+
+class TestComponent(ScriptComponent):
+    def Update(self):
+        print("nice")
+
+Player.AddComponent(TestComponent)
 
 Engine.Mainloop()

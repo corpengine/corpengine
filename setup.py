@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 classifiers = [
-    'Development Status :: 1 - Planning',
+    'Development Status :: 2 - Pre-Alpha',
     'Intended Audience :: Developers',
     'Operating System :: OS Independent',
     'License :: OSI Approved :: MIT License',
@@ -10,7 +10,7 @@ classifiers = [
 
 setup(
     name='corpengine2',
-    version='0.1.0',
+    version='2.0',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine',
     url='https://corpengine.github.io/',
