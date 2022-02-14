@@ -64,23 +64,21 @@ class Window(object):
         return self.__backgroundColor
     
 
-class EngineClass(object):
-    def __init__(self):
+class Engine(object):
+    def __init__(self, screenWidth, screenHeight, title):
         self._type = "Engine"
         self.status = None
         self.Game = GameService(self)
-        self.window = Window(self)
-    
-    def _Init(self, screenWidth, screenHeight, title):
-        self.window.screenWidth = screenWidth
-        self.window.screenHeight = screenHeight
-        self.window.title = title
-        self.window._Setup()
+        self.Window = Window(self)
+        self.Window.screenWidth = screenWidth
+        self.Window.screenHeight = screenHeight
+        self.Window.title = title
+        self.Window._Setup()
     
     def Mainloop(self):
         self.status = True
         while not rl.WindowShouldClose() and self.status:
-            self.window._Update()
+            self.Window._Update()
         # De-initilization process
         rl.CloseWindow()
 

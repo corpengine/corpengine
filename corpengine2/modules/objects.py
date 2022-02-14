@@ -1,5 +1,5 @@
 from pyray import Vector2
-from corpengine2.modules.core import OpenErrorWindow
+from corpengine2.modules import core as c
 from corpengine2.modules.components import Transform, Texture
 
 class GameObject(object):
@@ -39,7 +39,7 @@ class GameObject(object):
         try:
             return self.__components[name]
         except Exception:
-            OpenErrorWindow(f"No component found named \"{name}\".", self.GetEngine())
+            c.OpenErrorWindow(f"No component found named \"{name}\".", self.GetEngine())
     
     def HasComponent(self, name):
         return name in self.__components.keys()
@@ -54,7 +54,7 @@ class GameObject(object):
             newObj = obj
 
         if self.HasComponent(newObj.type):
-            OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
+            c.OpenErrorWindow(f"Sorry, only one {newObj.type} per Object ¯\_(ツ)_/¯", self.GetEngine())
         else:
             self.__components.update({newObj.type: newObj})
             setattr(self, newObj.type, newObj)
@@ -64,11 +64,19 @@ class GameObject(object):
     def RemoveComponent(self, name):
         try:
             if not name == "Transform":
+                # remove object from collision group
+                if name == "RectCollider":
+                    component = self.GetComponent("RectCollider")
+                    collisionGroup = self.GetGameService().collisionGroups[component.collisionGroup]
+                    index = collisionGroup.index(self)
+                    del collisionGroup[index]
+                
                 del self.__components[name]
+                delattr(self, name)
             else:
-                OpenErrorWindow("Transform component not removable", self.GetEngine())
+                c.OpenErrorWindow("Transform component not removable.", self.GetEngine())
         except Exception:
-            OpenErrorWindow(f"No component in object named \"{name}\"", self.GetEngine())
+            c.OpenErrorWindow(f"No component in object named \"{name}\"", self.GetEngine())
 
     def _Update(self):
         for child in self.GetChildren():
@@ -84,16 +92,16 @@ class Entity(GameObject):
         self.__components = {}
         self.AddComponent(Texture(self, texture))
 
+"""
 def NewEntity(name, engine, texture=None, scale=1, rotation=0, position=Vector2(0, 0)):
-    """Create & return a GameObject with Texture"""
     newObject = Entity(engine.Game.Workspace, texture, scale, rotation, position)
     newObject.__name__ = newObject.name = name
     engine.Game.Workspace._AddChild(newObject)
     return newObject
 
 def NewGameObject(name, engine, scale=1, rotation=0, position=Vector2(0, 0)):
-    """Create & return a plain GameObject"""
     newObject = GameObject(engine.Game.Workspace, scale, rotation, position)
     newObject.__name__ = newObject.name = name
     engine.Game.Workspace._AddChild(newObject)
     return newObject
+"""

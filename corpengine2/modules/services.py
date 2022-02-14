@@ -2,6 +2,7 @@ import raylib as rl
 from pyray import Vector2
 from corpengine2.modules import core
 from corpengine2.modules.colors import WHITE
+from corpengine2.modules.objects import GameObject
 
 class Service(object):
     def __init__(self, parent):
@@ -14,6 +15,7 @@ class GameService(Service):
         self.Assets = Assets(self)
         self.Workspace = Workspace(self)
         self.EngineRenderService = EngineRenderService(self)
+        self.ObjectService = ObjectService(self)
     
     def GetService(self, name):
         if hasattr(self, name):
@@ -69,10 +71,17 @@ class Workspace(Service):
     
     def _Update(self):
         for child in self.GetChildren():
+            # script update call
             if child.HasComponent("Script"):
                 Script = child.GetComponent("Script")
                 if Script.enabled and hasattr(Script, "Update"):
                     Script.Update()
+
+            # rect collider collision check call
+            if child.HasComponent("RectCollider"):
+                RectCollider = child.GetComponent("RectCollider")
+                if RectCollider.enabled:
+                    RectCollider._Update(self.parent)
     
     def _AddChild(self, obj):
         self.__children.update({obj.name: obj})
@@ -93,3 +102,14 @@ class EngineRenderService(Service):
                     scale = Transform.scale
                     texture = Texture.texture
                     rl.DrawTextureEx(texture, position, rotation, scale, WHITE)
+
+class ObjectService(Service):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+    def New(self, name, parent, scale=1, rotation=0, position=Vector2(0, 0)):
+        newObject = GameObject(parent, scale, rotation, position)
+        newObject.name = name
+        newObject.parent = parent
+        parent._AddChild(newObject)
+        return newObject
