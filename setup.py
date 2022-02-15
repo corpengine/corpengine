@@ -9,7 +9,7 @@ classifiers = [
 ]
 
 setup(
-    name='corpengine2',
+    name='corp',
     version='2.0',
     description='Fast, Organized, Object-Oriented Python Game Development',
     long_description='github repository: https://github.com/corpengine/corpengine',
